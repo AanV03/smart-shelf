@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Send, RotateCcw, Package, Hash, Layers, DollarSign, CalendarDays } from "lucide-react"
+import { Send, RotateCcw, Package, Hash, Layers, DollarSign, CalendarDays, AlertCircle } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ProductCombobox } from "../shared/product-combobox"
 import { ExpirationDatePicker } from "../shared/expiration-date-picker"
+import { api } from "@/trpc/react"
 
 export interface BatchEntry {
   id: string
@@ -20,7 +21,22 @@ export interface BatchEntry {
 }
 
 interface BatchEntryFormProps {
-  onSubmit: (entry: BatchEntry) => void
+  onSuccess?: () => void
+}
+
+// Temporary mapping: SKU -> hardcoded productId
+// In production, this would come from the database
+const skuToProductIdMap: Record<string, string> = {
+  "sku-001": "prod-001",
+  "sku-002": "prod-002",
+  "sku-003": "prod-003",
+  "sku-004": "prod-004",
+  "sku-005": "prod-005",
+  "sku-006": "prod-006",
+  "sku-007": "prod-007",
+  "sku-008": "prod-008",
+  "sku-009": "prod-009",
+  "sku-010": "prod-010",
 }
 
 const productMap: Record<string, string> = {
@@ -42,16 +58,35 @@ interface FormErrors {
   quantity?: string
   unitCost?: string
   expirationDate?: string
+  submit?: string
 }
 
-export function BatchEntryForm({ onSubmit }: BatchEntryFormProps) {
+export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
   const [product, setProduct] = useState("")
   const [batchNumber, setBatchNumber] = useState("")
   const [quantity, setQuantity] = useState("")
   const [unitCost, setUnitCost] = useState("")
   const [expirationDate, setExpirationDate] = useState<Date | undefined>()
   const [errors, setErrors] = useState<FormErrors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const createBatchMutation = api.inventory.createBatch.useMutation({
+    onSuccess: () => {
+      // Reset form
+      setProduct("")
+      setBatchNumber("")
+      setQuantity("")
+      setUnitCost("")
+      setExpirationDate(undefined)
+      setErrors({})
+      onSuccess?.()
+    },
+    onError: (error) => {
+      setErrors((prev) => ({
+        ...prev,
+        submit: error.message || "Failed to create batch. Please try again.",
+      }))
+    },
+  })
 
   const validate = (): boolean => {
     const newErrors: FormErrors = {}
@@ -73,29 +108,19 @@ export function BatchEntryForm({ onSubmit }: BatchEntryFormProps) {
     e.preventDefault()
     if (!validate()) return
 
-    setIsSubmitting(true)
-    // Simulate async submission
-    await new Promise((resolve) => setTimeout(resolve, 600))
+    const productId = skuToProductIdMap[product]
+    if (!productId) {
+      setErrors((prev) => ({ ...prev, product: "Invalid product selected" }))
+      return
+    }
 
-    onSubmit({
-      id: crypto.randomUUID(),
-      product,
-      productLabel: productMap[product] ?? product,
+    createBatchMutation.mutate({
+      productId,
       batchNumber: batchNumber.trim(),
       quantity: Number(quantity),
-      unitCost: Number(unitCost),
-      expirationDate: expirationDate!,
-      timestamp: new Date(),
+      costPerUnit: Number(unitCost),
+      expiresAt: expirationDate!,
     })
-
-    // Reset form
-    setProduct("")
-    setBatchNumber("")
-    setQuantity("")
-    setUnitCost("")
-    setExpirationDate(undefined)
-    setErrors({})
-    setIsSubmitting(false)
   }
 
   const handleReset = () => {
@@ -304,14 +329,24 @@ export function BatchEntryForm({ onSubmit }: BatchEntryFormProps) {
         </div>
       </div>
 
+      {/* Error Alert */}
+      {errors.submit && (
+        <div className="flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+          <AlertCircle className="size-5 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
+          <div>
+            <p className="text-sm font-medium text-destructive">{errors.submit}</p>
+          </div>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex items-center gap-3 pt-2">
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={createBatchMutation.isPending}
           className="flex-1 h-11 bg-primary text-primary-foreground hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          {isSubmitting ? (
+          {createBatchMutation.isPending ? (
             <span className="flex items-center gap-2">
               <span className="size-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
               Logging...

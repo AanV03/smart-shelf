@@ -2,12 +2,24 @@
 
 import { useState } from "react"
 import { Navbar } from "../shared/navbar"
-import { AlertCircle, TrendingUp, Package } from "lucide-react"
+import { AlertCircle, TrendingUp, Package, Loader2 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { api } from "@/trpc/react"
+import { format } from "date-fns"
 
 export default function ManagerDashboard() {
   const [activeTab, setActiveTab] = useState("overview")
+
+  // Fetch dashboard stats
+  const { data: statsData, isLoading: statsLoading, error: statsError } = api.stats.getDashboardStats.useQuery()
+  
+  // Fetch alerts
+  const { data: alertsData, isLoading: alertsLoading } = api.alerts.getAlerts.useQuery({
+    isRead: false,
+    limit: 10,
+  })
 
   return (
     <div className="relative min-h-screen bg-background">
@@ -46,7 +58,10 @@ export default function ManagerDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold tabular-nums text-foreground">
-                  $0.00
+                  {statsLoading ? "—" : `$${(statsData?.totalInventoryValue ?? 0).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Total current valuation
@@ -64,7 +79,7 @@ export default function ManagerDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold tabular-nums text-foreground">
-                  0
+                  {statsLoading ? "—" : statsData?.activeProductCount ?? 0}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Unique SKUs in stock
@@ -82,10 +97,10 @@ export default function ManagerDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold tabular-nums text-foreground">
-                  0
+                  {statsLoading ? "—" : statsData?.expiringCount ?? 0}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Due in next 3 days
+                  Due in next 7 days
                 </p>
               </CardContent>
             </Card>
@@ -137,11 +152,56 @@ export default function ManagerDashboard() {
                   <h3 className="font-semibold text-foreground">
                     Active Alerts
                   </h3>
-                  <div className="rounded-lg border border-warning/20 bg-warning/5 p-4">
-                    <p className="text-sm text-foreground">
-                      No active alerts
-                    </p>
-                  </div>
+                  {alertsLoading ? (
+                    <div className="flex items-center justify-center gap-2 py-12">
+                      <Loader2 className="size-4 animate-spin" />
+                      <span className="text-sm text-muted-foreground">Loading alerts...</span>
+                    </div>
+                  ) : alertsData?.alerts && alertsData.alerts.length > 0 ? (
+                    <div className="space-y-2">
+                      {alertsData.alerts.map((alert) => (
+                        <div
+                          key={alert.id}
+                          className={`rounded-lg border p-4 ${
+                            alert.severity === "CRITICAL"
+                              ? "border-destructive/30 bg-destructive/5"
+                              : alert.severity === "WARNING"
+                              ? "border-warning/30 bg-warning/5"
+                              : "border-primary/30 bg-primary/5"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-medium text-foreground text-sm">
+                                {alert.message}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {format(alert.createdAt, "MMM d, h:mm a")}
+                              </p>
+                            </div>
+                            <Badge
+                              variant="outline"
+                              className={
+                                alert.severity === "CRITICAL"
+                                  ? "bg-destructive/10 text-destructive border-destructive/30"
+                                  : alert.severity === "WARNING"
+                                  ? "bg-warning/10 text-warning border-warning/30"
+                                  : "bg-primary/10 text-primary border-primary/30"
+                              }
+                            >
+                              {alert.severity}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                      <p className="text-sm text-foreground">
+                        No unread alerts
+                      </p>
+                    </div>
+                  )}
                 </div>
               </TabsContent>
 

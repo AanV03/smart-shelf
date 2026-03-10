@@ -1,23 +1,30 @@
 "use client"
 
-import { useState } from "react"
 import { Navbar } from "../shared/navbar"
-import { BatchEntryForm, type BatchEntry } from "./BatchEntryForm"
+import { BatchEntryForm } from "./BatchEntryForm"
 import { RecentEntries } from "./RecentEntries"
-import { Boxes, TrendingUp } from "lucide-react"
+import { Boxes, TrendingUp, AlertCircle } from "lucide-react"
+import { api } from "@/trpc/react"
 
 export default function EmployeeDashboard() {
-  const [entries, setEntries] = useState<BatchEntry[]>([])
+  const utils = api.useUtils()
+  
+  // Get batches for today
+  const { data: batchesData, isLoading, error } = api.inventory.getBatches.useQuery({
+    limit: 50,
+    offset: 0,
+  })
+  
+  const batches = batchesData?.batches ?? []
+  
+  // Calculate totals
+  const totalUnitsToday = batches.reduce((acc, batch) => acc + batch.quantity, 0)
+  const totalValueToday = batches.reduce((acc, batch) => acc + batch.totalCost, 0)
 
-  const handleNewEntry = (entry: BatchEntry) => {
-    setEntries((prev) => [...prev, entry])
+  const handleBatchCreated = () => {
+    // Refresh batches after creating one
+    utils.inventory.getBatches.invalidate()
   }
-
-  const totalUnitsToday = entries.reduce((acc, e) => acc + e.quantity, 0)
-  const totalValueToday = entries.reduce(
-    (acc, e) => acc + e.quantity * e.unitCost,
-    0
-  )
 
   return (
     <div className="relative min-h-screen bg-background">
@@ -54,7 +61,7 @@ export default function EmployeeDashboard() {
                 </span>
               </div>
               <p className="mt-2 text-2xl font-bold tabular-nums text-foreground">
-                {entries.length}
+                {isLoading ? "—" : batches.length}
               </p>
             </div>
             <div className="rounded-xl border border-border/40 bg-card/60 p-4 backdrop-blur-sm">
@@ -65,7 +72,7 @@ export default function EmployeeDashboard() {
                 </span>
               </div>
               <p className="mt-2 text-2xl font-bold tabular-nums text-foreground">
-                {totalUnitsToday.toLocaleString()}
+                {isLoading ? "—" : totalUnitsToday.toLocaleString()}
               </p>
             </div>
             <div className="col-span-2 rounded-xl border border-border/40 bg-card/60 p-4 backdrop-blur-sm sm:col-span-1">
@@ -76,10 +83,10 @@ export default function EmployeeDashboard() {
                 </span>
               </div>
               <p className="mt-2 text-2xl font-bold tabular-nums text-foreground">
-                ${totalValueToday.toLocaleString(undefined, {
+                {isLoading ? "—" : `$${totalValueToday.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
-                })}
+                })}`}
               </p>
             </div>
           </div>
@@ -97,14 +104,24 @@ export default function EmployeeDashboard() {
                     Fill in the details from the supplier shipment
                   </p>
                 </div>
-                <BatchEntryForm onSubmit={handleNewEntry} />
+                <BatchEntryForm onSuccess={handleBatchCreated} />
               </div>
             </div>
 
             {/* Recent Entries Sidebar */}
             <div className="lg:col-span-2">
               <div className="sticky top-24 rounded-2xl border border-border/40 bg-card/60 p-6 backdrop-blur-xl">
-                <RecentEntries entries={entries} />
+                {error ? (
+                  <div className="flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+                    <AlertCircle className="size-5 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
+                    <div>
+                      <p className="text-sm font-medium text-destructive">Failed to load batches</p>
+                      <p className="text-xs text-destructive/80 mt-1">{error.message}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <RecentEntries batches={batches} isLoading={isLoading} />
+                )}
               </div>
             </div>
           </div>

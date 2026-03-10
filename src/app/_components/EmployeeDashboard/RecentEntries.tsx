@@ -1,17 +1,21 @@
 "use client"
 
 import { format, differenceInDays } from "date-fns"
-import { Clock, Package, AlertTriangle, CheckCircle2 } from "lucide-react"
+import { Clock, Package, AlertTriangle, CheckCircle2, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import type { BatchEntry } from "./BatchEntryForm"
+import type { inferRouterOutputs } from "@trpc/server"
+import type { AppRouter } from "@/server/api/root"
+
+type Batch = inferRouterOutputs<AppRouter>["inventory"]["getBatches"]["batches"][0]
 
 interface RecentEntriesProps {
-  entries: BatchEntry[]
+  batches: Batch[]
+  isLoading?: boolean
 }
 
-export function RecentEntries({ entries }: RecentEntriesProps) {
-  const recentThree = entries.slice(-3).reverse()
+export function RecentEntries({ batches, isLoading }: RecentEntriesProps) {
+  const recentThree = batches.slice(-3).reverse()
 
   const getExpiryBadge = (date: Date) => {
     const days = differenceInDays(date, new Date())
@@ -31,17 +35,22 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
         >
           Recent Entries
         </h2>
-        {entries.length > 0 && (
+        {batches.length > 0 && (
           <Badge
             variant="secondary"
             className="ml-auto border border-border/60 bg-secondary/80 text-secondary-foreground"
           >
-            {entries.length} today
+            {batches.length} today
           </Badge>
         )}
       </div>
 
-      {recentThree.length === 0 ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+          <span className="text-xs">Loading batches...</span>
+        </div>
+      ) : recentThree.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/40 bg-secondary/20 py-12 text-center">
           <div className="rounded-full bg-secondary/50 p-3">
             <Package className="size-6 text-muted-foreground" aria-hidden="true" />
@@ -57,11 +66,11 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
         </div>
       ) : (
         <ul className="space-y-3" aria-label="List of recent batch entries">
-          {recentThree.map((entry, index) => {
-            const expiryBadge = getExpiryBadge(entry.expirationDate)
+          {recentThree.map((batch, index) => {
+            const expiryBadge = getExpiryBadge(batch.expiresAt)
             return (
               <li
-                key={entry.id}
+                key={batch.id}
                 className={cn(
                   "group relative rounded-lg border border-border/40 bg-secondary/25 p-4 transition-colors hover:bg-secondary/40",
                   index === 0 && "border-primary/20 bg-primary/5"
@@ -82,17 +91,17 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-foreground">
-                      {entry.productLabel}
+                      {batch.product.name}
                     </p>
                     <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
-                      {entry.batchNumber}
+                      {batch.batchNumber}
                     </p>
                   </div>
                   <Badge
                     variant="outline"
                     className={cn("shrink-0 text-[10px]", expiryBadge.className)}
                   >
-                    {differenceInDays(entry.expirationDate, new Date()) <= 7 && (
+                    {differenceInDays(batch.expiresAt, new Date()) <= 7 && (
                       <AlertTriangle className="mr-1 size-3" aria-hidden="true" />
                     )}
                     {expiryBadge.label}
@@ -101,18 +110,18 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
 
                 <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
                   <span>
-                    Qty: <span className="font-medium text-foreground">{entry.quantity}</span>
+                    Qty: <span className="font-medium text-foreground">{batch.quantity}</span>
                   </span>
                   <span>
-                    Cost: <span className="font-medium text-foreground">${entry.unitCost.toFixed(2)}</span>
+                    Cost: <span className="font-medium text-foreground">${batch.costPerUnit.toFixed(2)}</span>
                   </span>
                   <span className="ml-auto">
-                    Exp: <span className="font-medium text-foreground">{format(entry.expirationDate, "MMM d")}</span>
+                    Exp: <span className="font-medium text-foreground">{format(batch.expiresAt, "MMM d")}</span>
                   </span>
                 </div>
 
                 <p className="mt-2 text-[10px] text-muted-foreground/60">
-                  Logged at {format(entry.timestamp, "h:mm a")}
+                  Logged at {format(batch.createdAt, "h:mm a")}
                 </p>
               </li>
             )
@@ -120,9 +129,9 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
         </ul>
       )}
 
-      {entries.length > 3 && (
+      {batches.length > 3 && (
         <p className="mt-3 text-center text-[11px] text-muted-foreground">
-          + {entries.length - 3} more {entries.length - 3 === 1 ? "entry" : "entries"} today
+          + {batches.length - 3} more {batches.length - 3 === 1 ? "entry" : "entries"} today
         </p>
       )}
     </section>
