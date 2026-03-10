@@ -1,5 +1,5 @@
-import ManagerDashboard from "@/components/smart-shelf/ManagerDashboard";
-import EmployeeDashboard from "@/components/smart-shelf/EmployeeDashboard";
+import ManagerDashboard from "@/app/_components/ManagerDashboard/ManagerDashboard";
+import EmployeeDashboard from "@/app/_components/EmployeeDashboard/EmployeeDashboard";
 import { getServerAuthSession } from "@/server/auth"; // Magia de T3
 import { redirect } from "next/navigation";
 

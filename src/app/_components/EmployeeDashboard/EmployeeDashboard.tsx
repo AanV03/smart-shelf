@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Navbar } from "./navbar"
-import { BatchEntryForm, type BatchEntry } from "./batch-entry-form"
-import { RecentEntries } from "./recent-entries"
+import { Navbar } from "../shared/navbar"
+import { BatchEntryForm, type BatchEntry } from "./BatchEntryForm"
+import { RecentEntries } from "./RecentEntries"
 import { Boxes, TrendingUp } from "lucide-react"
 
 export default function EmployeeDashboard() {

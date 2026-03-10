@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Navbar } from "./navbar"
+import { Navbar } from "../shared/navbar"
 import { AlertCircle, TrendingUp, Package } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

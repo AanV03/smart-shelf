@@ -5,8 +5,8 @@ import { Send, RotateCcw, Package, Hash, Layers, DollarSign, CalendarDays } from
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { ProductCombobox } from "./product-combobox"
-import { ExpirationDatePicker } from "./expiration-date-picker"
+import { ProductCombobox } from "../shared/product-combobox"
+import { ExpirationDatePicker } from "../shared/expiration-date-picker"
 
 export interface BatchEntry {
   id: string
