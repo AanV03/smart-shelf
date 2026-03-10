@@ -4,7 +4,7 @@ import { format, differenceInDays } from "date-fns"
 import { Clock, Package, AlertTriangle, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import type { BatchEntry } from "./batch-entry-form"
+import type { BatchEntry } from "./BatchEntryForm"
 
 interface RecentEntriesProps {
   entries: BatchEntry[]

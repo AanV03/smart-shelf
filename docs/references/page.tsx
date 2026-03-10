@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Navbar } from "@/app/_components/navbar"
-import { BatchEntryForm, type BatchEntry } from "@/app/_components/batch-entry-form"
-import { RecentEntries } from "@/app/_components/recent-entries"
+import { Navbar } from "@/app/_components/shared/navbar"
+import { BatchEntryForm, type BatchEntry } from "@/app/_components/EmployeeDashboard/BatchEntryForm"
+import { RecentEntries } from "@/app/_components/EmployeeDashboard/RecentEntries"
 import { Boxes, TrendingUp } from "lucide-react"
 
 export default function SmartShelfPage() {

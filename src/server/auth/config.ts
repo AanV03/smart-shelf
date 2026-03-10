@@ -15,12 +15,14 @@ declare module "next-auth" {
     user: {
       id: string;
       role: string;
+      storeId: string | null;
       // ...other properties
     } & DefaultSession["user"];
   }
 
   interface User {
     role: string;
+    storeId: string | null;
   }
 }
 
@@ -50,6 +52,7 @@ export const authConfig = {
         ...session.user,
         id: user.id,
         role: user.role || "EMPLOYEE",
+        storeId: user.storeId,
       },
     }),
   },
