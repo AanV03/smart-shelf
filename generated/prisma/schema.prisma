@@ -56,14 +56,20 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  posts         Post[]
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+  role           String    @default("EMPLOYEE") // MANAGER or EMPLOYEE
+  storeId        String?
+  store          Store?    @relation(fields: [storeId], references: [id])
+  accounts       Account[]
+  sessions       Session[]
+  posts          Post[]
+  createdBatches Batch[]
+
+  @@index([storeId])
 }
 
 model VerificationToken {
@@ -72,4 +78,92 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// Inventory Models
+model Store {
+  id        String   @id @default(cuid())
+  name      String
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users    User[]
+  products Product[]
+  batches  Batch[]
+  alerts   Alert[]
+
+  @@index([name])
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+
+  @@index([name])
+}
+
+model Product {
+  id         String   @id @default(cuid())
+  sku        String   @unique
+  name       String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  storeId    String
+  store      Store    @relation(fields: [storeId], references: [id])
+  batches    Batch[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([categoryId])
+  @@index([sku])
+}
+
+model Batch {
+  id          String   @id @default(cuid())
+  batchNumber String
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Int      @default(0)
+  costPerUnit Float
+  totalCost   Float    @default(0) // quantity * costPerUnit, denormalized for perf
+  expiresAt   DateTime
+  status      String   @default("ACTIVE") // ACTIVE, EXPIRED, SOLD, SPOILED
+  receivedAt  DateTime @default(now())
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([batchNumber, storeId])
+  @@index([storeId])
+  @@index([productId])
+  @@index([expiresAt])
+  @@index([status])
+  @@index([createdById])
+}
+
+model Alert {
+  id        String   @id @default(cuid())
+  type      String // EXPIRING_SOON, EXPIRED, LOW_STOCK
+  severity  String // INFO, WARNING, CRITICAL
+  message   String
+  batchId   String?
+  productId String?
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id])
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([isRead])
+  @@index([createdAt])
 }
