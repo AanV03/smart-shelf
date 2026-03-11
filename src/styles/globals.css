@@ -59,7 +59,7 @@
     --warning: oklch(0.80 0.17 70);
     --warning-foreground: oklch(0.20 0.04 70);
 
-    /* Color aliases (used by components via var(--color-...)) */
+    /* Semantic color aliases (component shortcuts) */
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);

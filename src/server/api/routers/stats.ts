@@ -102,7 +102,7 @@ export const statsRouter = createTRPCRouter({
 
     for (const batch of batches) {
       const categoryName = batch.product.category.name;
-      const existing = categoryMap.get(categoryName) || {
+      const existing = categoryMap.get(categoryName) ?? {
         category: categoryName,
         totalValue: 0,
         itemCount: 0,
@@ -166,7 +166,7 @@ export const statsRouter = createTRPCRouter({
       // Count batches expiring on each day
       for (const batch of batches) {
         const dateStr = format(batch.expiresAt, "yyyy-MM-dd");
-        const existing = trendMap.get(dateStr) || 0;
+        const existing = trendMap.get(dateStr) ?? 0;
         trendMap.set(dateStr, existing + batch.quantity);
       }
 

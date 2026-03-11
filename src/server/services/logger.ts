@@ -8,7 +8,7 @@ export interface LogContext {
   storeId?: string
   cronJob?: string
   module?: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 class Logger {
@@ -26,7 +26,7 @@ class Logger {
     console.warn(this.formatMessage("WARN", message, context))
   }
 
-  error(message: string, error?: Error | unknown, context?: LogContext) {
+  error(message: string, error: unknown, context?: LogContext) {
     const errorMessage =
       error instanceof Error ? error.message : String(error)
     const fullContext = {

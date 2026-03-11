@@ -12,11 +12,6 @@ export function initSentry() {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     environment: process.env.NODE_ENV || "development",
-    integrations: [
-      new Sentry.Integrations.Http({ tracing: true }),
-      new Sentry.Integrations.OnUncaughtException(),
-      new Sentry.Integrations.OnUnhandledRejection(),
-    ],
     tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
     debug: process.env.NODE_ENV === "development",
   })
@@ -28,8 +23,8 @@ export function initSentry() {
  * Capture an exception and send to Sentry
  */
 export function captureException(
-  error: Error | unknown,
-  context?: Record<string, any>
+  error: unknown,
+  context?: Record<string, unknown>
 ) {
   if (!process.env.SENTRY_DSN) {
     console.error("[SENTRY] DSN not configured. Logging error locally:", error)
@@ -47,7 +42,7 @@ export function captureException(
 export function captureMessage(
   message: string,
   level: "fatal" | "error" | "warning" | "info" | "debug" = "info",
-  context?: Record<string, any>
+  _context?: Record<string, unknown>
 ) {
   if (!process.env.SENTRY_DSN) {
     console.log(`[SENTRY] ${message}`)
@@ -55,17 +50,12 @@ export function captureMessage(
   }
 
   Sentry.captureMessage(message, level)
-  if (context) {
-    Sentry.captureContext({
-      extra: context,
-    })
-  }
 }
 
 /**
  * Set user context for error tracking
  */
-export function setUserContext(userId: string, email?: string) {
+export function setUserContext(userId: string, email?: string): void {
   if (!process.env.SENTRY_DSN) return
 
   Sentry.setUser({

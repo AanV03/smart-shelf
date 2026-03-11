@@ -23,7 +23,7 @@ export default function EmployeeDashboard() {
 
   const handleBatchCreated = () => {
     // Refresh batches after creating one
-    utils.inventory.getBatches.invalidate()
+    void utils.inventory.getBatches.invalidate()
   }
 
   return (

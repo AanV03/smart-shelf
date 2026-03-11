@@ -13,10 +13,10 @@ export default function ManagerDashboard() {
   const [activeTab, setActiveTab] = useState("overview")
 
   // Fetch dashboard stats
-  const { data: statsData, isLoading: statsLoading, error: statsError } = api.stats.getDashboardStats.useQuery()
+  const { data: stats, isLoading: statsLoading } = api.stats.getDashboardStats.useQuery()
   
   // Fetch alerts
-  const { data: alertsData, isLoading: alertsLoading } = api.alerts.getAlerts.useQuery({
+  const { data: alerts, isLoading: alertsLoading } = api.alerts.getAlerts.useQuery({
     isRead: false,
     limit: 10,
   })
@@ -58,7 +58,7 @@ export default function ManagerDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold tabular-nums text-foreground">
-                  {statsLoading ? "—" : `$${(statsData?.totalInventoryValue ?? 0).toLocaleString(undefined, {
+                  {statsLoading ? "—" : `$${(stats?.totalInventoryValue ?? 0).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}`}
@@ -79,7 +79,7 @@ export default function ManagerDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold tabular-nums text-foreground">
-                  {statsLoading ? "—" : statsData?.activeProductCount ?? 0}
+                  {statsLoading ? "—" : stats?.activeProductCount ?? 0}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Unique SKUs in stock
@@ -97,7 +97,7 @@ export default function ManagerDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold tabular-nums text-foreground">
-                  {statsLoading ? "—" : statsData?.expiringCount ?? 0}
+                  {statsLoading ? "—" : stats?.expiringCount ?? 0}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Due in next 7 days
@@ -157,9 +157,9 @@ export default function ManagerDashboard() {
                       <Loader2 className="size-4 animate-spin" />
                       <span className="text-sm text-muted-foreground">Loading alerts...</span>
                     </div>
-                  ) : alertsData?.alerts && alertsData.alerts.length > 0 ? (
+                  ) : alerts?.alerts && alerts.alerts.length > 0 ? (
                     <div className="space-y-2">
-                      {alertsData.alerts.map((alert) => (
+                      {alerts.alerts.map((alert) => (
                         <div
                           key={alert.id}
                           className={`rounded-lg border p-4 ${

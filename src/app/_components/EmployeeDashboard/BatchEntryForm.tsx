@@ -39,18 +39,19 @@ const skuToProductIdMap: Record<string, string> = {
   "sku-010": "prod-010",
 }
 
-const productMap: Record<string, string> = {
-  "sku-001": "Organic Whole Milk (1 Gal)",
-  "sku-002": "Free-Range Eggs (Dozen)",
-  "sku-003": "Greek Yogurt (32oz)",
-  "sku-004": "Sourdough Bread Loaf",
-  "sku-005": "Fresh Atlantic Salmon (1lb)",
-  "sku-006": "Baby Spinach (10oz bag)",
-  "sku-007": "Cheddar Cheese Block (8oz)",
-  "sku-008": "Ground Turkey (1lb)",
-  "sku-009": "Almond Butter (16oz)",
-  "sku-010": "Kombucha Ginger (16oz)",
-}
+// Unused in current implementation - product data comes from database
+// const productMap: Record<string, string> = {
+//   "sku-001": "Organic Whole Milk (1 Gal)",
+//   "sku-002": "Free-Range Eggs (Dozen)",
+//   "sku-003": "Greek Yogurt (32oz)",
+//   "sku-004": "Sourdough Bread Loaf",
+//   "sku-005": "Fresh Atlantic Salmon (1lb)",
+//   "sku-006": "Baby Spinach (10oz bag)",
+//   "sku-007": "Cheddar Cheese Block (8oz)",
+//   "sku-008": "Ground Turkey (1lb)",
+//   "sku-009": "Almond Butter (16oz)",
+//   "sku-010": "Kombucha Ginger (16oz)",
+// }
 
 interface FormErrors {
   product?: string
