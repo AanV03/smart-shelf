@@ -1,6 +1,5 @@
 "use client"
 
-import { Navbar } from "../shared/navbar"
 import { BatchEntryForm } from "./BatchEntryForm"
 import { RecentEntries } from "./RecentEntries"
 import { Boxes, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react"
@@ -29,7 +28,7 @@ export default function EmployeeDashboard() {
   }
 
   return (
-    <div className="relative min-h-screen bg-background overflow-hidden">
+    <div className="relative w-full overflow-hidden">
       {/* Animated gradient background */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob opacity-70" />
@@ -38,8 +37,6 @@ export default function EmployeeDashboard() {
       </div>
 
       <div className="relative z-10">
-        <Navbar role="EMPLOYEE" />
-
         <main className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
           {/* Hero section */}
           <div className="mb-10">

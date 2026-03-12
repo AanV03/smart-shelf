@@ -11,11 +11,5 @@ export default async function DashboardPage() {
     if (!session) return redirect("/api/auth/signin");
 
     // 3. Renderizamos el componente correcto según su rol
-    if (session.user.role === "MANAGER") {
-        return <ManagerDashboard />;
-    }
-
-    if (session.user.role === "EMPLOYEE") {
-        return <EmployeeDashboard />;
-    }
+    return session.user.role === "MANAGER" ? <ManagerDashboard /> : <EmployeeDashboard />;
 }

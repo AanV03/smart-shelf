@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Navbar } from "../shared/navbar"
 import { AlertCircle, TrendingUp, Package, Loader2, CheckCircle2 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,7 +21,7 @@ export default function ManagerDashboard() {
   })
 
   return (
-    <div className="relative min-h-screen bg-background overflow-hidden">
+    <div className="relative w-full overflow-hidden">
       {/* Animated gradient background */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob opacity-70" />
@@ -31,8 +30,6 @@ export default function ManagerDashboard() {
       </div>
 
       <div className="relative z-10">
-        <Navbar role="MANAGER" />
-
         <main className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
           {/* Hero section */}
           <div className="mb-10">

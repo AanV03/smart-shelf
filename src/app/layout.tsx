@@ -5,6 +5,7 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { AuthProvider } from "@/app/_components/auth/AuthProvider";
+import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
   title: "Smart-Shelf",
@@ -21,11 +22,13 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} antialiased`}>
+    <html lang="en" className={`${geist.variable} antialiased`} suppressHydrationWarning>
       <body className="bg-background text-foreground font-sans antialiased">
-        <AuthProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-        </AuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <AuthProvider>
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
