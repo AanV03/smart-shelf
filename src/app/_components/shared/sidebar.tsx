@@ -25,16 +25,16 @@ export function Sidebar({ role = "EMPLOYEE" }: SidebarProps) {
   const navItems =
     role === "MANAGER"
       ? [
-          { href: "/dashboard", label: "Dashboard", icon: Home },
-          { href: "/dashboard/inventory", label: "Inventory", icon: Package },
+          { href: "/dashboard", label: "Home", icon: Home },
+          { href: "/dashboard/inventory", label: "Inventario Estratégico", icon: Package },
           { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
-          { href: "/dashboard/users", label: "Users", icon: Users },
-          { href: "/dashboard/settings", label: "Settings", icon: Settings },
+          { href: "/dashboard/users", label: "Usuarios", icon: Users },
+          { href: "/dashboard/settings", label: "Configuración", icon: Settings },
         ]
       : [
-          { href: "/dashboard", label: "Dashboard", icon: Home },
-          { href: "/dashboard/batch-entry", label: "Batch Entry", icon: Grid3x3 },
-          { href: "/dashboard/inventory", label: "Inventory", icon: Package },
+          { href: "/dashboard", label: "Home", icon: Home },
+          { href: "/dashboard/batch-entry", label: "Ingreso de Lotes", icon: Grid3x3 },
+          { href: "/dashboard/inventory", label: "Inventario FEFO", icon: Package },
         ]
 
   return (

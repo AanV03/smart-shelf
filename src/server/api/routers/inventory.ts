@@ -253,4 +253,36 @@ export const inventoryRouter = createTRPCRouter({
         include: { product: { include: { category: true } } },
       });
     }),
+
+  /**
+   * Delete a batch
+   */
+  deleteBatch: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session.user.storeId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not associated with a store",
+        });
+      }
+
+      const batch = await ctx.db.batch.findFirst({
+        where: {
+          id: input.id,
+          storeId: ctx.session.user.storeId,
+        },
+      });
+
+      if (!batch) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Batch not found",
+        });
+      }
+
+      return ctx.db.batch.delete({
+        where: { id: input.id },
+      });
+    }),
 });
