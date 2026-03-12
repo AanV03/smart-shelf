@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { RecentEntries } from "./RecentEntries"
-import { Boxes, TrendingUp, CheckCircle2, ArrowRight } from "lucide-react"
+import { Boxes, TrendingUp, CheckCircle2, ArrowRight, AlertCircle } from "lucide-react"
 import { api } from "@/trpc/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"

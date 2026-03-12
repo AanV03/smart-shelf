@@ -41,7 +41,7 @@ export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
     refetch().catch(() => {
       // Silently catch refetch errors
     })
-  }, [refreshTrigger, refetch])
+  }, [refetch])
 
   const mutation = api.inventory.deleteBatch.useMutation({
     onSuccess: () => {

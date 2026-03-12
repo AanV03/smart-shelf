@@ -1,5 +1,7 @@
 import { getServerAuthSession } from "@/server/auth"
 import { notFound } from "next/navigation"
+import { AnalyticsPanel } from "../_components/AnalyticsPanel"
+import { BarChart3 } from "lucide-react"
 
 export const metadata = {
   title: "Analytics - Smart-Shelf",
@@ -24,20 +26,45 @@ export default async function AnalyticsPage() {
 
       <div className="relative z-10">
         <main className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+          {/* Hero section */}
           <div className="mb-10">
-            <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2">
-              Analytics y Reportes
-            </h1>
+            <div className="flex items-center gap-2 mb-2">
+              <BarChart3 className="h-6 w-6 text-primary" />
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">
+                Analytics y Reportes
+              </h1>
+            </div>
             <p className="text-lg text-muted-foreground">
-              Proyecciones financieras, métricas de merma y tendencias
+              Proyecciones financieras, métricas de merma y tendencias de inventario
             </p>
           </div>
 
-          {/* Placeholder: Analytics Dashboard will go here */}
-          <div className="rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm p-8">
-            <p className="text-muted-foreground">
-              ✅ Panel de analytics en desarrollo...
-            </p>
+          {/* Analytics Content */}
+          <AnalyticsPanel />
+
+          {/* Footer educational section */}
+          <div className="mt-8 rounded-lg border border-border/30 bg-card/50 backdrop-blur-sm p-6">
+            <h3 className="text-sm font-bold text-foreground mb-3">
+              🎯 Cómo Usar Este Panel
+            </h3>
+            <div className="grid grid-cols-1 gap-4 text-sm text-muted-foreground sm:grid-cols-2">
+              <div>
+                <p className="font-semibold text-foreground mb-1">Valor Total de Inventario</p>
+                <p>Muestra el dinero retenido en inventario activo. Reduce este número para mejorar cash flow.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-foreground mb-1">Tendencia de Expiración</p>
+                <p>Gráfico de 30 días mostrando picos de expiración. Planifica promociones en esas fechas.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-foreground mb-1">Distribución por Categoría</p>
+                <p>Identifica qué categorías concentran mayor valor. Monitorea su rotación.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-foreground mb-1">Alertas Críticas</p>
+                <p>Acciones inmediatas requeridas. Revísalas regularmente para evitar pérdidas.</p>
+              </div>
+            </div>
           </div>
         </main>
       </div>
