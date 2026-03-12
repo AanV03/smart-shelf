@@ -141,12 +141,12 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
       className="space-y-6"
     >
       {/* Product Select */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <Label
           htmlFor="product-select"
-          className="flex items-center gap-2 text-foreground"
+          className="flex items-center gap-2 text-foreground font-semibold"
         >
-          <Package className="size-3.5 text-primary" aria-hidden="true" />
+          <Package className="size-4 text-primary" aria-hidden="true" />
           Product
           <span className="text-destructive" aria-hidden="true">*</span>
         </Label>
@@ -162,19 +162,19 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
           aria-describedby={errors.product ? "product-error" : undefined}
         />
         {errors.product && (
-          <p id="product-error" role="alert" className="text-xs text-destructive">
-            {errors.product}
+          <p id="product-error" role="alert" className="text-xs text-destructive flex items-center gap-1">
+            <AlertCircle className="h-3 w-3" /> {errors.product}
           </p>
         )}
       </div>
 
       {/* Batch Number */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <Label
           htmlFor="batch-number"
-          className="flex items-center gap-2 text-foreground"
+          className="flex items-center gap-2 text-foreground font-semibold"
         >
-          <Hash className="size-3.5 text-primary" aria-hidden="true" />
+          <Hash className="size-4 text-primary" aria-hidden="true" />
           Batch Number
           <span className="text-destructive" aria-hidden="true">*</span>
         </Label>
@@ -193,14 +193,14 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
           aria-describedby={
             errors.batchNumber ? "batch-error" : "batch-help"
           }
-          className="h-10 border-border/60 bg-secondary/40 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="h-11 border-border/30 bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
-        <p id="batch-help" className="text-[11px] text-muted-foreground">
-          Unique identifier from the supplier shipment label
+        <p id="batch-help" className="text-xs text-muted-foreground">
+          Unique identifier from supplier label
         </p>
         {errors.batchNumber && (
-          <p id="batch-error" role="alert" className="text-xs text-destructive">
-            {errors.batchNumber}
+          <p id="batch-error" role="alert" className="text-xs text-destructive flex items-center gap-1">
+            <AlertCircle className="h-3 w-3" /> {errors.batchNumber}
           </p>
         )}
       </div>
@@ -208,12 +208,12 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
       {/* Quantity & Unit Cost row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Quantity */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label
             htmlFor="quantity"
-            className="flex items-center gap-2 text-foreground"
+            className="flex items-center gap-2 text-foreground font-semibold"
           >
-            <Layers className="size-3.5 text-primary" aria-hidden="true" />
+            <Layers className="size-4 text-primary" aria-hidden="true" />
             Quantity
             <span className="text-destructive" aria-hidden="true">*</span>
           </Label>
@@ -232,30 +232,30 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
             aria-required={true}
             aria-invalid={!!errors.quantity}
             aria-describedby={errors.quantity ? "qty-error" : "qty-help"}
-            className="h-10 border-border/60 bg-secondary/40 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="h-11 border-border/30 bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
-          <p id="qty-help" className="text-[11px] text-muted-foreground">
-            Number of units in this batch
+          <p id="qty-help" className="text-xs text-muted-foreground">
+            Number of units
           </p>
           {errors.quantity && (
-            <p id="qty-error" role="alert" className="text-xs text-destructive">
-              {errors.quantity}
+            <p id="qty-error" role="alert" className="text-xs text-destructive flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" /> {errors.quantity}
             </p>
           )}
         </div>
 
         {/* Unit Cost */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label
             htmlFor="unit-cost"
-            className="flex items-center gap-2 text-foreground"
+            className="flex items-center gap-2 text-foreground font-semibold"
           >
-            <DollarSign className="size-3.5 text-primary" aria-hidden="true" />
+            <DollarSign className="size-4 text-primary" aria-hidden="true" />
             Unit Cost
             <span className="text-destructive" aria-hidden="true">*</span>
           </Label>
           <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">
               $
             </span>
             <Input
@@ -273,36 +273,36 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
               aria-required={true}
               aria-invalid={!!errors.unitCost}
               aria-describedby={errors.unitCost ? "cost-error" : "cost-help"}
-              className="h-10 border-border/60 bg-secondary/40 pl-7 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-11 border-border/30 bg-secondary/50 pl-8 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
           </div>
-          <p id="cost-help" className="text-[11px] text-muted-foreground">
-            Cost per unit in USD
+          <p id="cost-help" className="text-xs text-muted-foreground">
+            Cost per unit (USD)
           </p>
           {errors.unitCost && (
-            <p id="cost-error" role="alert" className="text-xs text-destructive">
-              {errors.unitCost}
+            <p id="cost-error" role="alert" className="text-xs text-destructive flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" /> {errors.unitCost}
             </p>
           )}
         </div>
       </div>
 
       {/* Expiration Date - CRITICAL for FEFO */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <div className="relative rounded-lg border border-warning/30 bg-warning/5 p-4">
-          <div className="absolute -top-2.5 left-3 flex items-center gap-1 bg-card px-2 text-[10px] font-semibold uppercase tracking-wider text-warning">
-            <CalendarDays className="size-3" aria-hidden="true" />
+          <div className="absolute -top-2.5 left-3 flex items-center gap-1 bg-card px-2 text-[11px] font-bold uppercase tracking-wider text-warning">
+            <CalendarDays className="size-3.5" aria-hidden="true" />
             FEFO Critical
           </div>
           <Label
             htmlFor="expiration-date"
-            className="flex items-center gap-2 text-foreground"
+            className="flex items-center gap-2 text-foreground font-semibold"
           >
             Expiration Date
             <span className="text-destructive" aria-hidden="true">*</span>
           </Label>
-          <p id="exp-help" className="mb-3 text-[11px] text-muted-foreground">
-            Critical for First-Expired, First-Out shelf rotation
+          <p id="exp-help" className="mb-3 text-xs text-muted-foreground">
+            Controls First-Expired, First-Out shelf rotation
           </p>
           <ExpirationDatePicker
             id="expiration-date"
@@ -322,9 +322,9 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
             <p
               id="exp-error"
               role="alert"
-              className="mt-1.5 text-xs text-destructive"
+              className="mt-2 text-xs text-destructive flex items-center gap-1"
             >
-              {errors.expirationDate}
+              <AlertCircle className="h-3 w-3" /> {errors.expirationDate}
             </p>
           )}
         </div>
@@ -335,39 +335,38 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
         <div className="flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
           <AlertCircle className="size-5 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
           <div>
-            <p className="text-sm font-medium text-destructive">{errors.submit}</p>
+            <p className="text-sm font-semibold text-destructive">{errors.submit}</p>
           </div>
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-2">
-        <Button
+      <div className="flex items-center gap-3 pt-4">
+        <button
           type="submit"
           disabled={createBatchMutation.isPending}
-          className="flex-1 h-11 bg-primary text-primary-foreground hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="flex-1 h-11 bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground font-semibold rounded-lg transition-all flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           {createBatchMutation.isPending ? (
-            <span className="flex items-center gap-2">
+            <>
               <span className="size-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
               Logging...
-            </span>
+            </>
           ) : (
-            <span className="flex items-center gap-2">
+            <>
               <Send className="size-4" aria-hidden="true" />
               Log Batch Entry
-            </span>
+            </>
           )}
-        </Button>
-        <Button
+        </button>
+        <button
           type="button"
-          variant="outline"
           onClick={handleReset}
-          className="h-11 border-border/60 text-muted-foreground hover:bg-secondary/70 hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="h-11 px-4 border border-border/30 bg-secondary/50 text-muted-foreground hover:bg-secondary/70 hover:text-foreground transition-colors rounded-lg focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           <RotateCcw className="size-4" aria-hidden="true" />
-          <span className="sr-only sm:not-sr-only">Reset</span>
-        </Button>
+          <span className="sr-only sm:not-sr-only ml-2">Reset</span>
+        </button>
       </div>
     </form>
   )

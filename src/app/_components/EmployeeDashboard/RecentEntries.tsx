@@ -31,17 +31,14 @@ export function RecentEntries({ batches, isLoading }: RecentEntriesProps) {
         <Clock className="size-4 text-primary" aria-hidden="true" />
         <h2
           id="recent-entries-heading"
-          className="text-sm font-semibold text-foreground"
+          className="font-semibold text-foreground"
         >
           Recent Entries
         </h2>
         {batches.length > 0 && (
-          <Badge
-            variant="secondary"
-            className="ml-auto border border-border/60 bg-secondary/80 text-secondary-foreground"
-          >
-            {batches.length} today
-          </Badge>
+          <div className="ml-auto px-2 py-1 rounded-lg bg-primary/15 border border-primary/30">
+            <span className="text-xs font-semibold text-primary">{batches.length} today</span>
+          </div>
         )}
       </div>
 
@@ -72,67 +69,46 @@ export function RecentEntries({ batches, isLoading }: RecentEntriesProps) {
               <li
                 key={batch.id}
                 className={cn(
-                  "group relative rounded-lg border border-border/40 bg-secondary/25 p-4 transition-colors hover:bg-secondary/40",
+                  "group relative rounded-lg border border-border/40 bg-secondary/25 p-4 transition-all hover:bg-secondary/40 hover:border-border/60",
                   index === 0 && "border-primary/20 bg-primary/5"
                 )}
               >
                 {index === 0 && (
-                  <div className="absolute -top-2 right-3">
-                    <Badge
-                      variant="default"
-                      className="bg-primary/20 text-primary border border-primary/30 text-[10px]"
-                    >
-                      <CheckCircle2 className="mr-1 size-3" aria-hidden="true" />
-                      Latest
-                    </Badge>
+                  <div className="absolute -top-2 right-3 flex items-center gap-1 bg-card px-2 py-0.5 rounded-full text-[10px] font-bold text-primary border border-primary/30">
+                    <CheckCircle2 className="size-3" />
+                    Latest
                   </div>
                 )}
-
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-foreground">
-                      {batch.product.name}
-                    </p>
-                    <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
-                      {batch.batchNumber}
-                    </p>
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-foreground truncate">
+                        {batch.product?.name ?? "Unknown Product"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Batch #{batch.batchNumber}
+                      </p>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "shrink-0",
+                        expiryBadge.className
+                      )}
+                    >
+                      {expiryBadge.label}
+                    </Badge>
                   </div>
-                  <Badge
-                    variant="outline"
-                    className={cn("shrink-0 text-[10px]", expiryBadge.className)}
-                  >
-                    {differenceInDays(batch.expiresAt, new Date()) <= 7 && (
-                      <AlertTriangle className="mr-1 size-3" aria-hidden="true" />
-                    )}
-                    {expiryBadge.label}
-                  </Badge>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{batch.quantity} units</span>
+                    <span className="text-border/50">•</span>
+                    <span>${batch.totalCost.toFixed(2)}</span>
+                  </div>
                 </div>
-
-                <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
-                  <span>
-                    Qty: <span className="font-medium text-foreground">{batch.quantity}</span>
-                  </span>
-                  <span>
-                    Cost: <span className="font-medium text-foreground">${batch.costPerUnit.toFixed(2)}</span>
-                  </span>
-                  <span className="ml-auto">
-                    Exp: <span className="font-medium text-foreground">{format(batch.expiresAt, "MMM d")}</span>
-                  </span>
-                </div>
-
-                <p className="mt-2 text-[10px] text-muted-foreground/60">
-                  Logged at {format(batch.createdAt, "h:mm a")}
-                </p>
               </li>
             )
           })}
         </ul>
-      )}
-
-      {batches.length > 3 && (
-        <p className="mt-3 text-center text-[11px] text-muted-foreground">
-          + {batches.length - 3} more {batches.length - 3 === 1 ? "entry" : "entries"} today
-        </p>
       )}
     </section>
   )

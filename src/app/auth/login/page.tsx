@@ -20,7 +20,7 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
       {/* Animated Background Gradients */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background via-background to-background">
+      <div className="absolute inset-0 -z-10 bg-linear-to-br from-background via-background to-background">
         {/* Blob 1 - Primary */}
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/15 rounded-full mix-blend-multiply filter blur-3xl animate-blob opacity-40 pointer-events-none"></div>
 
@@ -38,7 +38,7 @@ export default function AuthPage() {
       <div className="relative w-full max-w-md">
         {/* Header Animation */}
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-primary to-secondary bg-clip-text text-transparent mb-3">
+          <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-primary via-primary to-secondary bg-clip-text text-transparent mb-3">
             Smart-Shelf
           </h1>
           <p className="text-muted-foreground text-lg">

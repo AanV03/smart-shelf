@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { Package, User, Clock, LogOut } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 
 interface NavbarProps {
   role?: "MANAGER" | "EMPLOYEE"
@@ -40,16 +38,16 @@ export function Navbar({ role = "EMPLOYEE" }: NavbarProps) {
   return (
     <header
       role="banner"
-      className="sticky top-0 z-50 w-full border-b border-border/40 bg-card/60 backdrop-blur-xl"
+      className="sticky top-0 z-50 w-full border-b border-border/30 bg-linear-to-r from-card via-card to-card/95 backdrop-blur-xl shadow-sm"
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
         {/* Logo & App Name */}
         <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-lg bg-primary/15">
-            <Package className="size-5 text-primary" aria-hidden="true" />
+          <div className="flex size-10 items-center justify-center rounded-lg bg-linear-to-br from-primary to-primary/70 shadow-md">
+            <Package className="size-6 text-primary-foreground" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold tracking-tight text-foreground">
+            <h1 className="text-lg font-bold tracking-tight text-foreground">
               Smart-Shelf
             </h1>
             <p className="sr-only">Inventory Management System</p>
@@ -58,22 +56,21 @@ export function Navbar({ role = "EMPLOYEE" }: NavbarProps) {
 
         {/* Right side: Role + Clock */}
         <div className="flex items-center gap-4">
-          <div className="hidden items-center gap-2 sm:flex">
+          <div className="hidden items-center gap-3 sm:flex">
             <User className="size-4 text-muted-foreground" aria-hidden="true" />
-            <Badge
-              variant="secondary"
-              className="border border-border/60 bg-secondary/80 text-secondary-foreground"
-            >
-              {roleLabel}
-            </Badge>
+            <div className="px-3 py-1 rounded-lg bg-secondary/50 border border-border/30">
+              <span className="text-xs font-semibold text-secondary-foreground">
+                {roleLabel}
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-lg border border-border/40 bg-secondary/50 px-3 py-1.5">
-            <Clock className="size-3.5 text-primary" aria-hidden="true" />
+          <div className="flex items-center gap-2 rounded-lg border border-border/30 bg-secondary/50 px-3 py-1.5">
+            <Clock className="size-4 text-primary" aria-hidden="true" />
             <div className="flex flex-col items-end">
               <time
                 dateTime={currentTime?.toISOString()}
-                className="font-mono text-xs font-medium text-foreground"
+                className="font-mono text-xs font-semibold text-foreground"
                 aria-label={currentTime ? `Current time: ${formattedTime}` : "Loading time"}
               >
                 {formattedTime}
@@ -85,15 +82,14 @@ export function Navbar({ role = "EMPLOYEE" }: NavbarProps) {
           </div>
 
           {/* Sign Out Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-10 text-muted-foreground hover:bg-secondary/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          <button
+            onClick={() => {}}
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="Sign out"
             title="Sign out"
           >
             <LogOut className="size-4" aria-hidden="true" />
-          </Button>
+          </button>
         </div>
       </div>
     </header>
