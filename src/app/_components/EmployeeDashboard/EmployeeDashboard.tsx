@@ -1,14 +1,13 @@
 "use client"
 
-import { BatchEntryForm } from "./BatchEntryForm"
+import Link from "next/link"
 import { RecentEntries } from "./RecentEntries"
-import { Boxes, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react"
+import { Boxes, TrendingUp, CheckCircle2, ArrowRight } from "lucide-react"
 import { api } from "@/trpc/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 export default function EmployeeDashboard() {
-  const utils = api.useUtils()
-  
   // Get batches for today
   const { data: batchesData, isLoading, error } = api.inventory.getBatches.useQuery({
     limit: 50,
@@ -21,11 +20,6 @@ export default function EmployeeDashboard() {
   const totalUnitsToday = batches.reduce((acc, batch) => acc + batch.quantity, 0)
   const totalValueToday = batches.reduce((acc, batch) => acc + batch.totalCost, 0)
   const avgBatchValue = batches.length > 0 ? totalValueToday / batches.length : 0
-
-  const handleBatchCreated = () => {
-    // Refresh batches after creating one
-    void utils.inventory.getBatches.invalidate()
-  }
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -135,35 +129,50 @@ export default function EmployeeDashboard() {
             </Card>
           </div>
 
-          {/* Main content: Form + Recent Entries */}
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            {/* Form Card - Takes more space */}
-            <div className="lg:col-span-2">
-              <Card className="border-border/50 bg-linear-to-br from-card via-card/95 to-card/80 backdrop-blur-xl shadow-xl">
-                <CardHeader className="border-b border-border/30 pb-6">
-                  <CardTitle className="text-2xl">Create New Batch</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Enter product details from the incoming shipment
-                  </p>
-                </CardHeader>
-                <CardContent className="pt-8">
-                  <BatchEntryForm onSuccess={handleBatchCreated} />
-                </CardContent>
-              </Card>
+          {/* Main content: Quick Actions + Recent Activity */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {/* Quick Action - Ingresar Lote */}
+            <div className="lg:col-span-3">
+              <Link href="/dashboard/batch-entry">
+                <Card className="border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm hover:shadow-lg transition-all cursor-pointer hover:border-primary/60 group">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                          Ingresar Nuevo Lote
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          Accede al formulario optimizado para entrada rápida de lotes
+                        </p>
+                      </div>
+                      <div className="rounded-lg bg-primary/15 p-4 group-hover:bg-primary/25 transition-colors">
+                        <ArrowRight className="h-6 w-6 text-primary group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
 
-            {/* Recent Entries Sidebar */}
-            <div className="lg:col-span-1">
-              <Card className="sticky top-24 border-border/50 bg-linear-to-br from-card via-card/95 to-card/80 backdrop-blur-xl shadow-xl">
+            {/* Recent Activity - Full width */}
+            <div className="lg:col-span-3">
+              <Card className="border-border/50 bg-linear-to-br from-card via-card/95 to-card/80 backdrop-blur-xl shadow-xl">
                 <CardHeader className="border-b border-border/30 pb-4">
-                  <CardTitle className="text-lg">Recent Activity</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    📋 Actividad Reciente
+                    {batches.length > 0 && (
+                      <span className="text-sm font-normal text-primary ml-auto">
+                        {batches.length} lotes ingresados
+                      </span>
+                    )}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6">
                   {error ? (
                     <div className="flex gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4 items-start">
                       <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium text-destructive">Failed to load batches</p>
+                        <p className="text-sm font-medium text-destructive">Falló al cargar lotes</p>
                         <p className="text-xs text-destructive/80 mt-1">{error.message}</p>
                       </div>
                     </div>
