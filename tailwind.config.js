@@ -49,6 +49,32 @@ export default {
         lg: 'var(--radius-lg)',
         xl: 'var(--radius-xl)',
       },
+      animation: {
+        'slide-down': 'slideDown 0.5s ease-out forwards',
+        'slide-up': 'slideUp 0.5s ease-in forwards',
+      },
+      keyframes: {
+        slideDown: {
+          from: {
+            transform: 'translateY(-100%)',
+            opacity: '0',
+          },
+          to: {
+            transform: 'translateY(0)',
+            opacity: '1',
+          },
+        },
+        slideUp: {
+          from: {
+            transform: 'translateY(0)',
+            opacity: '1',
+          },
+          to: {
+            transform: 'translateY(-100%)',
+            opacity: '0',
+          },
+        },
+      },
     },
   },
   plugins: [],

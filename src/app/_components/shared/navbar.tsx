@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Package, User, Clock, LogOut, Menu } from "lucide-react"
 import { signOut } from "next-auth/react"
 import { DarkModeSwitch } from "./dark-mode-switch"
-import { useSidebar } from "./sidebar-context"
+import { useSidebar } from "@/components/ui/sidebar"
 import Link from "next/link"
 
 interface NavbarProps {
@@ -13,7 +13,7 @@ interface NavbarProps {
 
 export function Navbar({ role = "EMPLOYEE" }: NavbarProps) {
   const [currentTime, setCurrentTime] = useState<Date | null>(null)
-  const { toggle } = useSidebar()
+  const { toggleSidebar } = useSidebar()
 
   useEffect(() => {
     setCurrentTime(new Date())
@@ -41,85 +41,67 @@ export function Navbar({ role = "EMPLOYEE" }: NavbarProps) {
   return (
     <header
       role="banner"
-      className="sticky top-0 z-50 w-full border-b border-border/30 bg-linear-to-r from-card via-card to-card/95 backdrop-blur-xl shadow-sm"
+      className="flex h-16 w-full items-center justify-between border-b border-border bg-background px-6 shrink-0"
     >
-      <div className="flex h-16 items-center justify-between px-4 lg:px-8">
-        {/* Left: Logo & Toggle */}
-        <div className="flex items-center gap-3">
-          {/* Sidebar Toggle */}
-          <button
-            onClick={toggle}
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/50 hover:bg-secondary/70 border border-border/30 text-muted-foreground transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label="Toggle sidebar"
-            title="Toggle sidebar"
-          >
-            <Menu className="size-4" aria-hidden="true" />
-          </button>
+      {/* Left: Sidebar Toggle & Logo */}
+      <div className="flex items-center gap-4">
+        {/* Sidebar Toggle */}
+        <button
+          onClick={toggleSidebar}
+          className="flex h-9 w-9 items-center justify-center rounded-md bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label="Toggle sidebar"
+          title="Toggle sidebar"
+        >
+          <Menu className="size-4" aria-hidden="true" />
+        </button>
 
-          {/* Logo & App Name */}
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-linear-to-br from-primary to-primary/70 shadow-md">
-              <Package className="size-6 text-primary-foreground" aria-hidden="true" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold tracking-tight text-foreground">
-                Smart-Shelf
-              </h1>
-              <p className="sr-only">Inventory Management System</p>
-            </div>
+        {/* Logo & App Name */}
+        <div className="flex items-center gap-2">
+          <div className="flex size-8 items-center justify-center rounded-md bg-primary">
+            <Package className="size-5 text-primary-foreground" aria-hidden="true" />
           </div>
+          <h1 className="text-sm font-bold tracking-tight text-foreground hidden sm:block">
+            Smart-Shelf
+          </h1>
+        </div>
+      </div>
+
+      {/* Right side: Role + Clock + Actions */}
+      <div className="flex items-center gap-3">
+        {/* Role Badge */}
+        <div className="hidden items-center gap-2 sm:flex text-xs font-medium text-muted-foreground">
+          <User className="size-4" aria-hidden="true" />
+          <span>{role === "MANAGER" ? "Store Manager" : "Warehouse Employee"}</span>
         </div>
 
-        {/* Right side: Role + Clock */}
-        <div className="flex items-center gap-4">
-          <div className="hidden items-center gap-3 sm:flex">
-            <User className="size-4 text-muted-foreground" aria-hidden="true" />
-            <div className="px-3 py-1 rounded-lg bg-secondary/50 border border-border/30">
-              <span className="text-xs font-semibold text-secondary-foreground">
-                {role === "MANAGER" ? "Store Manager" : "Warehouse Employee"}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 rounded-lg border border-border/30 bg-secondary/50 px-3 py-1.5">
-            <Clock className="size-4 text-primary" aria-hidden="true" />
-            <div className="flex flex-col items-end">
-              <time
-                dateTime={currentTime?.toISOString()}
-                className="font-mono text-xs font-semibold text-foreground"
-                aria-label={currentTime ? `Current time: ${formattedTime}` : "Loading time"}
-              >
-                {formattedTime}
-              </time>
-              <span className="text-[10px] text-muted-foreground">
-                {formattedDate}
-              </span>
-            </div>
-          </div>
-
-          {/* Dark Mode Switch */}
-          <DarkModeSwitch />
-
-          {/* Profile && Sign Out */}
-          <Link
-            href="/dashboard/profile"
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label="Go to profile"
-            title="Go to profile"
-          >
-            <User className="size-4" aria-hidden="true" />
-          </Link>
-
-          {/* Sign Out Button */}
-          <button
-            onClick={() => void signOut()}
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label="Sign out"
-            title="Sign out"
-          >
-            <LogOut className="size-4" aria-hidden="true" />
-          </button>
+        {/* Clock */}
+        <div className="hidden md:flex items-center gap-1 text-xs font-mono text-muted-foreground">
+          <Clock className="size-4" aria-hidden="true" />
+          <time dateTime={currentTime?.toISOString()} aria-label={currentTime ? `Current time: ${formattedTime}` : "Loading time"}>
+            {formattedTime}
+          </time>
         </div>
+
+        {/* Dark Mode Switch */}
+        <DarkModeSwitch />
+
+        {/* Profile Button */}
+        <Link
+          href="/dashboard/profile"
+          className="flex h-9 w-9 items-center justify-center rounded-md bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label="Go to profile"
+        >
+          <User className="size-4" aria-hidden="true" />
+        </Link>
+
+        {/* Sign Out Button */}
+        <button
+          onClick={() => void signOut()}
+          className="flex h-9 w-9 items-center justify-center rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors focus-visible:ring-2 focus-visible:ring-destructive"
+          aria-label="Sign out"
+        >
+          <LogOut className="size-4" aria-hidden="true" />
+        </button>
       </div>
     </header>
   )

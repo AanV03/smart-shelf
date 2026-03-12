@@ -1,4 +1,6 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
 @config "../../tailwind.config.js";
 
 /* Define CSS custom properties at root level BEFORE tailwind utilities */
@@ -37,20 +39,28 @@
     --color-sidebar-foreground: oklch(0.06 0.01 260);
     --color-sidebar-primary: oklch(0.72 0.19 160);
     --color-sidebar-primary-foreground: oklch(0.13 0.02 160);
-    --color-sidebar-accent: oklch(0.22 0.015 260);
-    --color-sidebar-accent-foreground: oklch(0.96 0 0);
+    --color-sidebar-accent: oklch(0.72 0.19 160);
+    --color-sidebar-accent-foreground: oklch(0.13 0.02 160);
     --color-sidebar-border: oklch(0.85 0.01 260);
     --color-sidebar-ring: oklch(0.72 0.19 160);
     --color-warning: oklch(0.80 0.17 70);
     --color-warning-foreground: oklch(0.20 0.04 70);
-    
+
+    /* Theme variables for sidebar and topbar */
+    --color-theme-primary: oklch(0.72 0.19 160);
+    --color-theme-accent: oklch(0.22 0.015 260);
+    --color-theme-hover: rgb(0 0 0 / 0.05);
+    --color-theme-border: oklch(0.85 0.01 260);
+    --color-primary-bg: oklch(0.98 0.015 260);
+    --color-primary-border: oklch(0.85 0.01 260);
+
     /* Semantic aliases */
     --color-chart-1: var(--chart-1);
     --color-chart-2: var(--chart-2);
     --color-chart-3: var(--chart-3);
     --color-chart-4: var(--chart-4);
     --color-chart-5: var(--chart-5);
-    
+
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
@@ -82,12 +92,20 @@
     --color-sidebar-foreground: oklch(0.96 0 0);
     --color-sidebar-primary: oklch(0.72 0.19 160);
     --color-sidebar-primary-foreground: oklch(0.13 0.02 160);
-    --color-sidebar-accent: oklch(0.22 0.015 260);
+    --color-sidebar-accent: oklch(0.72 0.19 160);
     --color-sidebar-accent-foreground: oklch(0.96 0 0);
     --color-sidebar-border: oklch(0.30 0.015 260);
     --color-sidebar-ring: oklch(0.72 0.19 160);
     --color-warning: oklch(0.80 0.17 70);
     --color-warning-foreground: oklch(0.20 0.04 70);
+
+    /* Theme variables for sidebar and topbar (dark) */
+    --color-theme-primary: oklch(0.72 0.19 160);
+    --color-theme-accent: oklch(0.22 0.015 260);
+    --color-theme-hover: rgb(255 255 255 / 0.1);
+    --color-theme-border: oklch(0.30 0.015 260);
+    --color-primary-bg: oklch(0.13 0.015 260);
+    --color-primary-border: oklch(0.30 0.015 260);
   }
 
   body {
@@ -105,6 +123,28 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
   }
 }
 
@@ -144,6 +184,14 @@
     animation: blob 7s infinite;
   }
 
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-in;
+  }
+
   .animation-delay-2000 {
     animation-delay: 2s;
   }
@@ -151,4 +199,37 @@
   .animation-delay-4000 {
     animation-delay: 4s;
   }
+}
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }

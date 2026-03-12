@@ -2,100 +2,243 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import React, { useCallback } from "react"
 import {
   Package,
   BarChart3,
-  Settings,
   Home,
   Grid3x3,
-  Users,
+  ChevronDown,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useSidebar } from "./sidebar-context"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
+  SidebarSeparator,
+  useSidebar,
+} from "@/components/ui/sidebar"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { Badge } from "@/components/ui/badge"
+import { ChevronUp } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-interface SidebarProps {
+interface AppSidebarProps {
   role?: "MANAGER" | "EMPLOYEE"
 }
 
-export function Sidebar({ role = "EMPLOYEE" }: SidebarProps) {
-  const pathname = usePathname()
-  const { isOpen } = useSidebar()
+interface NavItem {
+  id: string
+  href?: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  isNew?: boolean
+  children?: NavItem[] | undefined
+}
 
-  // Nav items based on role
-  const navItems =
-    role === "MANAGER"
-      ? [
-          { href: "/dashboard", label: "Home", icon: Home },
-          { href: "/dashboard/inventory", label: "Inventario Estratégico", icon: Package },
-          { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
-          { href: "/dashboard/users", label: "Usuarios", icon: Users },
-          { href: "/dashboard/settings", label: "Configuración", icon: Settings },
-        ]
-      : [
-          { href: "/dashboard", label: "Home", icon: Home },
-          { href: "/dashboard/batch-entry", label: "Ingreso de Lotes", icon: Grid3x3 },
-          { href: "/dashboard/inventory", label: "Inventario FEFO", icon: Package },
-        ]
+export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
+  const pathname = usePathname()
+  const { isMobile, setOpenMobile } = useSidebar()
+
+  // Manager navigation with collapsible groups
+  const managerNav: NavItem[] = [
+    {
+      id: "home",
+      href: "/dashboard",
+      label: "Home",
+      icon: Home,
+    },
+    {
+      id: "inventory-group",
+      label: "Inventario",
+      icon: Package,
+      children: [
+        {
+          id: "inventory-fefo",
+          href: "/dashboard/inventory",
+          label: "Inventario Estratégico",
+          icon: BarChart3,
+        },
+      ],
+    },
+    {
+      id: "analytics-group",
+      label: "Analytics",
+      icon: BarChart3,
+      children: [
+        {
+          id: "analytics",
+          href: "/dashboard/analytics",
+          label: "Reportes",
+          icon: BarChart3,
+        },
+      ],
+    },
+  ]
+
+  // Employee navigation (simpler)
+  const employeeNav: NavItem[] = [
+    {
+      id: "home",
+      href: "/dashboard",
+      label: "Home",
+      icon: Home,
+    },
+    {
+      id: "batch-entry",
+      href: "/dashboard/batch-entry",
+      label: "Ingreso de Lotes",
+      icon: Grid3x3,
+    },
+    {
+      id: "inventory",
+      href: "/dashboard/inventory",
+      label: "Inventario FEFO",
+      icon: Package,
+    },
+  ]
+
+  const navItems = role === "MANAGER" ? managerNav : employeeNav
+
+  const isPathActive = useCallback(
+    (href?: string) => {
+      if (!href) return false
+      return pathname === href || pathname.startsWith(href + "/")
+    },
+    [pathname]
+  )
 
   return (
-    <aside
-      className={cn(
-        "flex h-screen flex-col border-r border-border/30 bg-card sticky top-0 left-0 transition-all duration-300 ease-in-out",
-        isOpen ? "w-64" : "w-20"
-      )}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-border/30 p-4">
-        {isOpen && (
-          <div className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-primary/70">
-              <Package className="size-5 text-primary-foreground" aria-hidden="true" />
-            </div>
-            <h2 className="text-sm font-bold text-foreground whitespace-nowrap">Smart-Shelf</h2>
-          </div>
-        )}
-        {!isOpen && (
-          <div className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-primary/70 mx-auto">
+    <Sidebar collapsible="icon" variant="sidebar" className="bg-gradient-to-b from-sidebar via-sidebar to-sidebar dark:from-[#0a0e27] dark:via-[#162e40] dark:to-[#0a0e27] from-[#f5f5f7] via-[#e8f4f0] to-[#f5f5f7]">
+      {/* HEADER - LOGO */}
+      <SidebarHeader className="border-b border-sidebar-border h-16 flex items-center px-2">
+        <div className="flex flex-1 items-center gap-2">
+          <div className="flex size-8 items-center justify-center rounded-md bg-primary flex-shrink-0">
             <Package className="size-5 text-primary-foreground" aria-hidden="true" />
           </div>
-        )}
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-2 py-4">
-        <ul className="space-y-1">
-          {navItems.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname === href || pathname.startsWith(href + "/")
-            return (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors whitespace-nowrap overflow-hidden",
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-                  )}
-                  title={label}
-                >
-                  <Icon className="size-4 flex-shrink-0" aria-hidden="true" />
-                  {isOpen && <span>{label}</span>}
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
-
-      {/* Footer */}
-      {isOpen && (
-        <div className="border-t border-border/30 p-4">
-          <p className="text-xs text-muted-foreground">
-            {role === "MANAGER" ? "Store Manager" : "Warehouse Employee"}
-          </p>
+          <h1 className="text-sm font-bold tracking-tight text-sidebar-foreground whitespace-nowrap overflow-hidden group-data-[collapsible=icon]:hidden">
+            Smart-Shelf
+          </h1>
         </div>
-      )}
-    </aside>
+      </SidebarHeader>
+
+      {/* CONTENT - NAVIGATION */}
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map((item) => {
+                const hasChildren = item.children && item.children.length > 0
+                const isActive = isPathActive(item.href) || (hasChildren && item.children?.some(child => isPathActive(child.href)))
+
+                if (!hasChildren) {
+                  // Simple menu item without children
+                  return (
+                    <SidebarMenuItem key={item.id}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        tooltip={item.label}
+                      >
+                        <Link href={item.href!}>
+                          <item.icon aria-hidden="true" />
+                          <span>{item.label}</span>
+                          {item.isNew && (
+                            <Badge variant="default" className="ml-auto h-5 py-0 px-1.5 text-xs">
+                              Nuevo
+                            </Badge>
+                          )}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                }
+
+                // Collapsible group with children
+                return (
+                  <Collapsible key={item.id} defaultOpen={isActive} className="group/collapsible">
+                    <SidebarMenuItem>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton
+                          tooltip={item.label}
+                          className="data-[state=open]:bg-accent"
+                        >
+                          <item.icon aria-hidden="true" />
+                          <span>{item.label}</span>
+                          <ChevronDown
+                            className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180"
+                            aria-hidden="true"
+                          />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.children?.map((child) => {
+                            const childIsActive = isPathActive(child.href)
+                            return (
+                              <SidebarMenuSubItem key={child.id}>
+                                <SidebarMenuSubButton
+                                  asChild
+                                  isActive={childIsActive}
+                                >
+                                  <Link href={child.href!}>
+                                    <child.icon aria-hidden="true" />
+                                    <span>{child.label}</span>
+                                    {child.isNew && (
+                                      <Badge variant="default" className="ml-auto h-4 py-0 px-1 text-xs">
+                                        Nuevo
+                                      </Badge>
+                                    )}
+                                  </Link>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            )
+                          })}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                )
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      {/* SEPARATOR */}
+      <SidebarSeparator className="my-0" />
+
+      {/* FOOTER - ROLE */}
+      <SidebarFooter className="border-t-0 h-16 flex items-center justify-between px-2">
+        <div className="text-xs text-sidebar-foreground/70">
+          <span className="group-data-[collapsible=icon]:hidden">© Smart-Shelf</span>
+          <span className="hidden group-data-[collapsible=icon]:inline">©</span>
+        </div>
+        {isMobile && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
+            onClick={() => setOpenMobile(false)}
+            aria-label="Close sidebar"
+          >
+            <ChevronUp className="h-4 w-4" />
+          </Button>
+        )}
+      </SidebarFooter>
+    </Sidebar>
   )
 }
 
