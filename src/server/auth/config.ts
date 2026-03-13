@@ -26,8 +26,17 @@ declare module "next-auth" {
   }
 
   interface User {
+    id: string;
     role: string;
     storeId: string | null;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    role?: string;
+    storeId?: string | null;
   }
 }
 
@@ -91,18 +100,135 @@ export const authConfig = {
     }),
   ],
   adapter: PrismaAdapter(db) as any, // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   pages: {
     signIn: "/auth/login",
   },
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-        role: user.role || "EMPLOYEE",
-        storeId: user.storeId,
-      },
-    }),
+    jwt: async ({ token, user, trigger, session }) => {
+      console.log("[AUTH_JWT]", {
+        trigger,
+        hasUser: !!user,
+        hasSession: !!session,
+      });
+
+      // Cuando el usuario hace login por primera vez
+      if (user) {
+        token.id = user.id;
+        token.role = (user as any).role || "EMPLOYEE";
+        token.storeId = (user as any).storeId;
+        console.log("[AUTH_JWT] Token created with user:", {
+          userId: user.id,
+          role: (user as any).role,
+          storeId: (user as any).storeId,
+        });
+      }
+
+      // Cuando se actualiza la sesión (en el callback session)
+      if (trigger === "update" && session) {
+        token.role = session.user.role;
+        token.storeId = session.user.storeId;
+        console.log("[AUTH_JWT] Token updated:", {
+          role: session.user.role,
+          storeId: session.user.storeId,
+        });
+      }
+
+      return token;
+    },
+    signIn: async ({ user, account }) => {
+      // Log para debugging
+      console.log("[AUTH_SIGNIN]", {
+        userId: user.id,
+        email: user.email,
+        provider: account?.provider,
+        hasStoreId: !!(user as any).storeId,
+      });
+
+      // Si el usuario no tiene una store asignada, crear una automáticamente
+      if (!(user as any).storeId) {
+        try {
+          // Crear una store por defecto para el usuario
+          const store = await db.store.create({
+            data: {
+              name: `${user.name || user.email?.split("@")[0] || "Store"}'s Store`,
+              location: "Default Location",
+            },
+          });
+
+          // Actualizar el usuario con la store
+          const updatedUser = await db.user.update({
+            where: { id: user.id },
+            data: { storeId: store.id },
+          });
+
+          // Actualizar el objeto user con el nuevo storeId
+          (user as any).storeId = updatedUser.storeId;
+          console.log("[AUTH_SIGNIN] Store created and assigned:", updatedUser.storeId);
+        } catch (error) {
+          console.error("[AUTH_SIGNIN_ERROR] Error creating store:", error);
+          // No fallar el signin, solo logear el error
+          return true;
+        }
+      }
+      return true;
+    },
+    session: async ({ session, token }) => {
+      console.log("[AUTH_SESSION] Token data:", {
+        id: token.id,
+        role: token.role,
+        storeId: token.storeId,
+      });
+
+      // Copiamos los datos del token JWT a la sesión
+      session.user.id = token.id as string;
+      session.user.role = (token.role as string) || "EMPLOYEE";
+      session.user.storeId = (token.storeId as string) || null;
+
+      // Si el usuario no tiene storeId, tratar de obtenerlo de la BD
+      if (!session.user.storeId && token.id) {
+        try {
+          const dbUser = await db.user.findUnique({
+            where: { id: token.id as string },
+            select: { storeId: true },
+          });
+
+          if (dbUser?.storeId) {
+            session.user.storeId = dbUser.storeId;
+            console.log("[AUTH_SESSION] StoreId found in database:", dbUser.storeId);
+          } else if (dbUser?.id) {
+            // Si el usuario existe pero no tiene storeId, crear uno
+            const store = await db.store.create({
+              data: {
+                name: `${session.user.name || session.user.email?.split("@")[0] || "Store"}'s Store`,
+                location: "Default Location",
+              },
+            });
+
+            const updatedUser = await db.user.update({
+              where: { id: token.id as string },
+              data: { storeId: store.id },
+            });
+
+            session.user.storeId = updatedUser.storeId;
+            console.log("[AUTH_SESSION] Store created in session callback:", store.id);
+          }
+        } catch (error) {
+          console.error("[AUTH_SESSION_ERROR] Error handling storeId:", error);
+        }
+      }
+
+      console.log("[AUTH_SESSION] Final session:", {
+        userId: session.user.id,
+        email: session.user.email,
+        storeId: session.user.storeId,
+        role: session.user.role,
+      });
+
+      return session;
+    },
   },
 } satisfies NextAuthConfig;

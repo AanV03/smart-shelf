@@ -10,8 +10,17 @@ export default async function DashboardLayout({
 }) {
   const session = await getServerAuthSession()
 
+  console.log("[DASHBOARD_LAYOUT] Session:", {
+    exists: !!session,
+    userId: session?.user?.id,
+    email: session?.user?.email,
+    storeId: session?.user?.storeId,
+    role: session?.user?.role,
+  });
+
   if (!session) {
-    return redirect("/api/auth/signin")
+    console.log("[DASHBOARD_LAYOUT] No session found, redirecting to login");
+    redirect("/auth/login")
   }
 
   const userRole = (session.user.role as "MANAGER" | "EMPLOYEE") ?? "EMPLOYEE"

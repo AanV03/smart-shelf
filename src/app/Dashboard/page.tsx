@@ -8,7 +8,7 @@ export default async function DashboardPage() {
     const session = await getServerAuthSession();
 
     // 2. Si no hay nadie, lo pateamos al login
-    if (!session) return redirect("/api/auth/signin");
+    if (!session) return redirect("/auth/login");
 
     // 3. Renderizamos el componente correcto según su rol
     return session.user.role === "MANAGER" ? <ManagerDashboard /> : <EmployeeDashboard />;
