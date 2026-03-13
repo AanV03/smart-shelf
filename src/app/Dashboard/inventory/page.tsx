@@ -16,7 +16,7 @@ export default async function InventoryPage() {
     redirect("/api/auth/signin")
   }
 
-  const isManager = session.user.role === "MANAGER"
+  const isManager = session.user.stores?.[0]?.role === "MANAGER" || session.user.stores?.[0]?.role === "ADMIN"
 
   return (
     <div className="relative w-full overflow-hidden">

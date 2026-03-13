@@ -1,5 +1,6 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import { type NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { type DefaultSession } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -19,24 +20,19 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      role: string;
-      storeId: string | null;
-      // ...other properties
+      status: string;
+      // NEW: Multi-tenant - array of stores with roles
+      stores: Array<{
+        id: string;
+        name: string;
+        role: "ADMIN" | "MANAGER" | "EMPLOYEE" | "PENDING";
+        status: "ACTIVE" | "INACTIVE" | "INVITED";
+      }>;
     } & DefaultSession["user"];
   }
 
   interface User {
-    id: string;
-    role: string;
-    storeId: string | null;
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id?: string;
-    role?: string;
-    storeId?: string | null;
+    status: string;
   }
 }
 
@@ -45,61 +41,107 @@ declare module "next-auth/jwt" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
-export const authConfig = {
-  providers: [
+
+console.log("[AUTH_CONFIG] Building authConfig with environment:", {
+  hasDiscordId: !!env.AUTH_DISCORD_ID?.trim(),
+  hasDiscordSecret: !!env.AUTH_DISCORD_SECRET?.trim(),
+  hasGoogleId: !!env.AUTH_GOOGLE_ID?.trim(),
+  hasGoogleSecret: !!env.AUTH_GOOGLE_SECRET?.trim(),
+  hasSecret: !!env.AUTH_SECRET,
+});
+
+const providers = [];
+
+// Discord OAuth - only enable if BOTH ID and SECRET are set
+if (env.AUTH_DISCORD_ID?.trim() && env.AUTH_DISCORD_SECRET?.trim()) {
+  console.log("[AUTH_CONFIG] Adding Discord provider");
+  providers.push(
     DiscordProvider({
       clientId: env.AUTH_DISCORD_ID,
       clientSecret: env.AUTH_DISCORD_SECRET,
-    }),
+    })
+  );
+}
+
+// Google OAuth - only enable if BOTH ID and SECRET are set
+if (env.AUTH_GOOGLE_ID?.trim() && env.AUTH_GOOGLE_SECRET?.trim()) {
+  console.log("[AUTH_CONFIG] Adding Google provider");
+  providers.push(
     GoogleProvider({
       clientId: env.AUTH_GOOGLE_ID,
       clientSecret: env.AUTH_GOOGLE_SECRET,
-    }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email", placeholder: "user@example.com" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        // Validate input
-        const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
-          .safeParse(credentials);
+    })
+  );
+}
 
-        if (!parsedCredentials.success) {
-          return null;
-        }
+// Credentials provider - always available
+providers.push(
+  CredentialsProvider({
+    name: "Credentials",
+    credentials: {
+      email: { label: "Email", type: "email", placeholder: "user@example.com" },
+      password: { label: "Password", type: "password" },
+    },
+    async authorize(credentials) {
+      console.log("[AUTH_CREDENTIALS] Attempting login with:", { email: credentials?.email });
+      
+      // Validate input
+      const parsedCredentials = z
+        .object({ email: z.string().email(), password: z.string().min(6) })
+        .safeParse(credentials);
 
-        const user = await db.user.findUnique({
-          where: { email: parsedCredentials.data.email },
+      if (!parsedCredentials.success) {
+        console.warn("[AUTH_CREDENTIALS] Invalid credentials format");
+        return null;
+      }
+
+      const user = await db.user.findUnique({
+        where: { email: parsedCredentials.data.email },
+      });
+
+      if (!user?.password) {
+        console.warn("[AUTH_CREDENTIALS] User not found or no password");
+        return null;
+      }
+
+      // Check if user account is suspended or deleted
+      if (user.status !== "ACTIVE") {
+        console.warn("[AUTH_CREDENTIALS] User account is not active:", {
+          userId: user.id,
+          status: user.status,
         });
+        return null;
+      }
 
-        if (!user?.password) {
-          return null;
-        }
+      const passwordsMatch = await compare(
+        parsedCredentials.data.password,
+        user.password
+      );
 
-        const passwordsMatch = await compare(
-          parsedCredentials.data.password,
-          user.password
-        );
+      if (!passwordsMatch) {
+        console.warn("[AUTH_CREDENTIALS] Password mismatch");
+        return null;
+      }
 
-        if (!passwordsMatch) {
-          return null;
-        }
+      console.log("[AUTH_CREDENTIALS] User authenticated successfully:", { userId: user.id });
+      
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        image: user.image,
+        status: user.status,
+      };
+    },
+  })
+);
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-          role: user.role,
-          storeId: user.storeId,
-        };
-      },
-    }),
-  ],
-  adapter: PrismaAdapter(db) as any, // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+console.log("[AUTH_CONFIG] Total providers configured:", providers.length);
+
+export const authOptions: NextAuthOptions = {
+  // For JWT strategy with OAuth, we don't use adapter
+  // Instead we handle user creation in signIn callback
+  providers,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -108,127 +150,190 @@ export const authConfig = {
     signIn: "/auth/login",
   },
   callbacks: {
-    jwt: async ({ token, user, trigger, session }) => {
-      console.log("[AUTH_JWT]", {
-        trigger,
-        hasUser: !!user,
-        hasSession: !!session,
+    async signIn({ user, account, profile }) {
+      console.log("[AUTH_SIGNIN] Attempting sign-in", {
+        userId: user?.id,
+        email: user?.email,
+        provider: account?.provider,
+        isOAuth: !!account,
       });
 
-      // Cuando el usuario hace login por primera vez
-      if (user) {
-        token.id = user.id;
-        token.role = (user as any).role || "EMPLOYEE";
-        token.storeId = (user as any).storeId;
-        console.log("[AUTH_JWT] Token created with user:", {
-          userId: user.id,
-          role: (user as any).role,
-          storeId: (user as any).storeId,
-        });
+      // For OAuth providers: Create or update user in database
+      if (account && user.email) {
+        try {
+          console.log("[AUTH_SIGNIN] OAuth - upsert user in DB", {
+            email: user.email,
+            provider: account.provider,
+          });
+
+          // Upsert user - create if doesn't exist, update if exists
+          const dbUser = await db.user.upsert({
+            where: { email: user.email },
+            update: {
+              name: user.name,
+              image: user.image,
+            },
+            create: {
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              status: "ACTIVE",
+            },
+          });
+
+          console.log("[AUTH_SIGNIN] User upserted successfully", {
+            email: user.email,
+            dbUserId: dbUser.id,
+          });
+
+          // ✅ CRITICAL: Store the correct database ID in the user object
+          // This will be passed to jwt() callback
+          user.id = dbUser.id;
+          (user as any).dbId = dbUser.id; // Force set for safety
+        } catch (error) {
+          console.error("[AUTH_SIGNIN] Error upserting user", { error });
+          throw error;
+        }
       }
 
-      // Cuando se actualiza la sesión (en el callback session)
-      if (trigger === "update" && session) {
-        token.role = session.user.role;
-        token.storeId = session.user.storeId;
-        console.log("[AUTH_JWT] Token updated:", {
-          role: session.user.role,
-          storeId: session.user.storeId,
+      return true;
+    },
+    async jwt({ token, user, account }) {
+      console.log("[AUTH_JWT] JWT Callback", {
+        hasUser: !!user,
+        userId: user?.id,
+        tokenId: token.id,
+        tokenEmail: token.email,
+        provider: account?.provider,
+      });
+
+      if (user) {
+        // ✅ When user object is passed (login/register), use its ID
+        token.id = user.id;
+        token.email = user.email || token.email;
+        token.status = (user as any)?.status ?? "ACTIVE";
+
+        console.log("[AUTH_JWT] Token updated from user", {
+          newTokenId: token.id,
+          email: token.email,
         });
+      } else if (!token.id && token.email) {
+        // ✅ Token refresh or OAuth - need to fetch from DB to get correct ID
+        console.log("[AUTH_JWT] No token.id but have email, fetching from DB");
+        try {
+          const dbUser = await db.user.findUnique({
+            where: { email: token.email as string },
+          });
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.status = dbUser.status;
+            console.log("[AUTH_JWT] Updated token with DB user ID", {
+              newTokenId: token.id,
+              email: token.email,
+            });
+          } else {
+            console.warn("[AUTH_JWT] User not found by email in DB", {
+              email: token.email,
+            });
+          }
+        } catch (error) {
+          console.error("[AUTH_JWT] Error fetching user from DB", error);
+        }
       }
 
       return token;
     },
-    signIn: async ({ user, account }) => {
-      // Log para debugging
-      console.log("[AUTH_SIGNIN]", {
-        userId: user.id,
-        email: user.email,
-        provider: account?.provider,
-        hasStoreId: !!(user as any).storeId,
+    async session({ session, token }) {
+      console.log("[AUTH_SESSION] Starting session callback", {
+        hasToken: !!token,
+        tokenId: token.id,
+        tokenEmail: token.email,
       });
 
-      // Si el usuario no tiene una store asignada, crear una automáticamente
-      if (!(user as any).storeId) {
-        try {
-          // Crear una store por defecto para el usuario
-          const store = await db.store.create({
-            data: {
-              name: `${user.name || user.email?.split("@")[0] || "Store"}'s Store`,
-              location: "Default Location",
-            },
-          });
+      // ✅ Initialize stores array
+      session.user.stores = [];
 
-          // Actualizar el usuario con la store
-          const updatedUser = await db.user.update({
-            where: { id: user.id },
-            data: { storeId: store.id },
-          });
-
-          // Actualizar el objeto user con el nuevo storeId
-          (user as any).storeId = updatedUser.storeId;
-          console.log("[AUTH_SIGNIN] Store created and assigned:", updatedUser.storeId);
-        } catch (error) {
-          console.error("[AUTH_SIGNIN_ERROR] Error creating store:", error);
-          // No fallar el signin, solo logear el error
-          return true;
-        }
+      if (!token.id) {
+        console.error("[AUTH_SESSION] No token.id found, cannot load stores", {
+          token,
+        });
+        return session;
       }
-      return true;
-    },
-    session: async ({ session, token }) => {
-      console.log("[AUTH_SESSION] Token data:", {
-        id: token.id,
-        role: token.role,
-        storeId: token.storeId,
-      });
 
-      // Copiamos los datos del token JWT a la sesión
-      session.user.id = token.id as string;
-      session.user.role = (token.role as string) || "EMPLOYEE";
-      session.user.storeId = (token.storeId as string) || null;
+      try {
+        // ✅ Verify user exists in database before proceeding
+        const dbUser = await db.user.findUnique({
+          where: { id: token.id as string },
+        });
 
-      // Si el usuario no tiene storeId, tratar de obtenerlo de la BD
-      if (!session.user.storeId && token.id) {
-        try {
-          const dbUser = await db.user.findUnique({
-            where: { id: token.id as string },
-            select: { storeId: true },
+        if (!dbUser) {
+          console.error("[AUTH_SESSION] User not found in database", {
+            userId: token.id,
+            email: token.email,
           });
-
-          if (dbUser?.storeId) {
-            session.user.storeId = dbUser.storeId;
-            console.log("[AUTH_SESSION] StoreId found in database:", dbUser.storeId);
-          } else if (dbUser?.id) {
-            // Si el usuario existe pero no tiene storeId, crear uno
-            const store = await db.store.create({
-              data: {
-                name: `${session.user.name || session.user.email?.split("@")[0] || "Store"}'s Store`,
-                location: "Default Location",
-              },
+          // ✅ Try to find by email as fallback
+          const userByEmail = await db.user.findUnique({
+            where: { email: token.email as string },
+          });
+          if (userByEmail) {
+            console.log("[AUTH_SESSION] Found user by email, updating token.id", {
+              email: token.email,
+              dbId: userByEmail.id,
             });
-
-            const updatedUser = await db.user.update({
-              where: { id: token.id as string },
-              data: { storeId: store.id },
+            token.id = userByEmail.id;
+          } else {
+            console.error("[AUTH_SESSION] User not found by email either", {
+              email: token.email,
             });
-
-            session.user.storeId = updatedUser.storeId;
-            console.log("[AUTH_SESSION] Store created in session callback:", store.id);
+            session.user.stores = [];
+            return session;
           }
-        } catch (error) {
-          console.error("[AUTH_SESSION_ERROR] Error handling storeId:", error);
         }
-      }
 
-      console.log("[AUTH_SESSION] Final session:", {
-        userId: session.user.id,
-        email: session.user.email,
-        storeId: session.user.storeId,
-        role: session.user.role,
-      });
+        // Set user id and status from token
+        session.user.id = token.id as string;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        session.user.status = (token.status ?? "ACTIVE") as string;
+
+        console.log("[AUTH_SESSION] Fetching stores for user:", token.id);
+
+        // Fetch stores and roles from StoreMember
+        const storeMembers = await db.storeMember.findMany({
+          where: { userId: token.id as string },
+          include: {
+            store: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+          orderBy: { createdAt: "asc" },
+        });
+
+        console.log("[AUTH_SESSION] Found store members:", {
+          count: storeMembers.length,
+          userId: token.id,
+        });
+
+        // Map StoreMember to stores array in session
+        session.user.stores = storeMembers.map((member) => ({
+          id: member.store.id,
+          name: member.store.name,
+          role: member.role as "ADMIN" | "MANAGER" | "EMPLOYEE" | "PENDING",
+          status: member.status as "ACTIVE" | "INACTIVE" | "INVITED",
+        }));
+
+        console.log("[AUTH_SESSION] Session built successfully:", {
+          userId: session.user.id,
+          storeCount: session.user.stores.length,
+        });
+      } catch (error) {
+        console.error("[AUTH_SESSION] Error loading stores:", error);
+        session.user.stores = [];
+      }
 
       return session;
     },
   },
-} satisfies NextAuthConfig;
+};

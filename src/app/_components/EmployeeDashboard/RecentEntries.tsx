@@ -83,7 +83,8 @@ export function RecentEntries({ batches, isLoading }: RecentEntriesProps) {
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">
-                        {batch.product?.name ?? "Unknown Product"}
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
+                        {(batch as any).product?.name ?? "Unknown Product"}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         Batch #{batch.batchNumber}

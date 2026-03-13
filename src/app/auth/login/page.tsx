@@ -9,12 +9,23 @@ import { RegisterForm } from "@/app/_components/auth/RegisterForm";
 type AuthMode = "login" | "register";
 
 export default function AuthPage() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const [mode, setMode] = useState<AuthMode>("login");
 
-  // If already logged in, redirect to dashboard
-  if (status === "authenticated") {
-    redirect("/dashboard");
+  // ✅ LOGIC:
+  // - If authenticated AND has active stores → redirect to dashboard
+  // - If authenticated but NO active stores → redirect to onboarding
+  // - If not authenticated → show login/register forms
+  if (status === "authenticated" && session?.user) {
+    const activeStores = session.user.stores?.filter(
+      (s) => s.status === "ACTIVE" && s.role !== "PENDING"
+    ) ?? [];
+
+    if (activeStores.length > 0) {
+      redirect("/dashboard");
+    } else {
+      redirect("/onboarding");
+    }
   }
 
   return (

@@ -1,22 +1,18 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedureWithStore } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 export const inventoryRouter = createTRPCRouter({
   /**
    * Get all products for the user's store
    */
-  getProducts: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session.user.storeId) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "User not associated with a store",
-      });
-    }
+  getProducts: protectedProcedureWithStore.query(async ({ ctx }) => {
+    // ✅ defaultStoreId is guaranteed to exist from protectedProcedureWithStore
+    const storeId = ctx.defaultStoreId;
 
     return ctx.db.product.findMany({
-      where: { storeId: ctx.session.user.storeId },
-      include: { category: true },
+      where: { storeId: storeId },
+      include: { Category: true },
       orderBy: { name: "asc" },
     });
   }),
@@ -24,32 +20,38 @@ export const inventoryRouter = createTRPCRouter({
   /**
    * Get batches for a product or all batches
    */
-  getBatches: protectedProcedure
+  getBatches: protectedProcedureWithStore
     .input(
       z.object({
         productId: z.string().optional(),
         status: z.enum(["ACTIVE", "EXPIRED", "SOLD", "SPOILED"]).optional(),
         limit: z.number().default(50),
         offset: z.number().default(0),
+        storeId: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      // ✅ Multi-tenant: Get store from input or use default from middleware
+      const requestedStoreId = input.storeId ?? ctx.defaultStoreId;
+      
+      // ✅ SECURITY: Verify user has access to requested store
+      const hasAccess = ctx.session.user.stores?.some(s => s.id === requestedStoreId);
+      if (!hasAccess) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "User not associated with a store",
+          message: "You don't have access to this store",
         });
       }
 
       const where = {
-        storeId: ctx.session.user.storeId,
+        storeId: requestedStoreId,
         ...(input.productId && { productId: input.productId }),
         ...(input.status && { status: input.status }),
       };
 
       const batches = await ctx.db.batch.findMany({
         where,
-        include: { product: { include: { category: true } }, createdBy: true },
+        include: { Product: { include: { Category: true } }, User: true },
         orderBy: { expiresAt: "asc" },
         take: input.limit,
         skip: input.offset,
@@ -63,17 +65,13 @@ export const inventoryRouter = createTRPCRouter({
   /**
    * Get total inventory value (sum of totalCost for ACTIVE batches)
    */
-  getTotalInventoryValue: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session.user.storeId) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "User not associated with a store",
-      });
-    }
+  getTotalInventoryValue: protectedProcedureWithStore.query(async ({ ctx }) => {
+    // ✅ defaultStoreId is guaranteed to exist from protectedProcedureWithStore
+    const storeId = ctx.defaultStoreId;
 
     const result = await ctx.db.batch.aggregate({
       where: {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         status: "ACTIVE",
       },
       _sum: { totalCost: true },
@@ -85,29 +83,24 @@ export const inventoryRouter = createTRPCRouter({
   /**
    * Get batches expiring soon (within N days)
    */
-  getExpiringBatches: protectedProcedure
+  getExpiringBatches: protectedProcedureWithStore
     .input(z.object({ daysThreshold: z.number().default(3) }))
     .query(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "User not associated with a store",
-        });
-      }
+      const storeId = ctx.defaultStoreId;
 
       const now = new Date();
       const futureDate = new Date(now.getTime() + input.daysThreshold * 24 * 60 * 60 * 1000);
 
       return ctx.db.batch.findMany({
         where: {
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
           status: "ACTIVE",
           expiresAt: {
             lte: futureDate,
             gte: now,
           },
         },
-        include: { product: { include: { category: true } } },
+        include: { Product: { include: { Category: true } } },
         orderBy: { expiresAt: "asc" },
       });
     }),
@@ -115,7 +108,7 @@ export const inventoryRouter = createTRPCRouter({
   /**
    * Create a new batch
    */
-  createBatch: protectedProcedure
+  createBatch: protectedProcedureWithStore
     .input(
       z.object({
         productId: z.string(),
@@ -126,18 +119,13 @@ export const inventoryRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "User not associated with a store",
-        });
-      }
+      const storeId = ctx.defaultStoreId;
 
       // Verify product exists and belongs to store
       const product = await ctx.db.product.findFirst({
         where: {
           id: input.productId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
 
@@ -152,7 +140,7 @@ export const inventoryRouter = createTRPCRouter({
       const existingBatch = await ctx.db.batch.findFirst({
         where: {
           batchNumber: input.batchNumber,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
 
@@ -174,30 +162,25 @@ export const inventoryRouter = createTRPCRouter({
           totalCost,
           expiresAt: input.expiresAt,
           status: "ACTIVE",
-          storeId: ctx.session.user.storeId,
-          createdById: ctx.session.user.id,
+          storeId: storeId,
+          createdById: ctx.session.user.id!,
         },
-        include: { product: { include: { category: true } }, createdBy: true },
+        include: { Product: { include: { Category: true } }, User: true },
       });
     }),
 
   /**
    * Mark batch as expired
    */
-  markBatchExpired: protectedProcedure
+  markBatchExpired: protectedProcedureWithStore
     .input(z.object({ batchId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "User not associated with a store",
-        });
-      }
+      const storeId = ctx.defaultStoreId;
 
       const batch = await ctx.db.batch.findFirst({
         where: {
           id: input.batchId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
 
@@ -211,14 +194,14 @@ export const inventoryRouter = createTRPCRouter({
       return ctx.db.batch.update({
         where: { id: input.batchId },
         data: { status: "EXPIRED" },
-        include: { product: { include: { category: true } } },
+        include: { Product: { include: { Category: true } } },
       });
     }),
 
   /**
    * Update batch status
    */
-  updateBatchStatus: protectedProcedure
+  updateBatchStatus: protectedProcedureWithStore
     .input(
       z.object({
         batchId: z.string(),
@@ -226,17 +209,12 @@ export const inventoryRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "User not associated with a store",
-        });
-      }
+      const storeId = ctx.defaultStoreId;
 
       const batch = await ctx.db.batch.findFirst({
         where: {
           id: input.batchId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
 
@@ -250,27 +228,22 @@ export const inventoryRouter = createTRPCRouter({
       return ctx.db.batch.update({
         where: { id: input.batchId },
         data: { status: input.status },
-        include: { product: { include: { category: true } } },
+        include: { Product: { include: { Category: true } } },
       });
     }),
 
   /**
    * Delete a batch
    */
-  deleteBatch: protectedProcedure
+  deleteBatch: protectedProcedureWithStore
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "User not associated with a store",
-        });
-      }
+      const storeId = ctx.defaultStoreId;
 
       const batch = await ctx.db.batch.findFirst({
         where: {
           id: input.id,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
 

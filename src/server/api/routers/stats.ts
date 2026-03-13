@@ -8,14 +8,17 @@ export const statsRouter = createTRPCRouter({
    * Get dashboard stats (MANAGER only)
    */
   getDashboardStats: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session.user.storeId) {
+    const storeId = ctx.session.user.stores?.[0]?.id;
+    const userRole = ctx.session.user.stores?.[0]?.role;
+
+    if (!storeId) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "User not associated with a store",
       });
     }
 
-    if (ctx.session.user.role !== "MANAGER") {
+    if (userRole !== "MANAGER" && userRole !== "ADMIN") {
       throw new TRPCError({
         code: "FORBIDDEN",
         message: "Only managers can access dashboard stats",
@@ -25,7 +28,7 @@ export const statsRouter = createTRPCRouter({
     // Total inventory value
     const inventoryValue = await ctx.db.batch.aggregate({
       where: {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         status: "ACTIVE",
       },
       _sum: { totalCost: true },
@@ -33,7 +36,7 @@ export const statsRouter = createTRPCRouter({
 
     // Count active products
     const activeProductCount = await ctx.db.product.count({
-      where: { storeId: ctx.session.user.storeId },
+      where: { storeId: storeId },
     });
 
     // Count batches expiring in next 7 days
@@ -42,7 +45,7 @@ export const statsRouter = createTRPCRouter({
 
     const expiringCount = await ctx.db.batch.count({
       where: {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         status: "ACTIVE",
         expiresAt: {
           lte: weekFromNow,
@@ -54,7 +57,7 @@ export const statsRouter = createTRPCRouter({
     // Count unread alerts
     const alertsUnread = await ctx.db.alert.count({
       where: {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         isRead: false,
       },
     });
@@ -71,14 +74,17 @@ export const statsRouter = createTRPCRouter({
    * Get inventory by category
    */
   getInventoryByCategory: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session.user.storeId) {
+    const storeId = ctx.session.user.stores?.[0]?.id;
+    const userRole = ctx.session.user.stores?.[0]?.role;
+
+    if (!storeId) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "User not associated with a store",
       });
     }
 
-    if (ctx.session.user.role !== "MANAGER") {
+    if (userRole !== "MANAGER" && userRole !== "ADMIN") {
       throw new TRPCError({
         code: "FORBIDDEN",
         message: "Only managers can access inventory stats",
@@ -88,10 +94,10 @@ export const statsRouter = createTRPCRouter({
     // Get all active batches with product and category info
     const batches = await ctx.db.batch.findMany({
       where: {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         status: "ACTIVE",
       },
-      include: { product: { include: { category: true } } },
+      include: { Product: { include: { Category: true } } },
     });
 
     // Group by category
@@ -101,7 +107,7 @@ export const statsRouter = createTRPCRouter({
     >();
 
     for (const batch of batches) {
-      const categoryName = batch.product.category.name;
+      const categoryName = batch.Product.Category.name;
       const existing = categoryMap.get(categoryName) ?? {
         category: categoryName,
         totalValue: 0,
@@ -125,14 +131,17 @@ export const statsRouter = createTRPCRouter({
   getExpirationTrend: protectedProcedure
     .input(z.object({ days: z.number().default(30) }))
     .query(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+      const userRole = ctx.session.user.stores?.[0]?.role;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
         });
       }
 
-      if (ctx.session.user.role !== "MANAGER") {
+      if (userRole !== "MANAGER" && userRole !== "ADMIN") {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only managers can access trend stats",
@@ -145,7 +154,7 @@ export const statsRouter = createTRPCRouter({
       // Get all batches in the date range
       const batches = await ctx.db.batch.findMany({
         where: {
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
           expiresAt: {
             gte: startDate,
             lte: endDate,
@@ -180,14 +189,17 @@ export const statsRouter = createTRPCRouter({
    * Get inventory snapshot by batch status
    */
   getInventorySnapshot: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session.user.storeId) {
+    const storeId = ctx.session.user.stores?.[0]?.id;
+    const userRole = ctx.session.user.stores?.[0]?.role;
+
+    if (!storeId) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "User not associated with a store",
       });
     }
 
-    if (ctx.session.user.role !== "MANAGER") {
+    if (userRole !== "MANAGER" && userRole !== "ADMIN") {
       throw new TRPCError({
         code: "FORBIDDEN",
         message: "Only managers can access inventory snapshot",
@@ -202,7 +214,7 @@ export const statsRouter = createTRPCRouter({
     for (const status of statuses) {
       const count = await ctx.db.batch.count({
         where: {
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
           status,
         },
       });

@@ -41,13 +41,13 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hash(password, 10);
 
-    // Create user
+    // Create user (role will be assigned when added to a store via StoreMember)
     const user = await db.user.create({
       data: {
         email,
         name,
         password: hashedPassword,
-        role: "EMPLOYEE", // Default role for new users
+        status: "ACTIVE",
       },
     });
 

@@ -15,7 +15,9 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -23,13 +25,13 @@ export const productRouter = createTRPCRouter({
       }
 
       const where = {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         ...(input.categoryId && { categoryId: input.categoryId }),
       };
 
       const products = await ctx.db.product.findMany({
         where,
-        include: { category: true },
+        include: { Category: true },
         orderBy: { name: "asc" },
         take: input.limit,
         skip: input.offset,
@@ -46,7 +48,9 @@ export const productRouter = createTRPCRouter({
   getProductBySku: protectedProcedure
     .input(z.object({ sku: z.string() }))
     .query(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -56,9 +60,9 @@ export const productRouter = createTRPCRouter({
       return ctx.db.product.findFirst({
         where: {
           sku: input.sku,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
-        include: { category: true },
+        include: { Category: true },
       });
     }),
 
@@ -68,7 +72,9 @@ export const productRouter = createTRPCRouter({
   getProductById: protectedProcedure
     .input(z.object({ productId: z.string() }))
     .query(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -78,9 +84,9 @@ export const productRouter = createTRPCRouter({
       return ctx.db.product.findFirst({
         where: {
           id: input.productId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
-        include: { category: true, batches: true },
+        include: { Category: true, Batch: true },
       });
     }),
 
@@ -96,7 +102,9 @@ export const productRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -132,9 +140,9 @@ export const productRouter = createTRPCRouter({
           name: input.name,
           sku: input.sku,
           categoryId: input.categoryId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
-        include: { category: true },
+        include: { Category: true },
       });
     }),
 
@@ -150,7 +158,9 @@ export const productRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -161,7 +171,7 @@ export const productRouter = createTRPCRouter({
       const product = await ctx.db.product.findFirst({
         where: {
           id: input.productId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
 
@@ -194,7 +204,7 @@ export const productRouter = createTRPCRouter({
       return ctx.db.product.update({
         where: { id: input.productId },
         data: updateData,
-        include: { category: true },
+        include: { Category: true },
       });
     }),
 
@@ -204,7 +214,9 @@ export const productRouter = createTRPCRouter({
   deleteProduct: protectedProcedure
     .input(z.object({ productId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -214,9 +226,9 @@ export const productRouter = createTRPCRouter({
       const product = await ctx.db.product.findFirst({
         where: {
           id: input.productId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
-        include: { batches: true },
+        include: { Batch: true },
       });
 
       if (!product) {
@@ -226,7 +238,7 @@ export const productRouter = createTRPCRouter({
         });
       }
 
-      if (product.batches.length > 0) {
+      if (product.Batch.length > 0) {
         throw new TRPCError({
           code: "CONFLICT",
           message: "Cannot delete product with existing batches",

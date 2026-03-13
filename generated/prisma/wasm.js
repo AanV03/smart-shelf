@@ -93,14 +93,6 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.PostScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdById: 'createdById'
-};
-
 exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -117,51 +109,15 @@ exports.Prisma.AccountScalarFieldEnum = {
   refresh_token_expires_in: 'refresh_token_expires_in'
 };
 
-exports.Prisma.SessionScalarFieldEnum = {
+exports.Prisma.AlertScalarFieldEnum = {
   id: 'id',
-  sessionToken: 'sessionToken',
-  userId: 'userId',
-  expires: 'expires'
-};
-
-exports.Prisma.UserScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  emailVerified: 'emailVerified',
-  image: 'image',
-  password: 'password',
-  role: 'role',
-  storeId: 'storeId'
-};
-
-exports.Prisma.VerificationTokenScalarFieldEnum = {
-  identifier: 'identifier',
-  token: 'token',
-  expires: 'expires'
-};
-
-exports.Prisma.StoreScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  location: 'location',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.CategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ProductScalarFieldEnum = {
-  id: 'id',
-  sku: 'sku',
-  name: 'name',
-  categoryId: 'categoryId',
+  type: 'type',
+  severity: 'severity',
+  message: 'message',
+  batchId: 'batchId',
+  productId: 'productId',
   storeId: 'storeId',
+  isRead: 'isRead',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -182,17 +138,71 @@ exports.Prisma.BatchScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.AlertScalarFieldEnum = {
+exports.Prisma.CategoryScalarFieldEnum = {
   id: 'id',
-  type: 'type',
-  severity: 'severity',
-  message: 'message',
-  batchId: 'batchId',
-  productId: 'productId',
-  storeId: 'storeId',
-  isRead: 'isRead',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PostScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  sku: 'sku',
+  name: 'name',
+  categoryId: 'categoryId',
+  storeId: 'storeId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  sessionToken: 'sessionToken',
+  userId: 'userId',
+  expires: 'expires'
+};
+
+exports.Prisma.StoreScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  location: 'location',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  image: 'image',
+  password: 'password',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
+};
+
+exports.Prisma.StoreMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  storeId: 'storeId',
+  role: 'role',
+  status: 'status',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -209,19 +219,31 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.StoreRole = exports.$Enums.StoreRole = {
+  ADMIN: 'ADMIN',
+  MANAGER: 'MANAGER',
+  EMPLOYEE: 'EMPLOYEE',
+  PENDING: 'PENDING'
+};
 
+exports.StoreMemberStatus = exports.$Enums.StoreMemberStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  INVITED: 'INVITED'
+};
 
 exports.Prisma.ModelName = {
-  Post: 'Post',
   Account: 'Account',
+  Alert: 'Alert',
+  Batch: 'Batch',
+  Category: 'Category',
+  Post: 'Post',
+  Product: 'Product',
   Session: 'Session',
+  Store: 'Store',
   User: 'User',
   VerificationToken: 'VerificationToken',
-  Store: 'Store',
-  Category: 'Category',
-  Product: 'Product',
-  Batch: 'Batch',
-  Alert: 'Alert'
+  StoreMember: 'StoreMember'
 };
 /**
  * Create the Client
@@ -262,7 +284,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -271,13 +292,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below\n  // Further reading:\n  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema\n  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Post {\n  id        Int      @id @default(autoincrement())\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  createdBy   User   @relation(fields: [createdById], references: [id])\n  createdById String\n\n  @@index([name])\n}\n\n// Necessary for Next auth\nmodel Account {\n  id                       String  @id @default(cuid())\n  userId                   String\n  type                     String\n  provider                 String\n  providerAccountId        String\n  refresh_token            String? // @db.Text\n  access_token             String? // @db.Text\n  expires_at               Int?\n  token_type               String?\n  scope                    String?\n  id_token                 String? // @db.Text\n  session_state            String?\n  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n  refresh_token_expires_in Int?\n\n  @@unique([provider, providerAccountId])\n}\n\nmodel Session {\n  id           String   @id @default(cuid())\n  sessionToken String   @unique\n  userId       String\n  expires      DateTime\n  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel User {\n  id             String    @id @default(cuid())\n  name           String?\n  email          String?   @unique\n  emailVerified  DateTime?\n  image          String?\n  password       String? // For credentials provider (hashed with bcrypt)\n  role           String    @default(\"EMPLOYEE\") // MANAGER or EMPLOYEE\n  storeId        String?\n  store          Store?    @relation(fields: [storeId], references: [id])\n  accounts       Account[]\n  sessions       Session[]\n  posts          Post[]\n  createdBatches Batch[]\n\n  @@index([storeId])\n}\n\nmodel VerificationToken {\n  identifier String\n  token      String   @unique\n  expires    DateTime\n\n  @@unique([identifier, token])\n}\n\n// Inventory Models\nmodel Store {\n  id        String   @id @default(cuid())\n  name      String\n  location  String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  users    User[]\n  products Product[]\n  batches  Batch[]\n  alerts   Alert[]\n\n  @@index([name])\n}\n\nmodel Category {\n  id        String   @id @default(cuid())\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  products Product[]\n\n  @@index([name])\n}\n\nmodel Product {\n  id         String   @id @default(cuid())\n  sku        String   @unique\n  name       String\n  categoryId String\n  category   Category @relation(fields: [categoryId], references: [id])\n  storeId    String\n  store      Store    @relation(fields: [storeId], references: [id])\n  batches    Batch[]\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([storeId])\n  @@index([categoryId])\n  @@index([sku])\n}\n\nmodel Batch {\n  id          String   @id @default(cuid())\n  batchNumber String\n  productId   String\n  product     Product  @relation(fields: [productId], references: [id])\n  quantity    Int      @default(0)\n  costPerUnit Float\n  totalCost   Float    @default(0) // quantity * costPerUnit, denormalized for perf\n  expiresAt   DateTime\n  status      String   @default(\"ACTIVE\") // ACTIVE, EXPIRED, SOLD, SPOILED\n  receivedAt  DateTime @default(now())\n  createdById String\n  createdBy   User     @relation(fields: [createdById], references: [id])\n  storeId     String\n  store       Store    @relation(fields: [storeId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@unique([batchNumber, storeId])\n  @@index([storeId])\n  @@index([productId])\n  @@index([expiresAt])\n  @@index([status])\n  @@index([createdById])\n}\n\nmodel Alert {\n  id        String   @id @default(cuid())\n  type      String // EXPIRING_SOON, EXPIRED, LOW_STOCK\n  severity  String // INFO, WARNING, CRITICAL\n  message   String\n  batchId   String?\n  productId String?\n  storeId   String\n  store     Store    @relation(fields: [storeId], references: [id])\n  isRead    Boolean  @default(false)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([storeId])\n  @@index([isRead])\n  @@index([createdAt])\n}\n",
-  "inlineSchemaHash": "d68262a4b211498a1dee975c39e983c40f3785d4ed70456fcd4f25bf3ab3bfe5",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Account {\n  id                       String  @id\n  userId                   String\n  type                     String\n  provider                 String\n  providerAccountId        String\n  refresh_token            String?\n  access_token             String?\n  expires_at               Int?\n  token_type               String?\n  scope                    String?\n  id_token                 String?\n  session_state            String?\n  refresh_token_expires_in Int?\n  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([provider, providerAccountId])\n}\n\nmodel Alert {\n  id        String   @id @default(cuid())\n  type      String\n  severity  String\n  message   String\n  batchId   String?\n  productId String?\n  storeId   String\n  isRead    Boolean  @default(false)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  Store     Store    @relation(fields: [storeId], references: [id])\n\n  @@index([createdAt])\n  @@index([isRead])\n  @@index([storeId])\n}\n\nmodel Batch {\n  id          String   @id @default(cuid())\n  batchNumber String\n  productId   String\n  quantity    Int      @default(0)\n  costPerUnit Float\n  totalCost   Float    @default(0)\n  expiresAt   DateTime\n  status      String   @default(\"ACTIVE\")\n  receivedAt  DateTime @default(now())\n  createdById String\n  storeId     String\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n  User        User     @relation(fields: [createdById], references: [id])\n  Product     Product  @relation(fields: [productId], references: [id])\n  Store       Store    @relation(fields: [storeId], references: [id])\n\n  @@unique([batchNumber, storeId])\n  @@index([createdById])\n  @@index([expiresAt])\n  @@index([productId])\n  @@index([status])\n  @@index([storeId])\n}\n\nmodel Category {\n  id        String    @id @default(cuid())\n  name      String\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  Product   Product[]\n\n  @@index([name])\n}\n\nmodel Post {\n  id          Int      @id @default(autoincrement())\n  name        String\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n  createdById String\n  User        User     @relation(fields: [createdById], references: [id])\n\n  @@index([name])\n}\n\nmodel Product {\n  id         String   @id @default(cuid())\n  sku        String   @unique\n  name       String\n  categoryId String\n  storeId    String\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n  Batch      Batch[]\n  Category   Category @relation(fields: [categoryId], references: [id])\n  Store      Store    @relation(fields: [storeId], references: [id])\n\n  @@index([categoryId])\n  @@index([sku])\n  @@index([storeId])\n}\n\nmodel Session {\n  id           String   @id\n  sessionToken String   @unique\n  userId       String\n  expires      DateTime\n  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel Store {\n  id        String        @id @default(cuid())\n  name      String\n  location  String?\n  createdAt DateTime      @default(now())\n  updatedAt DateTime      @updatedAt\n  Alert     Alert[]\n  Batch     Batch[]\n  Product   Product[]\n  members   StoreMember[]\n\n  @@index([name])\n}\n\nmodel User {\n  id            String        @id @default(cuid())\n  name          String?\n  email         String?       @unique\n  emailVerified DateTime?\n  image         String?\n  password      String?\n  status        String        @default(\"ACTIVE\")\n  createdAt     DateTime      @default(now())\n  updatedAt     DateTime      @updatedAt\n  Account       Account[]\n  Batch         Batch[]\n  Post          Post[]\n  Session       Session[]\n  storeMembers  StoreMember[]\n\n  @@index([status])\n}\n\nmodel VerificationToken {\n  identifier String\n  token      String   @unique\n  expires    DateTime\n\n  @@unique([identifier, token])\n}\n\nenum StoreRole {\n  ADMIN\n  MANAGER\n  EMPLOYEE\n  PENDING\n}\n\nenum StoreMemberStatus {\n  ACTIVE\n  INACTIVE\n  INVITED\n}\n\nmodel StoreMember {\n  id        String            @id @default(cuid())\n  userId    String\n  storeId   String\n  role      StoreRole         @default(EMPLOYEE)\n  status    StoreMemberStatus @default(ACTIVE)\n  createdAt DateTime          @default(now())\n\n  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)\n  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, storeId])\n  @@index([userId])\n  @@index([storeId])\n  @@index([role])\n  @@index([status])\n}\n",
+  "inlineSchemaHash": "4f51271fbb970ddfdf391c93c3569c8972a5b25b0a27991739e1e37c094ef95d",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Post\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PostToUser\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerAccountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refresh_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"access_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"token_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"id_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"session_state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"},{\"name\":\"refresh_token_expires_in\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessionToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"store\",\"kind\":\"object\",\"type\":\"Store\",\"relationName\":\"StoreToUser\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"posts\",\"kind\":\"object\",\"type\":\"Post\",\"relationName\":\"PostToUser\"},{\"name\":\"createdBatches\",\"kind\":\"object\",\"type\":\"Batch\",\"relationName\":\"BatchToUser\"}],\"dbName\":null},\"VerificationToken\":{\"fields\":[{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Store\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"location\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"StoreToUser\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToStore\"},{\"name\":\"batches\",\"kind\":\"object\",\"type\":\"Batch\",\"relationName\":\"BatchToStore\"},{\"name\":\"alerts\",\"kind\":\"object\",\"type\":\"Alert\",\"relationName\":\"AlertToStore\"}],\"dbName\":null},\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CategoryToProduct\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToProduct\"},{\"name\":\"storeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"store\",\"kind\":\"object\",\"type\":\"Store\",\"relationName\":\"ProductToStore\"},{\"name\":\"batches\",\"kind\":\"object\",\"type\":\"Batch\",\"relationName\":\"BatchToProduct\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Batch\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"batchNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"BatchToProduct\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"costPerUnit\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"totalCost\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"receivedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"BatchToUser\"},{\"name\":\"storeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"store\",\"kind\":\"object\",\"type\":\"Store\",\"relationName\":\"BatchToStore\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Alert\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"severity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"batchId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"store\",\"kind\":\"object\",\"type\":\"Store\",\"relationName\":\"AlertToStore\"},{\"name\":\"isRead\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerAccountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refresh_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"access_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"token_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"id_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"session_state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refresh_token_expires_in\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"}],\"dbName\":null},\"Alert\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"severity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"batchId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isRead\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Store\",\"kind\":\"object\",\"type\":\"Store\",\"relationName\":\"AlertToStore\"}],\"dbName\":null},\"Batch\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"batchNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"costPerUnit\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"totalCost\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"receivedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"User\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"BatchToUser\"},{\"name\":\"Product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"BatchToProduct\"},{\"name\":\"Store\",\"kind\":\"object\",\"type\":\"Store\",\"relationName\":\"BatchToStore\"}],\"dbName\":null},\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CategoryToProduct\"}],\"dbName\":null},\"Post\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"User\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PostToUser\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sku\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Batch\",\"kind\":\"object\",\"type\":\"Batch\",\"relationName\":\"BatchToProduct\"},{\"name\":\"Category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToProduct\"},{\"name\":\"Store\",\"kind\":\"object\",\"type\":\"Store\",\"relationName\":\"ProductToStore\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessionToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"User\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":null},\"Store\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"location\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Alert\",\"kind\":\"object\",\"type\":\"Alert\",\"relationName\":\"AlertToStore\"},{\"name\":\"Batch\",\"kind\":\"object\",\"type\":\"Batch\",\"relationName\":\"BatchToStore\"},{\"name\":\"Product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToStore\"},{\"name\":\"members\",\"kind\":\"object\",\"type\":\"StoreMember\",\"relationName\":\"StoreToStoreMember\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Account\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"Batch\",\"kind\":\"object\",\"type\":\"Batch\",\"relationName\":\"BatchToUser\"},{\"name\":\"Post\",\"kind\":\"object\",\"type\":\"Post\",\"relationName\":\"PostToUser\"},{\"name\":\"Session\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"storeMembers\",\"kind\":\"object\",\"type\":\"StoreMember\",\"relationName\":\"StoreMemberToUser\"}],\"dbName\":null},\"VerificationToken\":{\"fields\":[{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"StoreMember\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"StoreRole\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"StoreMemberStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"StoreMemberToUser\"},{\"name\":\"store\",\"kind\":\"object\",\"type\":\"Store\",\"relationName\":\"StoreToStoreMember\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

@@ -131,3 +131,43 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+/**
+ * Protected procedure with store validation (MULTI-TENANT)
+ *
+ * Use this for procedures that require user to be authenticated AND
+ * associated with an active store. This ensures multi-tenant isolation.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const protectedProcedureWithStore = t.procedure
+  .use(timingMiddleware)
+  .use(({ ctx, next }) => {
+    // ✅ VALIDATION: User must be authenticated
+    if (!ctx.session?.user) {
+      throw new TRPCError({ 
+        code: "UNAUTHORIZED",
+        message: "Authentication required"
+      });
+    }
+
+    // ✅ VALIDATION: User must have at least one active store
+    const activeStores = ctx.session.user.stores?.filter(
+      s => s.status === "ACTIVE" && s.role !== "PENDING"
+    ) ?? [];
+
+    if (activeStores.length === 0) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "User not associated with a store. Please create or join a store first.",
+      });
+    }
+
+    return next({
+      ctx: {
+        session: { ...ctx.session, user: ctx.session.user },
+        // ✅ ADD: Default storeId for easy access in procedures
+        defaultStoreId: activeStores[0]?.id,
+      },
+    });
+  });

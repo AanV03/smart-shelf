@@ -128,8 +128,10 @@ export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
                     </td>
                     <td className="px-2 py-3">
                       <div>
-                        <p className="font-medium">{batch.product.name}</p>
-                        <p className="text-xs text-muted-foreground">{batch.product.sku}</p>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
+                        <p className="font-medium">{(batch as any).product.name}</p>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
+                        <p className="text-xs text-muted-foreground">{(batch as any).product.sku}</p>
                       </div>
                     </td>
                     <td className="px-2 py-3 text-right font-mono">

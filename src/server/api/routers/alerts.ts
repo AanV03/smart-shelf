@@ -16,7 +16,9 @@ export const alertsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -24,7 +26,7 @@ export const alertsRouter = createTRPCRouter({
       }
 
       const where = {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         ...(input.isRead !== undefined && { isRead: input.isRead }),
         ...(input.severity && { severity: input.severity }),
       };
@@ -45,7 +47,9 @@ export const alertsRouter = createTRPCRouter({
    * Get count of unread alerts
    */
   getUnreadAlertsCount: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session.user.storeId) {
+    const storeId = ctx.session.user.stores?.[0]?.id;
+
+    if (!storeId) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "User not associated with a store",
@@ -54,7 +58,7 @@ export const alertsRouter = createTRPCRouter({
 
     const count = await ctx.db.alert.count({
       where: {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         isRead: false,
       },
     });
@@ -66,7 +70,9 @@ export const alertsRouter = createTRPCRouter({
    * Get count of critical alerts
    */
   getCriticalAlertsCount: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session.user.storeId) {
+    const storeId = ctx.session.user.stores?.[0]?.id;
+
+    if (!storeId) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "User not associated with a store",
@@ -75,7 +81,7 @@ export const alertsRouter = createTRPCRouter({
 
     const count = await ctx.db.alert.count({
       where: {
-        storeId: ctx.session.user.storeId,
+        storeId: storeId,
         severity: "CRITICAL",
         isRead: false,
       },
@@ -90,7 +96,9 @@ export const alertsRouter = createTRPCRouter({
   acknowledgeAlert: protectedProcedure
     .input(z.object({ alertId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -100,7 +108,7 @@ export const alertsRouter = createTRPCRouter({
       const alert = await ctx.db.alert.findFirst({
         where: {
           id: input.alertId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
 
@@ -123,7 +131,9 @@ export const alertsRouter = createTRPCRouter({
   dismissAlert: protectedProcedure
     .input(z.object({ alertId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -133,7 +143,7 @@ export const alertsRouter = createTRPCRouter({
       const alert = await ctx.db.alert.findFirst({
         where: {
           id: input.alertId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
 
@@ -165,7 +175,9 @@ export const alertsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session.user.storeId) {
+      const storeId = ctx.session.user.stores?.[0]?.id;
+
+      if (!storeId) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "User not associated with a store",
@@ -179,7 +191,7 @@ export const alertsRouter = createTRPCRouter({
           message: input.message,
           batchId: input.batchId,
           productId: input.productId,
-          storeId: ctx.session.user.storeId,
+          storeId: storeId,
         },
       });
     }),

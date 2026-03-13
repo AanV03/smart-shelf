@@ -74,15 +74,23 @@ export async function GET(request: NextRequest) {
       const storeContext = { ...cronContext, storeId: store.id }
 
       // Get store managers for email notifications
-      const managers = await db.user.findMany({
+      const storeMembers = await db.storeMember.findMany({
         where: {
           storeId: store.id,
           role: "MANAGER",
+          status: "ACTIVE",
+        },
+        include: {
+          user: {
+            select: {
+              email: true,
+            },
+          },
         },
       })
 
-      const managerEmails = managers
-        .map((m) => m.email)
+      const managerEmails = storeMembers
+        .map((m) => m.user.email)
         .filter((email): email is string => !!email)
 
       logger.debug(`Found ${managerEmails.length} managers for ${store.name}`, storeContext)
@@ -107,7 +115,7 @@ export async function GET(request: NextRequest) {
               lte: endDate,
             },
           },
-          include: { product: true },
+          include: { Product: true },
         })
 
         if (batchesInWindow.length > 0) {

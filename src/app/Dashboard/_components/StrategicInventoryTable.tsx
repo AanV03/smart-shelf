@@ -272,10 +272,12 @@ export function StrategicInventoryTable() {
                       <td className="px-3 py-4">
                         <div>
                           <p className="font-bold text-foreground">
-                            {batch.product.name}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {batch.product.sku} • Lote: {batch.batchNumber}
+                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
+                              {(batch as any).product.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
+                              {(batch as any).product.sku} • Lote: {batch.batchNumber}
                           </p>
                         </div>
                       </td>

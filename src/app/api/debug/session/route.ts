@@ -9,18 +9,32 @@ export async function GET() {
       exists: !!session,
       userId: session?.user?.id,
       email: session?.user?.email,
-      storeId: session?.user?.storeId,
-      role: session?.user?.role,
+      stores: session?.user?.stores,
     });
 
     if (session?.user?.id) {
       // Verificar en database
       const user = await db.user.findUnique({
         where: { id: session.user.id },
-        select: { id: true, email: true, storeId: true, role: true },
+        select: { id: true, email: true, status: true },
       });
 
       console.log("[DEBUG_SESSION] User in database:", user);
+
+      // Verificar store members en database
+      const storeMembers = await db.storeMember.findMany({
+        where: { userId: session.user.id },
+        include: {
+          store: {
+            select: { id: true, name: true },
+          },
+        },
+      });
+
+      console.log("[DEBUG_SESSION] Store memberships in database:", {
+        count: storeMembers.length,
+        memberships: storeMembers,
+      });
 
       // Verificar sesiones en database
       const dbSessions = await db.session.findMany({
@@ -37,6 +51,7 @@ export async function GET() {
         status: "authenticated",
         session,
         user,
+        storeMembers,
         dbSessions: dbSessions.length,
       });
     }

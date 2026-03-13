@@ -121,14 +121,6 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.PostScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdById: 'createdById'
-};
-
 exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -145,51 +137,15 @@ exports.Prisma.AccountScalarFieldEnum = {
   refresh_token_expires_in: 'refresh_token_expires_in'
 };
 
-exports.Prisma.SessionScalarFieldEnum = {
+exports.Prisma.AlertScalarFieldEnum = {
   id: 'id',
-  sessionToken: 'sessionToken',
-  userId: 'userId',
-  expires: 'expires'
-};
-
-exports.Prisma.UserScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  emailVerified: 'emailVerified',
-  image: 'image',
-  password: 'password',
-  role: 'role',
-  storeId: 'storeId'
-};
-
-exports.Prisma.VerificationTokenScalarFieldEnum = {
-  identifier: 'identifier',
-  token: 'token',
-  expires: 'expires'
-};
-
-exports.Prisma.StoreScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  location: 'location',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.CategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ProductScalarFieldEnum = {
-  id: 'id',
-  sku: 'sku',
-  name: 'name',
-  categoryId: 'categoryId',
+  type: 'type',
+  severity: 'severity',
+  message: 'message',
+  batchId: 'batchId',
+  productId: 'productId',
   storeId: 'storeId',
+  isRead: 'isRead',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -210,17 +166,71 @@ exports.Prisma.BatchScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.AlertScalarFieldEnum = {
+exports.Prisma.CategoryScalarFieldEnum = {
   id: 'id',
-  type: 'type',
-  severity: 'severity',
-  message: 'message',
-  batchId: 'batchId',
-  productId: 'productId',
-  storeId: 'storeId',
-  isRead: 'isRead',
+  name: 'name',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PostScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  createdById: 'createdById'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  sku: 'sku',
+  name: 'name',
+  categoryId: 'categoryId',
+  storeId: 'storeId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  sessionToken: 'sessionToken',
+  userId: 'userId',
+  expires: 'expires'
+};
+
+exports.Prisma.StoreScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  location: 'location',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  image: 'image',
+  password: 'password',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
+};
+
+exports.Prisma.StoreMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  storeId: 'storeId',
+  role: 'role',
+  status: 'status',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -237,19 +247,31 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.StoreRole = exports.$Enums.StoreRole = {
+  ADMIN: 'ADMIN',
+  MANAGER: 'MANAGER',
+  EMPLOYEE: 'EMPLOYEE',
+  PENDING: 'PENDING'
+};
 
+exports.StoreMemberStatus = exports.$Enums.StoreMemberStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  INVITED: 'INVITED'
+};
 
 exports.Prisma.ModelName = {
-  Post: 'Post',
   Account: 'Account',
+  Alert: 'Alert',
+  Batch: 'Batch',
+  Category: 'Category',
+  Post: 'Post',
+  Product: 'Product',
   Session: 'Session',
+  Store: 'Store',
   User: 'User',
   VerificationToken: 'VerificationToken',
-  Store: 'Store',
-  Category: 'Category',
-  Product: 'Product',
-  Batch: 'Batch',
-  Alert: 'Alert'
+  StoreMember: 'StoreMember'
 };
 
 /**

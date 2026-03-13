@@ -12,7 +12,7 @@ export const metadata = {
 export default async function BatchEntryPage() {
   const session = await getServerAuthSession()
 
-  if (session?.user.role !== "EMPLOYEE") {
+  if (!session) {
     notFound()
   }
 

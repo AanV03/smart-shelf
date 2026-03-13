@@ -11,7 +11,7 @@ export const metadata = {
 export default async function AnalyticsPage() {
   const session = await getServerAuthSession()
 
-  if (session?.user.role !== "MANAGER") {
+  if (!session) {
     notFound()
   }
 

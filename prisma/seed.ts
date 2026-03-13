@@ -1,4 +1,4 @@
-import { PrismaClient } from "../generated/prisma";
+import { PrismaClient } from "../generated/prisma/index.js";
 import { hash } from "bcryptjs";
 
 const db = new PrismaClient();
@@ -205,8 +205,7 @@ async function main() {
         email: "gerente@tienda1.com",
         name: "Carlos García",
         password: hashedPassword,
-        role: "MANAGER",
-        storeId: store1.id,
+        status: "ACTIVE",
       },
     });
 
@@ -218,8 +217,7 @@ async function main() {
         email: "empleado@tienda1.com",
         name: "María López",
         password: hashedPassword,
-        role: "EMPLOYEE",
-        storeId: store1.id,
+        status: "ACTIVE",
       },
     });
 
@@ -231,12 +229,72 @@ async function main() {
         email: "gerente@tienda2.com",
         name: "Juan Rodríguez",
         password: hashedPassword,
-        role: "MANAGER",
-        storeId: store2.id,
+        status: "ACTIVE",
       },
     });
 
     console.log(`✅ Created 3 users`);
+
+    // ============================================
+    // 4b. Crear StoreMember (Multi-Tenant Relationships)
+    // ============================================
+    console.log("🔗 Creating store members...");
+
+    // user1 as MANAGER of store1
+    await db.storeMember.upsert({
+      where: {
+        userId_storeId: {
+          userId: user1.id,
+          storeId: store1.id,
+        },
+      },
+      update: {},
+      create: {
+        id: "member-001",
+        userId: user1.id,
+        storeId: store1.id,
+        role: "MANAGER",
+        status: "ACTIVE",
+      },
+    });
+
+    // user2 as EMPLOYEE of store1
+    await db.storeMember.upsert({
+      where: {
+        userId_storeId: {
+          userId: user2.id,
+          storeId: store1.id,
+        },
+      },
+      update: {},
+      create: {
+        id: "member-002",
+        userId: user2.id,
+        storeId: store1.id,
+        role: "EMPLOYEE",
+        status: "ACTIVE",
+      },
+    });
+
+    // user3 as MANAGER of store2
+    await db.storeMember.upsert({
+      where: {
+        userId_storeId: {
+          userId: user3.id,
+          storeId: store2.id,
+        },
+      },
+      update: {},
+      create: {
+        id: "member-003",
+        userId: user3.id,
+        storeId: store2.id,
+        role: "MANAGER",
+        status: "ACTIVE",
+      },
+    });
+
+    console.log(`✅ Created 3 store members`);
 
     // ============================================
     // 5. Crear Batches
