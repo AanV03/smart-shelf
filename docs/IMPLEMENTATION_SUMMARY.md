@@ -24,8 +24,83 @@ Fijar el error "User not associated with a store" que ocurría cuando usuarios s
   - Garantiza que la sesión siempre tenga `storeId` válido
 
 ```typescript
-// Flujo de autenticación
-signIn → create Store si no existe → update User → session → return con storeId
+// Flujo de autenticación con JWT
+signIn → create Store si no existe → update User → jwt token creado → session → return con storeId
+```
+
+**Los 3 Callbacks Detallados:**
+
+**1. JWT Callback** - Crea el token
+```typescript
+jwt: async ({ token, user }) => {
+  if (user) {
+    token.id = user.id;
+    token.role = user.role || "EMPLOYEE";
+    token.storeId = user.storeId;
+    console.log("[AUTH_JWT] Token created:", token.id);
+  }
+  return token;
+}
+```
+Este callback se ejecuta SOLO cuando el usuario hace login por primera vez. Crea el JWT con los datos del usuario.
+
+**2. SignIn Callback** - Valida y prepara
+```typescript
+signIn: async ({ user, account }) => {
+  console.log("[AUTH_SIGNIN]", { 
+    userId: user.id,
+    email: user.email,
+    provider: account?.provider,
+    hasStoreId: !!(user as any).storeId
+  });
+  
+  if (!(user as any).storeId) {
+    // Crear Store para usuarios nuevos OAuth
+    const store = await db.store.create({...});
+    await db.user.update({...});
+  }
+  return true;
+}
+```
+Este callback valida el login. Si es un usuario OAuth sin tienda, crea una automáticamente.
+
+**3. Session Callback** - Sincroniza datos
+```typescript
+session: async ({ session, token }) => {
+  console.log("[AUTH_SESSION] Syncing:", { id: token.id, storeId: token.storeId });
+  
+  session.user.id = token.id as string;
+  session.user.role = (token.role as string) || "EMPLOYEE";
+  session.user.storeId = (token.storeId as string) || null;
+  
+  // Fallback: si falta storeId, crear Store
+  if (!session.user.storeId && token.id) {
+    const store = await db.store.create({...});
+    session.user.storeId = store.id;
+  }
+  
+  return session;
+}
+```
+Este callback se ejecuta en CADA REQUEST. Copia los datos del JWT token a la sesión.
+
+**Diagrama del Flujo:**
+```
+[Usuario Login]
+    ↓
+[Provider autentica: Credentials / Google / Discord]
+    ↓
+[jwt({ token, user }) - CREAR TOKEN JWT]
+    ↓
+[signIn({ user, account }) - VALIDAR Y CREAR TIENDA SI FALTA]
+    ↓
+[Token JWT guardado en cookie httpOnly]
+    ↓
+[Usuario redirigido a /dashboard]
+    ↓
+[session({ session, token }) - SINCRONIZAR DATOS DEL TOKEN]
+    ↓
+[Sesión disponible con id, role, storeId]
 ```
 
 ### 2. **Seed Database**

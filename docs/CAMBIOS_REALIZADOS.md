@@ -18,8 +18,15 @@ Agregué **2 callbacks inteligentes** en la autenticación (`src/server/auth/con
 
 Ahora el flujo es:
 ```
-Inicio de Sesión → Verificar storeId → Si no existe, crear tienda → Asignar al usuario
+Inicio de Sesión → Verificar storeId → Si no existe, crear tienda → Crear JWT Token → Asignar al usuario
 ```
+
+**Tokens JWT:**
+- Se crean automáticamente en el callback `jwt`
+- Se almacenan en cookies httpOnly seguras
+- Contienen: `id`, `role`, `storeId`, firma digital
+- Se auto-renuevan cada hora
+- Duran 30 días de máximo
 
 ### 2️⃣ **Creé un Seed con Datos de Prueba** ✅
 Archivo: `prisma/seed.ts`
@@ -98,6 +105,90 @@ npm run dev
 SELECT email, name, "storeId" FROM "User" ORDER BY "createdAt" DESC;
 
 -- Ver tiendas
+SELECT id, name, location FROM "Store" ORDER BY "createdAt" DESC;
+```
+
+---
+
+## 🔐 Los 3 Callbacks de Autenticación (JWT Strategy)
+
+### 1️⃣ Callback `jwt`
+**Crea el token JWT cuando el usuario hace login**
+
+```typescript
+jwt: async ({ token, user }) => {
+  if (user) {
+    token.id = user.id;
+    token.role = user.role || "EMPLOYEE";
+    token.storeId = user.storeId;
+  }
+  return token;
+}
+```
+
+### 2️⃣ Callback `signIn`
+**Valida el login y crea automáticamente la tienda si falta**
+
+```typescript
+signIn: async ({ user }) => {
+  if (!user.storeId) {
+    // Crear Store automáticamente para usuarios OAuth
+    const store = await db.store.create({...});
+    user.storeId = store.id;
+  }
+  return true;  // Permitir login
+}
+```
+
+### 3️⃣ Callback `session`
+**Se ejecuta en cada request para sincronizar datos del token JWT**
+
+```typescript
+session: async ({ session, token }) => {
+  // Copiar datos del token JWT a la sesión
+  session.user.id = token.id;
+  session.user.role = token.role;
+  session.user.storeId = token.storeId;
+  return session;
+}
+```
+
+**Ventajas de JWT:**
+- ✅ Sin queries a BD en cada request (ultra rápido)
+- ✅ Escalable y stateless
+- ✅ Perfecto para serverless/edge computing
+- ✅ Auto-renovación automática
+
+---
+
+## 🧪 Cómo Probar los Tokens JWT
+
+### Opción 1: Debug Endpoint
+```bash
+# 1. Iniciar sesión en http://localhost:3000/auth/login
+# 2. Ir a http://localhost:3000/api/debug/session
+# 3. Ver los datos del token JWT y la sesión actual
+```
+
+### Opción 2: DevTools del Navegador
+```javascript
+// Abre la consola (F12) y pega esto:
+const cookies = document.cookie.split('; ');
+const token = cookies
+  .find(c => c.startsWith('next-auth.session-token='))
+  .split('=')
+  [1];
+
+// Pega el token en https://jwt.io/ para decodificarlo
+```
+
+### Opción 3: Ver Logs del Servidor
+Busca estos en la consola:
+```
+[AUTH_JWT]     → Token creado
+[AUTH_SIGNIN]  → Validación y creación de tienda
+[AUTH_SESSION] → Sincronización de datos
+```
 SELECT id, name FROM "Store";
 ```
 

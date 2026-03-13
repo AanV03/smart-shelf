@@ -68,9 +68,35 @@ ORDER BY "createdAt" DESC;
 Los siguiente logs pueden ayudarte a diagnosticar problemas:
 
 ```
-[AUTH_SIGNIN_ERROR] - Error al crear tienda en signIn
+[AUTH_JWT]           - Token JWT creado/actualizado
+[AUTH_SIGNIN]        - Validación de login y creación de tienda
+[AUTH_SESSION]       - Actualización de sesión
+[AUTH_SIGNIN_ERROR]  - Error al crear tienda en signIn
 [AUTH_SESSION_ERROR] - Error al asegurar tienda en session callback
 ```
+
+### Debug Endpoint
+
+Para ver el estado actual de la sesión y los datos del token JWT:
+
+```bash
+# URL: http://localhost:3000/api/debug/session
+# Muestra:
+# - Session actual (del JWT token)
+# - Usuario en BD
+# - Número de sesiones en BD (siempre vacío con JWT)
+```
+
+### JWT Strategy
+
+Esta autenticación usa **NextAuth.js con JWT strategy**:
+
+- ✅ No hay queries a BD por cada request (mejor performance)
+- ✅ Token firmado y almacenado en cookie httpOnly
+- ✅ Datos de usuario (id, role, storeId) viajan en el token
+- ✅ Auto-renovación cada hora
+
+**Duración de sesión**: 30 días
 
 ## Flujo Completo de Autenticación
 
