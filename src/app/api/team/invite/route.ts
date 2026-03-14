@@ -100,13 +100,19 @@ export async function POST(request: NextRequest) {
     });
 
     // Enviar email de invitación
-    await sendInvitationEmail({
-      to: email,
-      recipientName: user.name ?? "Usuario",
-      storeName: store?.name || "Smart-Shelf",
-      role: role === "MANAGER" ? "Manager" : "Empleado",
-      acceptUrl,
-    });
+    try {
+      await sendInvitationEmail({
+        to: email,
+        recipientName: user.name ?? "Usuario",
+        storeName: store?.name || "Smart-Shelf",
+        role: role === "MANAGER" ? "Manager" : "Empleado",
+        acceptUrl,
+      });
+    } catch (emailError) {
+      console.error("[TEAM_INVITE_EMAIL_ERROR]", emailError);
+      const errorMsg = emailError instanceof Error ? emailError.message : "Error desconocido al enviar email";
+      return errorResponse(`Error enviando email de invitación: ${errorMsg}`, 500);
+    }
 
     console.log("[TEAM_INVITE] Invitation created successfully", {
       email,
@@ -134,6 +140,7 @@ export async function POST(request: NextRequest) {
       return errorResponse("Ya existe una invitación pendiente para este email", 409);
     }
 
-    return errorResponse("Error al enviar invitación", 500);
+    const errorMessage = error instanceof Error ? error.message : "Error desconocido";
+    return errorResponse(`Error al crear invitación: ${errorMessage}`, 500);
   }
 }

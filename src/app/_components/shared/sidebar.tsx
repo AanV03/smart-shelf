@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Users,
   Settings,
+  CreditCard,
 } from "lucide-react"
 import {
   Sidebar,
@@ -116,6 +117,12 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
           icon: Settings,
         },
       ],
+    },
+    {
+      id: "plans",
+      href: "/dashboard/plans",
+      label: "Planes",
+      icon: CreditCard,
     },
   ]
 

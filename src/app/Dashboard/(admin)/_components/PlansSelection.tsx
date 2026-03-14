@@ -12,7 +12,8 @@ interface Plan {
   id: string;
   name: string;
   description: string;
-  priceId: string;
+  monthlyPriceId: string;
+  yearlyPriceId: string;
   monthlyPrice: number;
   yearlyPrice: number;
   features: string[];
@@ -25,7 +26,8 @@ const PLANS: Plan[] = [
     id: "starter",
     name: "Starter",
     description: "Para pequeños negocios",
-    priceId: "price_starter",
+    monthlyPriceId: "price_1TAiPPQrR30p4EpS54xmUqJF",
+    yearlyPriceId: "price_1TAiSPQrR30p4EpSgJx7Iom3",
     monthlyPrice: 29,
     yearlyPrice: 290,
     features: [
@@ -41,7 +43,8 @@ const PLANS: Plan[] = [
     id: "pro",
     name: "Professional",
     description: "Para tiendas en crecimiento",
-    priceId: "price_pro",
+    monthlyPriceId: "price_1TAiQ2QrR30p4EpSQc6L8MNa",
+    yearlyPriceId: "price_1TAiStQrR30p4EpSZICeWEOy",
     monthlyPrice: 79,
     yearlyPrice: 790,
     features: [
@@ -60,7 +63,8 @@ const PLANS: Plan[] = [
     id: "enterprise",
     name: "Enterprise",
     description: "Para cadenas grandes",
-    priceId: "price_enterprise",
+    monthlyPriceId: "price_1TAiRAQrR30p4EpSbYkYYlk2",
+    yearlyPriceId: "price_1TAiTPQrR30p4EpS0MMdg2Bp",
     monthlyPrice: 299,
     yearlyPrice: 2990,
     features: [
@@ -100,12 +104,15 @@ export function PlansSelection() {
     setSelectedPlan(plan.id);
 
     try {
+      // Select the correct priceId based on billing period
+      const priceId = billingPeriod === "monthly" ? plan.monthlyPriceId : plan.yearlyPriceId;
+
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           storeId: activeStore.id,
-          priceId: plan.priceId,
+          priceId,
           planName: plan.name,
           billingPeriod,
         }),

@@ -3,40 +3,61 @@ import Stripe from "stripe";
 import { env } from "@/env";
 import { requireAuth, errorResponse, successResponse } from "../users/utils";
 
-// Inicializar cliente de Stripe
-const stripe = new Stripe(env.STRIPE_SECRET_KEY ?? "");
-
 /**
  * POST /api/checkout
  * Crea una sesión de Stripe Checkout para suscripciones B2B
- * Solo disponible para usuarios con rol MANAGER
+ * Solo disponible para usuarios con rol ADMIN
  */
 export async function POST(request: NextRequest) {
+  console.log("[CHECKOUT] Request received");
+  
   try {
+    console.log("[CHECKOUT] Step 1: Checking Stripe config");
+    
+    // ✅ Validar que Stripe esté configurado
+    if (!env.STRIPE_SECRET_KEY) {
+      console.error("[CHECKOUT] STRIPE_SECRET_KEY not configured");
+      return errorResponse("Stripe no está configurado en el servidor", 500);
+    }
+
+    console.log("[CHECKOUT] Step 2: Initializing Stripe");
+    
+    // Inicializar cliente de Stripe
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+
+    console.log("[CHECKOUT] Step 3: Validating auth");
+    
     // ✅ Validar autenticación
     const auth = await requireAuth();
     if (!auth.isValid) {
+      console.warn("[CHECKOUT] Auth invalid");
       return auth.error;
     }
 
+    console.log("[CHECKOUT] Step 4: Getting session user");
+    
     const { user: sessionUser } = auth.session!;
 
-    // ✅ Validar que el usuario tenga rol MANAGER en al menos una store
-    const hasManagerRole = sessionUser.stores?.some(
-      (store) => store.role === "MANAGER" && store.status === "ACTIVE"
+    console.log("[CHECKOUT] Step 5: Checking ADMIN role");
+    
+    // ✅ Validar que el usuario tenga rol ADMIN en al menos una store
+    const hasAdminRole = sessionUser.stores?.some(
+      (store) => store.role === "ADMIN" && store.status === "ACTIVE"
     );
 
-    if (!hasManagerRole) {
-      console.warn("[CHECKOUT] User does not have MANAGER role", {
+    if (!hasAdminRole) {
+      console.warn("[CHECKOUT] User does not have ADMIN role", {
         userId: sessionUser.id,
         stores: sessionUser.stores,
       });
       return errorResponse(
-        "Solo gerentes pueden acceder al checkout",
+        "Solo administradores pueden acceder al checkout",
         403
       );
     }
 
+    console.log("[CHECKOUT] Step 6: Parsing request body");
+    
     // ✅ Parsear y validar el body
     const body = await request.json() as {
       storeId?: string;
@@ -45,20 +66,30 @@ export async function POST(request: NextRequest) {
       cancelUrl?: string;
     };
 
+    console.log("[CHECKOUT] Body received:", { storeId: body.storeId, priceId: body.priceId });
+
     const {
       storeId,
-      priceId = "price_1QzZ1sDFoZSFZZZDj5Fmc4Q3", // Default price ID - reemplazar con el tuyo
-      successUrl = `${process.env.NEXTAUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl = `${process.env.NEXTAUTH_URL}/dashboard`,
+      priceId,
+      successUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/dashboard`,
     } = body;
 
     if (!storeId) {
+      console.warn("[CHECKOUT] storeId missing");
       return errorResponse("storeId es requerido", 400);
     }
 
-    // ✅ Validar que el usuario tenga acceso a esta store
+    if (!priceId) {
+      console.warn("[CHECKOUT] priceId missing");
+      return errorResponse("priceId es requerido", 400);
+    }
+
+    console.log("[CHECKOUT] Step 7: Checking store access");
+    
+    // ✅ Validar que el usuario tenga acceso a esta store como ADMIN
     const hasAccessToStore = sessionUser.stores?.some(
-      (store) => store.id === storeId && store.role === "MANAGER"
+      (store) => store.id === storeId && store.role === "ADMIN"
     );
 
     if (!hasAccessToStore) {
@@ -70,6 +101,14 @@ export async function POST(request: NextRequest) {
     }
 
     // ✅ Crear sesión de checkout en Stripe
+    console.log("[CHECKOUT] Step 8: Creating Stripe session with params:", {
+      priceId,
+      storeId,
+      email: sessionUser.email,
+      successUrl,
+      cancelUrl,
+    });
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -90,7 +129,7 @@ export async function POST(request: NextRequest) {
       locale: "es",
     });
 
-    console.log("[CHECKOUT] Session created successfully", {
+    console.log("[CHECKOUT] Step 9: Session created successfully", {
       userId: sessionUser.id,
       storeId: storeId,
       sessionId: session.id,
@@ -98,24 +137,34 @@ export async function POST(request: NextRequest) {
 
     return successResponse(
       {
-        sessionId: session.id,
-        url: session.url,
+        data: {
+          sessionId: session.id,
+          url: session.url,
+        },
       },
       200
     );
   } catch (error) {
-    console.error("[CHECKOUT_ERROR]", error);
-
+    console.error("[CHECKOUT_ERROR] Exception caught");
+    console.error("[CHECKOUT_ERROR] Error type:", error instanceof Error ? "Error" : typeof error);
+    
     if (error instanceof Error) {
+      console.error("[CHECKOUT_ERROR_MESSAGE]", error.message);
+      console.error("[CHECKOUT_ERROR] Partial stack:", error.message.substring(0, 500));
+      
       // Manejar errores específicos de Stripe
-      if (error.message.includes("stripe")) {
+      if (error.message.includes("stripe") || error.message.includes("price")) {
+        console.log("[CHECKOUT] Returning Stripe-specific error");
         return errorResponse(
-          "Error al procesar el pago. Por favor intenta de nuevo.",
+          `Error de Stripe: ${error.message}`,
           402
         );
       }
+    } else {
+      console.error("[CHECKOUT_ERROR] Non-Error exception:", typeof error, String(error).substring(0, 200));
     }
 
+    console.log("[CHECKOUT] Returning generic 500 error");
     return errorResponse("Error interno del servidor", 500);
   }
 }
