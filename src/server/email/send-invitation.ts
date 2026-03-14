@@ -1,6 +1,6 @@
 /**
  * Email Service: Invitations
- * 
+ *
  * Utiliza Resend para enviar emails de invitación
  */
 
@@ -38,7 +38,8 @@ export async function sendInvitationEmail({
   });
 
   if (!env.RESEND_API_KEY) {
-    const errorMsg = "[EMAIL_SERVICE] RESEND_API_KEY not configured - email sending disabled";
+    const errorMsg =
+      "[EMAIL_SERVICE] RESEND_API_KEY not configured - email sending disabled";
     console.error(errorMsg);
     if (process.env.NODE_ENV === "development") {
       throw new Error(errorMsg);
@@ -74,7 +75,7 @@ export async function sendInvitationEmail({
       body: JSON.stringify(emailPayload),
     });
 
-    const responseData = await response.json() as Record<string, unknown>;
+    const responseData = (await response.json()) as Record<string, unknown>;
 
     if (!response.ok) {
       const errorMsg = `Resend API error (${response.status}): ${JSON.stringify(responseData)}`;
@@ -83,7 +84,10 @@ export async function sendInvitationEmail({
     }
 
     const { id } = responseData as { id: string };
-    console.log("[EMAIL_SERVICE] Invitation email sent successfully", { id, to });
+    console.log("[EMAIL_SERVICE] Invitation email sent successfully", {
+      id,
+      to,
+    });
   } catch (error) {
     console.error("[EMAIL_SERVICE] Error sending invitation email", error);
     if (process.env.NODE_ENV === "development") {
@@ -198,14 +202,15 @@ function generateInvitationHTML({
             <div class="store-badge">${storeName}</div>
             <p>Estamos emocionados de tenerte en nuestro equipo. Como <strong>${role}</strong>, podrás:</p>
             <ul>
-              ${role === "Manager" 
-                ? `
+              ${
+                role === "Manager"
+                  ? `
                   <li>Gestionar el catálogo de productos</li>
                   <li>Visualizar reportes financieros</li>
                   <li>Invitar y gestionar empleados</li>
                   <li>Monitorear el inventario en tiempo real</li>
                 `
-                : `
+                  : `
                   <li>Registrar entrada/salida de lotes</li>
                   <li>Consultar el inventario actual</li>
                   <li>Recibir alertas importantes</li>

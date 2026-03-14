@@ -18,7 +18,7 @@ export const storesRouter = createTRPCRouter({
       z.object({
         name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
         location: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user?.id;
@@ -44,7 +44,9 @@ export const storesRouter = createTRPCRouter({
         });
 
         if (!user) {
-          console.error("[STORES_CREATE] User not found in database", { userId });
+          console.error("[STORES_CREATE] User not found in database", {
+            userId,
+          });
           throw new TRPCError({
             code: "UNAUTHORIZED",
             message: "User not found in database. Please log in again.",
@@ -105,9 +107,7 @@ export const storesRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message:
-            error instanceof Error
-              ? error.message
-              : "Error al crear la tienda",
+            error instanceof Error ? error.message : "Error al crear la tienda",
           cause: error,
         });
       }
@@ -122,7 +122,7 @@ export const storesRouter = createTRPCRouter({
     .input(
       z.object({
         invitationCode: z.string().min(6, "Código inválido"),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session?.user?.id) {

@@ -1,12 +1,12 @@
 /**
  * Event Bus - Sistema de eventos asíncrono para flujos de negocio
- * 
+ *
  * Uso para:
  * - Invitaciones de managers/empleados (async emails)
  * - Cálculos de costos en background
  * - Detección de anomalías
  * - Alertas al manager
- * 
+ *
  * Arquitectura:
  * 1. Event Producer (Next.js API) - Publica evento
  * 2. Event Store (Base de datos) - Persiste eventos para reliability
@@ -15,7 +15,7 @@
 
 import { db } from "@/server/db";
 
-export type EventType = 
+export type EventType =
   | "manager.invited"
   | "employee.invited"
   | "batch.received"
@@ -36,7 +36,7 @@ export interface Event {
 
 /**
  * Publish an event for asynchronous processing
- * 
+ *
  * Example:
  * ```typescript
  * await eventBus.publish('manager.invited', {
@@ -52,18 +52,18 @@ export interface Event {
 export async function publishEvent(
   type: EventType,
   storeId: string,
-  payload: Record<string, unknown>
+  payload: Record<string, unknown>,
 ): Promise<Event> {
   console.log(`[EVENT_BUS] Publishing event: ${type}`, { storeId, payload });
 
   // TODO: Implement event persistence when Event model is added to Prisma schema
   // For now, we'll use an in-memory queue (NOT RECOMMENDED for production)
-  
+
   // In production, this should:
   // 1. Save to database with status='pending'
   // 2. Publish to message queue (Bull, RabbitMQ, etc)
   // 3. Return the saved event
-  
+
   const event: Event = {
     id: `evt_${Date.now()}`,
     type,
@@ -83,20 +83,20 @@ export async function publishEvent(
 
 /**
  * Subscribe to events for background processing
- * 
+ *
  * Example:
  * ```typescript
  * async function onManagerInvited(event: Event) {
  *   const payload = event.payload as { email: string; managerId: string };
  *   await sendEmail(payload.email, 'You are invited to manage...');
  * }
- * 
+ *
  * subscribe('manager.invited', onManagerInvited);
  * ```
  */
 export function subscribe(
   type: EventType,
-  handler: (event: Event) => Promise<void>
+  handler: (event: Event) => Promise<void>,
 ): void {
   console.log(`[EVENT_BUS] Subscribing to event: ${type}`);
 
@@ -107,7 +107,7 @@ export function subscribe(
 
 /**
  * Get pending events (used by background worker)
- * 
+ *
  * Example:
  * ```typescript
  * const pendingEvents = await eventBus.getPendingEvents();
@@ -116,21 +116,19 @@ export function subscribe(
  * }
  * ```
  */
-export async function getPendingEvents(
-  limit = 100
-): Promise<Event[]> {
+export async function getPendingEvents(limit = 100): Promise<Event[]> {
   // TODO: Query from database when Event model is added
   // For now, return from in-memory queue
-  
+
   globalThis.eventQueue = globalThis.eventQueue || [];
-  return globalThis.eventQueue.filter(
-    (e: Event) => e.status === "pending" && e.retries < 3
-  ).slice(0, limit);
+  return globalThis.eventQueue
+    .filter((e: Event) => e.status === "pending" && e.retries < 3)
+    .slice(0, limit);
 }
 
 /**
  * Process a single event
- * 
+ *
  * Example:
  * ```typescript
  * const event = await eventBus.getPendingEvents(1);
@@ -138,7 +136,9 @@ export async function getPendingEvents(
  * ```
  */
 export async function processEvent(event: Event): Promise<void> {
-  console.log(`[EVENT_BUS] Processing event: ${event.type}`, { eventId: event.id });
+  console.log(`[EVENT_BUS] Processing event: ${event.type}`, {
+    eventId: event.id,
+  });
 
   const listeners = globalThis.eventListeners || {};
   const handler = listeners[event.type];

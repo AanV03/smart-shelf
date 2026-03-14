@@ -10,9 +10,7 @@ export default async function PlansPage() {
   }
 
   // Only ADMIN can access plans
-  const isAdmin = session.user.stores?.some(
-    (s) => s.role === "ADMIN"
-  );
+  const isAdmin = session.user.stores?.some((s) => s.role === "ADMIN");
 
   if (!isAdmin) {
     redirect("/dashboard");

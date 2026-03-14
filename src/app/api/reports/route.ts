@@ -1,13 +1,17 @@
 /**
  * GET /api/reports
- * 
+ *
  * Obtiene los reportes financieros de una tienda
  * Requiere autenticación y rol MANAGER o ADMIN
  */
 
 import type { NextRequest } from "next/server";
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse } from "@/app/api/users/utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+} from "@/app/api/users/utils";
 
 export async function GET(request: NextRequest) {
   try {
@@ -33,9 +37,9 @@ export async function GET(request: NextRequest) {
 
     // ✅ Validar acceso a la tienda
     const hasAccess = sessionUser.stores?.some(
-      (store) => 
-        store.id === storeId && 
-        (store.role === "MANAGER" || store.role === "ADMIN")
+      (store) =>
+        store.id === storeId &&
+        (store.role === "MANAGER" || store.role === "ADMIN"),
     );
 
     if (!hasAccess) {
@@ -47,13 +51,13 @@ export async function GET(request: NextRequest) {
     }
 
     // ✅ Obtener reportes
-    let query: any = { storeId };
-    if (period) {
-      query.period = period;
-    }
+    const whereClause: {
+      storeId: string;
+      period?: string | undefined;
+    } = { storeId, ...(period && { period }) };
 
     const reports = await db.financialReport.findMany({
-      where: query,
+      where: whereClause,
       orderBy: { period: "desc" },
       take: limit,
     });
@@ -64,7 +68,7 @@ export async function GET(request: NextRequest) {
           reports: [],
           message: "No hay reportes disponibles aún",
         },
-        200
+        200,
       );
     }
 
@@ -88,7 +92,7 @@ export async function GET(request: NextRequest) {
           sentTo: report.sentTo,
         })),
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[REPORTS_API_ERROR]", error);

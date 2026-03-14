@@ -20,10 +20,10 @@ export function CreateStoreForm() {
   const createStoreMutation = api.stores.createStore.useMutation({
     onSuccess: async (data) => {
       console.log("[CreateStoreForm] Success:", data);
-      
+
       // ✅ Refresh session to get new stores and role
       await updateSession();
-      
+
       // Redirect to dashboard after session update
       router.push("/dashboard");
     },
@@ -51,16 +51,17 @@ export function CreateStoreForm() {
   return (
     <div className="w-full max-w-md space-y-6">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-foreground">
-          Crea tu Tienda
-        </h2>
-        <p className="text-sm text-muted-foreground">
+        <h2 className="text-foreground text-2xl font-bold">Crea tu Tienda</h2>
+        <p className="text-muted-foreground text-sm">
           Serás el administrador de esta tienda una vez creada.
         </p>
       </div>
 
       {error && (
-        <Alert variant="destructive" className="border-destructive/50 bg-destructive/5">
+        <Alert
+          variant="destructive"
+          className="border-destructive/50 bg-destructive/5"
+        >
           <AlertCircle className="h-4 w-4" aria-hidden="true" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -81,7 +82,7 @@ export function CreateStoreForm() {
             required
             aria-required="true"
             aria-describedby={error ? "store-error" : undefined}
-            className="bg-input border-border focus-visible:ring-2 focus-visible:ring-primary"
+            className="bg-input border-border focus-visible:ring-primary focus-visible:ring-2"
           />
         </div>
 
@@ -96,18 +97,21 @@ export function CreateStoreForm() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             disabled={createStoreMutation.isPending}
-            className="bg-input border-border focus-visible:ring-2 focus-visible:ring-primary"
+            className="bg-input border-border focus-visible:ring-primary focus-visible:ring-2"
           />
         </div>
 
         <Button
           type="submit"
           disabled={createStoreMutation.isPending}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground w-full"
         >
           {createStoreMutation.isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+              <Loader2
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
               Creando...
             </>
           ) : (
@@ -119,7 +123,7 @@ export function CreateStoreForm() {
         </Button>
       </form>
 
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-muted-foreground text-center text-xs">
         Los campos marcados con * son obligatorios
       </p>
     </div>

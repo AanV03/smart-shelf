@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedureWithStore } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedureWithStore,
+} from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 export const inventoryRouter = createTRPCRouter({
@@ -28,14 +31,16 @@ export const inventoryRouter = createTRPCRouter({
         limit: z.number().default(50),
         offset: z.number().default(0),
         storeId: z.string().optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       // ✅ Multi-tenant: Get store from input or use default from middleware
       const requestedStoreId = input.storeId ?? ctx.defaultStoreId;
 
       // ✅ SECURITY: Verify user has access to requested store
-      const hasAccess = ctx.session.user.stores?.some(s => s.id === requestedStoreId);
+      const hasAccess = ctx.session.user.stores?.some(
+        (s) => s.id === requestedStoreId,
+      );
       if (!hasAccess) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -59,7 +64,11 @@ export const inventoryRouter = createTRPCRouter({
 
       const total = await ctx.db.batch.count({ where });
 
-      return { batches, total, pageInfo: { limit: input.limit, offset: input.offset } };
+      return {
+        batches,
+        total,
+        pageInfo: { limit: input.limit, offset: input.offset },
+      };
     }),
 
   /**
@@ -89,7 +98,9 @@ export const inventoryRouter = createTRPCRouter({
       const storeId = ctx.defaultStoreId;
 
       const now = new Date();
-      const futureDate = new Date(now.getTime() + input.daysThreshold * 24 * 60 * 60 * 1000);
+      const futureDate = new Date(
+        now.getTime() + input.daysThreshold * 24 * 60 * 60 * 1000,
+      );
 
       return ctx.db.batch.findMany({
         where: {
@@ -116,11 +127,11 @@ export const inventoryRouter = createTRPCRouter({
         quantity: z.number().int().positive(),
         costPerUnit: z.number().positive(),
         expiresAt: z.date(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       // ✅ Protected by protectedProcedureWithStore - garantiza que defaultStoreId existe
-      const storeId = ctx.defaultStoreId!
+      const storeId = ctx.defaultStoreId!;
 
       // Verify product exists and belongs to store
       const product = await ctx.db.product.findFirst({
@@ -207,7 +218,7 @@ export const inventoryRouter = createTRPCRouter({
       z.object({
         batchId: z.string(),
         status: z.enum(["ACTIVE", "EXPIRED", "SOLD", "SPOILED"]),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const storeId = ctx.defaultStoreId;

@@ -38,16 +38,13 @@ export async function POST(request: NextRequest) {
     ];
 
     if (file.size > MAX_FILE_SIZE) {
-      return errorResponse(
-        "El archivo no debe superar 50MB",
-        413
-      );
+      return errorResponse("El archivo no debe superar 50MB", 413);
     }
 
     if (!ALLOWED_TYPES.includes(file.type)) {
       return errorResponse(
         "Formato de archivo no permitido. Usa PDF, CSV, Excel, JPG, PNG o WebP",
-        415
+        415,
       );
     }
 
@@ -83,7 +80,7 @@ export async function POST(request: NextRequest) {
         size: file.size,
         uploadedAt: new Date().toISOString(),
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[UPLOAD_REPORT_ERROR]", error);
@@ -92,7 +89,7 @@ export async function POST(request: NextRequest) {
       if (error.message.includes("blob")) {
         return errorResponse(
           "Error al subir el archivo. Por favor intenta de nuevo.",
-          502
+          502,
         );
       }
     }
@@ -124,10 +121,13 @@ export async function DELETE(request: NextRequest) {
 
     // ✅ Validar que la URL pertenece al usuario (seguridad)
     if (!url.includes(`/reports/${sessionUser.id}/`)) {
-      console.warn("[DELETE_REPORT] User attempting to delete file not owned by them", {
-        userId: sessionUser.id,
-        attemptedUrl: url,
-      });
+      console.warn(
+        "[DELETE_REPORT] User attempting to delete file not owned by them",
+        {
+          userId: sessionUser.id,
+          attemptedUrl: url,
+        },
+      );
       return errorResponse("No tienes permiso para eliminar este archivo", 403);
     }
 
@@ -143,7 +143,7 @@ export async function DELETE(request: NextRequest) {
       {
         message: "Archivo eliminado correctamente",
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[DELETE_REPORT_ERROR]", error);

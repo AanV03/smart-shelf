@@ -1,8 +1,15 @@
 import type { NextRequest } from "next/server";
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse } from "@/app/api/users/utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+} from "@/app/api/users/utils";
 import { sendInvitationEmail } from "@/server/email/send-invitation";
-import { generateInvitationToken, generateInvitationUrl } from "@/server/team/invitation";
+import {
+  generateInvitationToken,
+  generateInvitationUrl,
+} from "@/server/team/invitation";
 
 /**
  * POST /api/team/invite
@@ -19,14 +26,14 @@ export async function POST(request: NextRequest) {
 
     // Validar que el usuario sea ADMIN
     const isAdmin = sessionUser.stores?.some(
-      (store) => store.role === "ADMIN" && store.status === "ACTIVE"
+      (store) => store.role === "ADMIN" && store.status === "ACTIVE",
     );
 
     if (!isAdmin) {
       return errorResponse("Solo administradores pueden invitar miembros", 403);
     }
 
-    const body = await request.json() as {
+    const body = (await request.json()) as {
       email: string;
       role: "MANAGER" | "EMPLOYEE";
       storeId: string;
@@ -35,15 +42,12 @@ export async function POST(request: NextRequest) {
     const { email, role, storeId } = body;
 
     if (!email || !role || !storeId) {
-      return errorResponse(
-        "Email, role y storeId son requeridos",
-        400
-      );
+      return errorResponse("Email, role y storeId son requeridos", 400);
     }
 
     // Validar que el usuario tenga acceso a esta store
     const hasAccessToStore = sessionUser.stores?.some(
-      (store) => store.id === storeId && store.role === "ADMIN"
+      (store) => store.id === storeId && store.role === "ADMIN",
     );
 
     if (!hasAccessToStore) {
@@ -72,8 +76,11 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (existingMember && existingMember.status === "ACTIVE") {
-      return errorResponse("Este usuario ya es miembro activo de la tienda", 400);
+    if (existingMember?.status === "ACTIVE") {
+      return errorResponse(
+        "Este usuario ya es miembro activo de la tienda",
+        400,
+      );
     }
 
     // Generar token de invitación
@@ -97,21 +104,27 @@ export async function POST(request: NextRequest) {
     // Obtener nombre de la tienda
     const store = await db.store.findUnique({
       where: { id: storeId },
-    });
+    }) ?? { name: "Smart-Shelf", id: storeId };
 
     // Enviar email de invitación
     try {
       await sendInvitationEmail({
         to: email,
         recipientName: user.name ?? "Usuario",
-        storeName: store?.name || "Smart-Shelf",
+        storeName: store.name ?? "Smart-Shelf",
         role: role === "MANAGER" ? "Manager" : "Empleado",
         acceptUrl,
       });
     } catch (emailError) {
       console.error("[TEAM_INVITE_EMAIL_ERROR]", emailError);
-      const errorMsg = emailError instanceof Error ? emailError.message : "Error desconocido al enviar email";
-      return errorResponse(`Error enviando email de invitación: ${errorMsg}`, 500);
+      const errorMsg =
+        emailError instanceof Error
+          ? emailError.message
+          : "Error desconocido al enviar email";
+      return errorResponse(
+        `Error enviando email de invitación: ${errorMsg}`,
+        500,
+      );
     }
 
     console.log("[TEAM_INVITE] Invitation created successfully", {
@@ -124,23 +137,28 @@ export async function POST(request: NextRequest) {
 
     return successResponse(
       {
-        message: "Invitación enviada correctamente. El usuario recibirá un email con el enlace de aceptación.",
+        message:
+          "Invitación enviada correctamente. El usuario recibirá un email con el enlace de aceptación.",
         invitationToken: {
           id: invitationToken.id,
           email: invitationToken.email,
           expiresAt: invitationToken.expiresAt,
         },
       },
-      201
+      201,
     );
   } catch (error) {
     console.error("[TEAM_INVITE_ERROR]", error);
 
     if (error instanceof Error && error.message.includes("Unique constraint")) {
-      return errorResponse("Ya existe una invitación pendiente para este email", 409);
+      return errorResponse(
+        "Ya existe una invitación pendiente para este email",
+        409,
+      );
     }
 
-    const errorMessage = error instanceof Error ? error.message : "Error desconocido";
+    const errorMessage =
+      error instanceof Error ? error.message : "Error desconocido";
     return errorResponse(`Error al crear invitación: ${errorMessage}`, 500);
   }
 }

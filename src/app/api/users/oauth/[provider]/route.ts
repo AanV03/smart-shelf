@@ -2,7 +2,12 @@ import type { NextRequest } from "next/server";
 import { z } from "zod";
 
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse, validateUserStatus } from "../../utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+  validateUserStatus,
+} from "../../utils";
 
 const disconnectOAuthSchema = z.object({
   provider: z.enum(["discord", "google"], {
@@ -13,13 +18,13 @@ const disconnectOAuthSchema = z.object({
 /**
  * DELETE /api/users/oauth/[provider]
  * Desvincula una cuenta OAuth del usuario
- * 
+ *
  * Query params:
  * - provider: "discord" | "google"
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ provider: string }> }
+  { params }: { params: Promise<{ provider: string }> },
 ) {
   try {
     const { provider: paramProvider } = await params;
@@ -55,28 +60,29 @@ export async function DELETE(
 
     // Validar status
     if (!validateUserStatus(user.status)) {
-      return errorResponse("Tu cuenta está suspendida o ha sido eliminada", 403);
+      return errorResponse(
+        "Tu cuenta está suspendida o ha sido eliminada",
+        403,
+      );
     }
 
     // Encontrar la cuenta OAuth a desconectar
     const oauthAccount = user.Account.find((acc) => acc.provider === provider);
 
     if (!oauthAccount) {
-      return errorResponse(
-        `Tu cuenta no está vinculada a ${provider}`,
-        404
-      );
+      return errorResponse(`Tu cuenta no está vinculada a ${provider}`, 404);
     }
 
     // Validar que el usuario tenga al menos una forma de login:
     // O bien una contraseña, o bien otra cuenta OAuth
     const hasPassword = !!user.password;
-    const hasOtherOAuthAccounts = user.Account.filter((acc) => acc.id !== oauthAccount.id).length > 0;
+    const hasOtherOAuthAccounts =
+      user.Account.filter((acc) => acc.id !== oauthAccount.id).length > 0;
 
     if (!hasPassword && !hasOtherOAuthAccounts) {
       return errorResponse(
         `No puedes desconectar ${provider} porque es tu única forma de acceso. Por favor, establece una contraseña primero.`,
-        400
+        400,
       );
     }
 
@@ -96,7 +102,7 @@ export async function DELETE(
       {
         message: `Tu cuenta de ${provider} ha sido desvinculada exitosamente.`,
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[USERS_OAUTH_DISCONNECT_ERROR]", error);

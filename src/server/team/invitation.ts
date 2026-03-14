@@ -12,7 +12,7 @@ export function generateInvitationToken(): string {
  */
 export function generateInvitationUrl(
   token: string,
-  baseUrl: string = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
+  baseUrl: string = process.env.NEXTAUTH_URL ?? "http://localhost:3000",
 ): string {
   return `${baseUrl}/team/accept-invitation?token=${token}`;
 }

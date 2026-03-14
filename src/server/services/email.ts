@@ -1,19 +1,19 @@
-import { Resend } from "resend"
+import { Resend } from "resend";
 
 // Verify Resend API key is configured
-const resendApiKey = process.env.RESEND_API_KEY
+const resendApiKey = process.env.RESEND_API_KEY;
 if (!resendApiKey) {
   console.warn(
-    "[RESEND] API key not configured. Email notifications will be disabled."
-  )
+    "[RESEND] API key not configured. Email notifications will be disabled.",
+  );
 }
 
-export const resend = resendApiKey ? new Resend(resendApiKey) : null
+export const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 /**
  * Email template types
  */
-export type EmailTemplate = "expiring_soon" | "expired" | "daily_report"
+export type EmailTemplate = "expiring_soon" | "expired" | "daily_report";
 
 /**
  * Email notification service
@@ -26,28 +26,28 @@ export const emailService = {
     managerEmails: string[],
     storeName: string,
     batchCount: number,
-    daysUntilExpiry: number
+    daysUntilExpiry: number,
   ) {
     if (!resend) {
       console.warn(
-        "[EMAIL] Resend not configured. Skipping notification to managers."
-      )
-      return null
+        "[EMAIL] Resend not configured. Skipping notification to managers.",
+      );
+      return null;
     }
 
     const severity =
       daysUntilExpiry <= 3
         ? "CRITICAL"
         : daysUntilExpiry <= 5
-        ? "WARNING"
-        : "INFO"
+          ? "WARNING"
+          : "INFO";
 
     const subject =
       severity === "CRITICAL"
         ? `🚨 CRITICAL: ${batchCount} batches expiring in ${daysUntilExpiry} days at ${storeName}`
         : severity === "WARNING"
-        ? `⚠️ WARNING: ${batchCount} batches expiring in ${daysUntilExpiry} days at ${storeName}`
-        : `📋 INFO: ${batchCount} batches expiring in ${daysUntilExpiry} days at ${storeName}`
+          ? `⚠️ WARNING: ${batchCount} batches expiring in ${daysUntilExpiry} days at ${storeName}`
+          : `📋 INFO: ${batchCount} batches expiring in ${daysUntilExpiry} days at ${storeName}`;
 
     try {
       const result = await resend.emails.send({
@@ -58,14 +58,14 @@ export const emailService = {
           storeName,
           batchCount,
           daysUntilExpiry,
-          severity
+          severity,
         ),
-      })
+      });
 
-      return result
+      return result;
     } catch (error) {
-      console.error("[RESEND] Failed to send expiring batch alert:", error)
-      throw error
+      console.error("[RESEND] Failed to send expiring batch alert:", error);
+      throw error;
     }
   },
 
@@ -75,13 +75,13 @@ export const emailService = {
   async sendExpiredBatchAlert(
     managerEmails: string[],
     storeName: string,
-    expiredBatchCount: number
+    expiredBatchCount: number,
   ) {
     if (!resend) {
       console.warn(
-        "[EMAIL] Resend not configured. Skipping expired batch notification."
-      )
-      return null
+        "[EMAIL] Resend not configured. Skipping expired batch notification.",
+      );
+      return null;
     }
 
     try {
@@ -90,12 +90,12 @@ export const emailService = {
         to: managerEmails,
         subject: `🛑 CRITICAL: ${expiredBatchCount} batches have EXPIRED at ${storeName}`,
         html: generateExpiredBatchTemplate(storeName, expiredBatchCount),
-      })
+      });
 
-      return result
+      return result;
     } catch (error) {
-      console.error("[RESEND] Failed to send expired batch alert:", error)
-      throw error
+      console.error("[RESEND] Failed to send expired batch alert:", error);
+      throw error;
     }
   },
 
@@ -106,17 +106,17 @@ export const emailService = {
     managerEmails: string[],
     storeName: string,
     stats: {
-      totalInventoryValue: number
-      activeProductCount: number
-      expiringCount: number
-      expiredCount: number
-    }
+      totalInventoryValue: number;
+      activeProductCount: number;
+      expiringCount: number;
+      expiredCount: number;
+    },
   ) {
     if (!resend) {
       console.warn(
-        "[EMAIL] Resend not configured. Skipping daily report notification."
-      )
-      return null
+        "[EMAIL] Resend not configured. Skipping daily report notification.",
+      );
+      return null;
     }
 
     try {
@@ -125,15 +125,15 @@ export const emailService = {
         to: managerEmails,
         subject: `📊 Daily Inventory Report - ${storeName}`,
         html: generateDailyReportTemplate(storeName, stats),
-      })
+      });
 
-      return result
+      return result;
     } catch (error) {
-      console.error("[RESEND] Failed to send daily report:", error)
-      throw error
+      console.error("[RESEND] Failed to send daily report:", error);
+      throw error;
     }
   },
-}
+};
 
 /**
  * Email HTML templates
@@ -142,14 +142,14 @@ function generateExpiringBatchTemplate(
   storeName: string,
   batchCount: number,
   daysUntilExpiry: number,
-  severity: string
+  severity: string,
 ): string {
   const severityColor =
     severity === "CRITICAL"
       ? "#dc2626"
       : severity === "WARNING"
-      ? "#ea580c"
-      : "#0891b2"
+        ? "#ea580c"
+        : "#0891b2";
 
   return `
     <div style="background-color: #f8fafc; padding: 24px; font-family: sans-serif;">
@@ -191,12 +191,12 @@ function generateExpiringBatchTemplate(
         </p>
       </div>
     </div>
-  `
+  `;
 }
 
 function generateExpiredBatchTemplate(
   storeName: string,
-  expiredBatchCount: number
+  expiredBatchCount: number,
 ): string {
   return `
     <div style="background-color: #f8fafc; padding: 24px; font-family: sans-serif;">
@@ -238,17 +238,17 @@ function generateExpiredBatchTemplate(
         </p>
       </div>
     </div>
-  `
+  `;
 }
 
 function generateDailyReportTemplate(
   storeName: string,
   stats: {
-    totalInventoryValue: number
-    activeProductCount: number
-    expiringCount: number
-    expiredCount: number
-  }
+    totalInventoryValue: number;
+    activeProductCount: number;
+    expiringCount: number;
+    expiredCount: number;
+  },
 ): string {
   return `
     <div style="background-color: #f8fafc; padding: 24px; font-family: sans-serif;">
@@ -303,5 +303,5 @@ function generateDailyReportTemplate(
         </p>
       </div>
     </div>
-  `
+  `;
 }

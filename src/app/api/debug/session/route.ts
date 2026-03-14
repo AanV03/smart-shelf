@@ -62,9 +62,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("[DEBUG_SESSION] Error:", error);
-    return Response.json(
-      { error: String(error) },
-      { status: 500 }
-    );
+    return Response.json({ error: String(error) }, { status: 500 });
   }
 }

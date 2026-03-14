@@ -66,7 +66,7 @@ if (env.AUTH_DISCORD_ID?.trim() && env.AUTH_DISCORD_SECRET?.trim()) {
     DiscordProvider({
       clientId: env.AUTH_DISCORD_ID,
       clientSecret: env.AUTH_DISCORD_SECRET,
-    })
+    }),
   );
 }
 
@@ -77,7 +77,7 @@ if (env.AUTH_GOOGLE_ID?.trim() && env.AUTH_GOOGLE_SECRET?.trim()) {
     GoogleProvider({
       clientId: env.AUTH_GOOGLE_ID,
       clientSecret: env.AUTH_GOOGLE_SECRET,
-    })
+    }),
   );
 }
 
@@ -90,8 +90,10 @@ providers.push(
       password: { label: "Password", type: "password" },
     },
     async authorize(credentials) {
-      console.log("[AUTH_CREDENTIALS] Attempting login with:", { email: credentials?.email });
-      
+      console.log("[AUTH_CREDENTIALS] Attempting login with:", {
+        email: credentials?.email,
+      });
+
       // Validate input
       const parsedCredentials = z
         .object({ email: z.string().email(), password: z.string().min(6) })
@@ -122,7 +124,7 @@ providers.push(
 
       const passwordsMatch = await compare(
         parsedCredentials.data.password,
-        user.password
+        user.password,
       );
 
       if (!passwordsMatch) {
@@ -130,8 +132,10 @@ providers.push(
         return null;
       }
 
-      console.log("[AUTH_CREDENTIALS] User authenticated successfully:", { userId: user.id });
-      
+      console.log("[AUTH_CREDENTIALS] User authenticated successfully:", {
+        userId: user.id,
+      });
+
       return {
         id: user.id,
         email: user.email,
@@ -140,7 +144,7 @@ providers.push(
         status: user.status,
       };
     },
-  })
+  }),
 );
 
 console.log("[AUTH_CONFIG] Total providers configured:", providers.length);
@@ -283,10 +287,13 @@ export const authOptions: NextAuthOptions = {
             where: { email: token.email! },
           });
           if (userByEmail) {
-            console.log("[AUTH_SESSION] Found user by email, updating token.id", {
-              email: token.email,
-              dbId: userByEmail.id,
-            });
+            console.log(
+              "[AUTH_SESSION] Found user by email, updating token.id",
+              {
+                email: token.email,
+                dbId: userByEmail.id,
+              },
+            );
             token.id = userByEmail.id;
           } else {
             console.error("[AUTH_SESSION] User not found by email either", {
@@ -298,7 +305,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Set user id and status from token
-        session.user.id = token.id!
+        session.user.id = token.id!;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         session.user.status = (token.status ?? "ACTIVE") as string;
 

@@ -100,7 +100,7 @@ async function main() {
           categoryId: "cat-001",
           storeId: store1.id,
         },
-      })
+      }),
     );
 
     products.push(
@@ -114,7 +114,7 @@ async function main() {
           categoryId: "cat-002",
           storeId: store1.id,
         },
-      })
+      }),
     );
 
     products.push(
@@ -128,7 +128,7 @@ async function main() {
           categoryId: "cat-003",
           storeId: store1.id,
         },
-      })
+      }),
     );
 
     products.push(
@@ -142,7 +142,7 @@ async function main() {
           categoryId: "cat-004",
           storeId: store1.id,
         },
-      })
+      }),
     );
 
     products.push(
@@ -156,7 +156,7 @@ async function main() {
           categoryId: "cat-005",
           storeId: store1.id,
         },
-      })
+      }),
     );
 
     // Productos para store2
@@ -171,7 +171,7 @@ async function main() {
           categoryId: "cat-001",
           storeId: store2.id,
         },
-      })
+      }),
     );
 
     products.push(
@@ -185,7 +185,7 @@ async function main() {
           categoryId: "cat-002",
           storeId: store2.id,
         },
-      })
+      }),
     );
 
     console.log(`✅ Created ${products.length} products`);
@@ -329,11 +329,15 @@ async function main() {
             quantity,
             costPerUnit,
             totalCost: quantity * costPerUnit,
-            expiresAt: new Date(now.getTime() + daysUntilExpiry * 24 * 60 * 60 * 1000),
+            expiresAt: new Date(
+              now.getTime() + daysUntilExpiry * 24 * 60 * 60 * 1000,
+            ),
             status: "ACTIVE",
-            receivedAt: new Date(now.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+            receivedAt: new Date(
+              now.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000,
+            ),
           },
-        })
+        }),
       );
     }
 
@@ -362,11 +366,15 @@ async function main() {
             quantity,
             costPerUnit,
             totalCost: quantity * costPerUnit,
-            expiresAt: new Date(now.getTime() + daysUntilExpiry * 24 * 60 * 60 * 1000),
+            expiresAt: new Date(
+              now.getTime() + daysUntilExpiry * 24 * 60 * 60 * 1000,
+            ),
             status: "ACTIVE",
-            receivedAt: new Date(now.getTime() - Math.random() * 25 * 24 * 60 * 60 * 1000),
+            receivedAt: new Date(
+              now.getTime() - Math.random() * 25 * 24 * 60 * 60 * 1000,
+            ),
           },
-        })
+        }),
       );
     }
 
@@ -393,7 +401,7 @@ async function main() {
           status: "EXPIRED",
           receivedAt: new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000),
         },
-      })
+      }),
     );
 
     console.log(`✅ Created ${batches.length} batches`);
@@ -418,7 +426,7 @@ async function main() {
           storeId: store1.id,
           isRead: false,
         },
-      })
+      }),
     );
 
     alerts.push(
@@ -434,7 +442,7 @@ async function main() {
           storeId: store1.id,
           isRead: false,
         },
-      })
+      }),
     );
 
     alerts.push(
@@ -451,7 +459,7 @@ async function main() {
           storeId: store1.id,
           isRead: false,
         },
-      })
+      }),
     );
 
     console.log(`✅ Created ${alerts.length} alerts`);

@@ -47,7 +47,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   const confirmPasswordValid = passwordsMatch && password.length > 0;
   const nameValid = isValidName(name);
   const formValid =
-    nameValid && emailValid && passwordValid && confirmPasswordValid && !isLoading;
+    nameValid &&
+    emailValid &&
+    passwordValid &&
+    confirmPasswordValid &&
+    !isLoading;
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,17 +117,17 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 
   if (success) {
     return (
-      <div className="w-full space-y-6 animate-fade-in text-center">
+      <div className="animate-fade-in w-full space-y-6 text-center">
         <div className="flex justify-center">
-          <div className="rounded-full bg-primary/15 p-4">
-            <CheckCircle2 className="h-8 w-8 text-primary" />
+          <div className="bg-primary/15 rounded-full p-4">
+            <CheckCircle2 className="text-primary h-8 w-8" />
           </div>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">
+          <h2 className="text-foreground mb-2 text-2xl font-bold">
             ¡Registro exitoso!
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Tu cuenta ha sido creada. Iniciando sesión...
           </p>
         </div>
@@ -132,18 +136,23 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   }
 
   return (
-    <form onSubmit={handleRegister} className="w-full space-y-6 animate-fade-in">
+    <form
+      onSubmit={handleRegister}
+      className="animate-fade-in w-full space-y-6"
+    >
       {/* Error Alert */}
       {error && (
         <div
-          className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/30 rounded-lg backdrop-blur-sm"
+          className="bg-destructive/10 border-destructive/30 flex items-start gap-3 rounded-lg border p-4 backdrop-blur-sm"
           role="alert"
           aria-live="polite"
         >
-          <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+          <AlertCircle className="text-destructive mt-0.5 h-5 w-5 shrink-0" />
           <div>
-            <p className="text-sm font-semibold text-destructive">Error al registrar</p>
-            <p className="text-xs text-destructive/80 mt-0.5">{error}</p>
+            <p className="text-destructive text-sm font-semibold">
+              Error al registrar
+            </p>
+            <p className="text-destructive/80 mt-0.5 text-xs">{error}</p>
           </div>
         </div>
       )}
@@ -151,15 +160,18 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       {/* Name Field */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label htmlFor="name" className="text-sm font-semibold text-foreground">
+          <Label
+            htmlFor="name"
+            className="text-foreground text-sm font-semibold"
+          >
             Nombre Completo
           </Label>
           {touched.name && nameValid && (
-            <CheckCircle2 className="h-4 w-4 text-primary" />
+            <CheckCircle2 className="text-primary h-4 w-4" />
           )}
         </div>
         <div className="relative">
-          <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <User className="text-muted-foreground absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2" />
           <Input
             id="name"
             type="text"
@@ -168,14 +180,19 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             onChange={(e) => setName(e.target.value)}
             onBlur={() => setTouched({ ...touched, name: true })}
             required
-            className="pl-10 h-11 bg-secondary/50 border border-border/30 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+            className="bg-secondary/50 border-border/30 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20 h-11 border pl-10 focus:ring-2"
             disabled={isLoading}
             aria-invalid={touched.name && !nameValid}
-            aria-describedby={touched.name && !nameValid ? "name-error" : undefined}
+            aria-describedby={
+              touched.name && !nameValid ? "name-error" : undefined
+            }
           />
         </div>
         {touched.name && !nameValid && name && (
-          <p id="name-error" className="text-xs text-destructive flex items-center gap-1">
+          <p
+            id="name-error"
+            className="text-destructive flex items-center gap-1 text-xs"
+          >
             <AlertCircle className="h-3 w-3" /> Mínimo 2 caracteres
           </p>
         )}
@@ -184,15 +201,18 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       {/* Email Field */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label htmlFor="email" className="text-sm font-semibold text-foreground">
+          <Label
+            htmlFor="email"
+            className="text-foreground text-sm font-semibold"
+          >
             Correo electrónico
           </Label>
           {touched.email && emailValid && (
-            <CheckCircle2 className="h-4 w-4 text-primary" />
+            <CheckCircle2 className="text-primary h-4 w-4" />
           )}
         </div>
         <div className="relative">
-          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Mail className="text-muted-foreground absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2" />
           <Input
             id="email"
             type="email"
@@ -201,14 +221,19 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             onChange={(e) => setEmail(e.target.value)}
             onBlur={() => setTouched({ ...touched, email: true })}
             required
-            className="pl-10 h-11 bg-secondary/50 border border-border/30 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+            className="bg-secondary/50 border-border/30 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20 h-11 border pl-10 focus:ring-2"
             disabled={isLoading}
             aria-invalid={touched.email && !emailValid}
-            aria-describedby={touched.email && !emailValid ? "email-error" : undefined}
+            aria-describedby={
+              touched.email && !emailValid ? "email-error" : undefined
+            }
           />
         </div>
         {touched.email && !emailValid && email && (
-          <p id="email-error" className="text-xs text-destructive flex items-center gap-1">
+          <p
+            id="email-error"
+            className="text-destructive flex items-center gap-1 text-xs"
+          >
             <AlertCircle className="h-3 w-3" /> Email inválido
           </p>
         )}
@@ -217,15 +242,18 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       {/* Password Field */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password" className="text-sm font-semibold text-foreground">
+          <Label
+            htmlFor="password"
+            className="text-foreground text-sm font-semibold"
+          >
             Contraseña
           </Label>
           {touched.password && passwordValid && (
-            <CheckCircle2 className="h-4 w-4 text-primary" />
+            <CheckCircle2 className="text-primary h-4 w-4" />
           )}
         </div>
         <div className="relative">
-          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Lock className="text-muted-foreground absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2" />
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
@@ -235,22 +263,31 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             onBlur={() => setTouched({ ...touched, password: true })}
             required
             minLength={6}
-            className="pl-10 pr-11 h-11 bg-secondary/50 border border-border/30 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+            className="bg-secondary/50 border-border/30 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20 h-11 border pr-11 pl-10 focus:ring-2"
             disabled={isLoading}
             aria-invalid={touched.password && !passwordValid}
-            aria-describedby={touched.password && !passwordValid ? "password-error" : undefined}
+            aria-describedby={
+              touched.password && !passwordValid ? "password-error" : undefined
+            }
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3.5 -translate-y-1/2 transition-colors"
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
-            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            {showPassword ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
           </button>
         </div>
         {touched.password && !passwordValid && password && (
-          <p id="password-error" className="text-xs text-destructive flex items-center gap-1">
+          <p
+            id="password-error"
+            className="text-destructive flex items-center gap-1 text-xs"
+          >
             <AlertCircle className="h-3 w-3" /> Mínimo 6 caracteres
           </p>
         )}
@@ -259,15 +296,18 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       {/* Confirm Password Field */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label htmlFor="confirmPassword" className="text-sm font-semibold text-foreground">
+          <Label
+            htmlFor="confirmPassword"
+            className="text-foreground text-sm font-semibold"
+          >
             Confirmar Contraseña
           </Label>
           {touched.confirmPassword && confirmPasswordValid && (
-            <CheckCircle2 className="h-4 w-4 text-primary" />
+            <CheckCircle2 className="text-primary h-4 w-4" />
           )}
         </div>
         <div className="relative">
-          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Lock className="text-muted-foreground absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2" />
           <Input
             id="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
@@ -277,32 +317,45 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             onBlur={() => setTouched({ ...touched, confirmPassword: true })}
             required
             minLength={6}
-            className="pl-10 pr-11 h-11 bg-secondary/50 border border-border/30 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+            className="bg-secondary/50 border-border/30 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20 h-11 border pr-11 pl-10 focus:ring-2"
             disabled={isLoading}
             aria-invalid={touched.confirmPassword && !confirmPasswordValid}
-            aria-describedby={touched.confirmPassword && !confirmPasswordValid ? "confirmPassword-error" : undefined}
+            aria-describedby={
+              touched.confirmPassword && !confirmPasswordValid
+                ? "confirmPassword-error"
+                : undefined
+            }
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3.5 -translate-y-1/2 transition-colors"
             aria-label={showConfirmPassword ? "Hide password" : "Show password"}
           >
-            {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            {showConfirmPassword ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
           </button>
         </div>
-        {touched.confirmPassword && !confirmPasswordValid && confirmPassword && (
-          <p id="confirmPassword-error" className="text-xs text-destructive flex items-center gap-1">
-            <AlertCircle className="h-3 w-3" /> Las contraseñas no coinciden
-          </p>
-        )}
+        {touched.confirmPassword &&
+          !confirmPasswordValid &&
+          confirmPassword && (
+            <p
+              id="confirmPassword-error"
+              className="text-destructive flex items-center gap-1 text-xs"
+            >
+              <AlertCircle className="h-3 w-3" /> Las contraseñas no coinciden
+            </p>
+          )}
       </div>
 
       {/* Submit Button */}
       <button
         type="submit"
         disabled={!formValid}
-        className="w-full h-11 mt-8 bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground focus-visible:ring-primary focus-visible:ring-offset-background mt-8 flex h-11 w-full items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2"
       >
         {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
         {isLoading ? "Registrando..." : "Crear Cuenta"}
@@ -311,10 +364,12 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       {/* Divider */}
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border/30"></div>
+          <div className="border-border/30 w-full border-t"></div>
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">O continúa con</span>
+          <span className="bg-background text-muted-foreground px-2">
+            O continúa con
+          </span>
         </div>
       </div>
 
@@ -322,9 +377,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => signIn("google", { redirect: true, callbackUrl: "/dashboard" })}
+          onClick={() =>
+            signIn("google", { redirect: true, callbackUrl: "/dashboard" })
+          }
           disabled={isLoading}
-          className="h-11 bg-secondary/50 hover:bg-secondary border border-border/30 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
+          className="bg-secondary/50 hover:bg-secondary border-border/30 focus-visible:ring-primary focus-visible:ring-offset-background flex h-11 items-center justify-center gap-2 rounded-lg border transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
             <path
@@ -344,25 +401,27 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
             />
           </svg>
-          <span className="text-sm font-medium hidden sm:inline">Google</span>
+          <span className="hidden text-sm font-medium sm:inline">Google</span>
         </button>
 
         <button
           type="button"
-          onClick={() => signIn("discord", { redirect: true, callbackUrl: "/dashboard" })}
+          onClick={() =>
+            signIn("discord", { redirect: true, callbackUrl: "/dashboard" })
+          }
           disabled={isLoading}
-          className="h-11 bg-secondary/50 hover:bg-secondary border border-border/30 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
+          className="bg-secondary/50 hover:bg-secondary border-border/30 focus-visible:ring-primary focus-visible:ring-offset-background flex h-11 items-center justify-center gap-2 rounded-lg border transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M20.317 4.3702a19.8 19.8 0 0 0-4.885-1.515a.07.07 0 0 0-.079.0336c-.211.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0c-.165-.386-.398-.875-.609-1.25a.07.07 0 0 0-.079-.0336A19.773 19.773 0 0 0 3.677 4.37a.07.07 0 0 0-.032.0277C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.975 14.975 0 0 0 1.293-2.1a.07.07 0 0 0-.038-.1a13.114 13.114 0 0 1-1.872-.892a.072.072 0 0 1-.009-.119c.125-.093.25-.19.371-.287a.075.075 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.075.075 0 0 1 .079.009c.12.098.245.195.371.288a.072.072 0 0 1-.01.119a12.96 12.96 0 0 1-1.873.892a.07.07 0 0 0-.038.1a15 15 0 0 0 1.294 2.1a.07.07 0 0 0 .084.028a19.963 19.963 0 0 0 6.002-3.03a.083.083 0 0 0 .032-.056c.361-4.334-.635-8.793-2.685-12.794a.07.07 0 0 0-.032-.028zM8.359 15.864c-1.195 0-2.182-.977-2.182-2.18c0-1.204.973-2.181 2.182-2.181c1.21 0 2.2.977 2.182 2.181c0 1.203-.973 2.18-2.182 2.18zm7.294 0c-1.195 0-2.182-.977-2.182-2.18c0-1.204.973-2.181 2.182-2.181c1.21 0 2.198.977 2.182 2.181c0 1.203-.972 2.18-2.182 2.18z" />
           </svg>
-          <span className="text-sm font-medium hidden sm:inline">Discord</span>
+          <span className="hidden text-sm font-medium sm:inline">Discord</span>
         </button>
       </div>
 
       {/* Switch to Login */}
       {onSwitchToLogin && (
-        <p className=" text-center text-sm text-muted-foreground mt-6">
+        <p className="text-muted-foreground mt-6 text-center text-sm">
           ¿Ya tienes cuenta?{" "}
           <button
             type="button"

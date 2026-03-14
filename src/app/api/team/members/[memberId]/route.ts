@@ -1,6 +1,10 @@
 import type { NextRequest } from "next/server";
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse } from "@/app/api/users/utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+} from "@/app/api/users/utils";
 
 /**
  * DELETE /api/team/members/[memberId]
@@ -8,7 +12,7 @@ import { requireAuth, errorResponse, successResponse } from "@/app/api/users/uti
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ memberId: string }> }
+  { params }: { params: Promise<{ memberId: string }> },
 ) {
   try {
     const auth = await requireAuth();
@@ -21,11 +25,14 @@ export async function DELETE(
 
     // Validar que el usuario sea ADMIN
     const isAdmin = sessionUser.stores?.some(
-      (store) => store.role === "ADMIN" && store.status === "ACTIVE"
+      (store) => store.role === "ADMIN" && store.status === "ACTIVE",
     );
 
     if (!isAdmin) {
-      return errorResponse("Solo administradores pueden eliminar miembros", 403);
+      return errorResponse(
+        "Solo administradores pueden eliminar miembros",
+        403,
+      );
     }
 
     // Buscar el miembro a eliminar
@@ -42,7 +49,7 @@ export async function DELETE(
 
     // Validar que el usuario tenga acceso a esta store
     const hasAccessToStore = sessionUser.stores?.some(
-      (store) => store.id === storeMember.storeId && store.role === "ADMIN"
+      (store) => store.id === storeMember.storeId && store.role === "ADMIN",
     );
 
     if (!hasAccessToStore) {
@@ -59,10 +66,7 @@ export async function DELETE(
     });
 
     if (storeMember.role === "ADMIN" && adminCount <= 1) {
-      return errorResponse(
-        "No puedes eliminar al último administrador",
-        400
-      );
+      return errorResponse("No puedes eliminar al último administrador", 400);
     }
 
     // Eliminar el miembro
@@ -81,7 +85,7 @@ export async function DELETE(
       {
         message: "Miembro eliminado correctamente",
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[TEAM_DELETE_MEMBER_ERROR]", error);

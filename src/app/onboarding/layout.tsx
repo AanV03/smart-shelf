@@ -23,15 +23,19 @@ export default async function OnboardingLayout({
   }
 
   // ✅ VALIDATION 2: If user already has active stores, redirect to dashboard
-  const activeStores = session.user.stores?.filter(
-    (s) => s.status === "ACTIVE" && s.role !== "PENDING"
-  ) ?? [];
+  const activeStores =
+    session.user.stores?.filter(
+      (s) => s.status === "ACTIVE" && s.role !== "PENDING",
+    ) ?? [];
 
   if (activeStores.length > 0) {
-    console.log("[ONBOARDING_LAYOUT] User already has active stores, redirecting to dashboard", {
-      userId: session.user.id,
-      storeCount: activeStores.length,
-    });
+    console.log(
+      "[ONBOARDING_LAYOUT] User already has active stores, redirecting to dashboard",
+      {
+        userId: session.user.id,
+        storeCount: activeStores.length,
+      },
+    );
     redirect("/dashboard");
   }
 

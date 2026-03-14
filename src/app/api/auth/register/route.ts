@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         { message: validation.error.errors[0]?.message ?? "Datos inválidos" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       return NextResponse.json(
         { message: "El usuario con este email ya existe" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -60,13 +60,13 @@ export async function POST(request: NextRequest) {
           name: user.name,
         },
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("[REGISTER_ERROR]", error);
     return NextResponse.json(
       { message: "Error interno del servidor" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

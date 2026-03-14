@@ -1,6 +1,6 @@
 /**
  * Event Handlers: Invitation Flow
- * 
+ *
  * Procesa eventos de invitación:
  * - manager.invited → Enviar email al manager
  * - employee.invited → Enviar email al empleado
@@ -12,7 +12,7 @@ import { sendInvitationEmail } from "@/server/email/send-invitation";
 
 /**
  * Handler: Manager invited
- * 
+ *
  * Flow:
  * 1. Admin invita manager → evento manager.invited
  * 2. Este handler corre en background
@@ -61,7 +61,7 @@ export async function onManagerInvited(event: Event): Promise<void> {
         storeId: payload.storeId,
         type: "manager",
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-      })
+      }),
     ).toString("base64");
 
     const acceptUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/invitations/accept?token=${acceptToken}`;
@@ -86,7 +86,7 @@ export async function onManagerInvited(event: Event): Promise<void> {
 
 /**
  * Handler: Employee invited
- * 
+ *
  * Same flow as manager invitation, but for employees
  */
 export async function onEmployeeInvited(event: Event): Promise<void> {
@@ -131,7 +131,7 @@ export async function onEmployeeInvited(event: Event): Promise<void> {
         storeId: payload.storeId,
         type: "employee",
         expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-      })
+      }),
     ).toString("base64");
 
     const acceptUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/invitations/accept?token=${acceptToken}`;
@@ -156,12 +156,12 @@ export async function onEmployeeInvited(event: Event): Promise<void> {
 
 /**
  * Register all event handlers
- * 
+ *
  * Call this once during app startup
  */
 export function registerInvitationHandlers(): void {
   console.log("[EVENT_HANDLERS] Registering invitation handlers");
-  
+
   eventBus.subscribe("manager.invited", onManagerInvited);
   eventBus.subscribe("employee.invited", onEmployeeInvited);
 }

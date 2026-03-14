@@ -22,7 +22,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} antialiased`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${geist.variable} antialiased`}
+      suppressHydrationWarning
+    >
       <body className="bg-background text-foreground font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>
@@ -33,4 +37,3 @@ export default function RootLayout({
     </html>
   );
 }
-

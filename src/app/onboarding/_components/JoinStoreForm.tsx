@@ -19,10 +19,10 @@ export function JoinStoreForm() {
   const joinStoreMutation = api.stores.joinStoreWithInvitationCode.useMutation({
     onSuccess: async (data) => {
       console.log("[JoinStoreForm] Success:", data);
-      
+
       // ✅ Refresh session to get new stores and role
       await updateSession();
-      
+
       // Redirect to dashboard after session update
       router.push("/dashboard");
     },
@@ -49,16 +49,19 @@ export function JoinStoreForm() {
   return (
     <div className="w-full max-w-md space-y-6">
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className="text-foreground text-2xl font-bold">
           Únete a una Tienda
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Ingresa el código de invitación que te proporcionó el administrador.
         </p>
       </div>
 
       {error && (
-        <Alert variant="destructive" className="border-destructive/50 bg-destructive/5">
+        <Alert
+          variant="destructive"
+          className="border-destructive/50 bg-destructive/5"
+        >
           <AlertCircle className="h-4 w-4" aria-hidden="true" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -79,7 +82,7 @@ export function JoinStoreForm() {
             required
             aria-required="true"
             aria-describedby={error ? "invite-error" : undefined}
-            className="uppercase bg-input border-border focus-visible:ring-2 focus-visible:ring-primary"
+            className="bg-input border-border focus-visible:ring-primary uppercase focus-visible:ring-2"
             maxLength={10}
           />
         </div>
@@ -87,11 +90,14 @@ export function JoinStoreForm() {
         <Button
           type="submit"
           disabled={joinStoreMutation.isPending}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground w-full"
         >
           {joinStoreMutation.isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+              <Loader2
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
               Verificando...
             </>
           ) : (
@@ -103,7 +109,7 @@ export function JoinStoreForm() {
         </Button>
       </form>
 
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-muted-foreground text-center text-xs">
         Si no tienes un código, pídele al administrador de la tienda
       </p>
     </div>

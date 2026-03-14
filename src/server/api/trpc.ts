@@ -156,21 +156,23 @@ export const protectedProcedureWithStore = t.procedure
   .use(({ ctx, next }) => {
     // ✅ VALIDATION: User must be authenticated
     if (!ctx.session?.user) {
-      throw new TRPCError({ 
+      throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Authentication required"
+        message: "Authentication required",
       });
     }
 
     // ✅ VALIDATION: User must have at least one active store
-    const activeStores = ctx.session.user.stores?.filter(
-      s => s.status === "ACTIVE" && s.role !== "PENDING"
-    ) ?? [];
+    const activeStores =
+      ctx.session.user.stores?.filter(
+        (s) => s.status === "ACTIVE" && s.role !== "PENDING",
+      ) ?? [];
 
     if (activeStores.length === 0) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "User not associated with a store. Please create or join a store first.",
+        message:
+          "User not associated with a store. Please create or join a store first.",
       });
     }
 

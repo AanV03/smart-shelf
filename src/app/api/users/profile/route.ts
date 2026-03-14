@@ -3,35 +3,49 @@ import type { NextRequest } from "next/server";
 import { z } from "zod";
 
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse, validateUserStatus } from "../utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+  validateUserStatus,
+} from "../utils";
 
-const updateProfileSchema = z.object({
-  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres").optional(),
-  email: z.string().email("Email inválido").optional(),
-  image: z.string().url("Imagen debe ser una URL válida").optional().nullable(),
-  currentPassword: z.string().min(6).optional(),
-  newPassword: z
-    .string()
-    .min(6, "La nueva contraseña debe tener al menos 6 caracteres")
-    .optional(),
-}).refine(
-  (data) => {
-    // Si proporciona newPassword, debe proporcionar currentPassword
-    if (data.newPassword && !data.currentPassword) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: "Se requiere la contraseña actual para cambiar la contraseña",
-    path: ["currentPassword"],
-  }
-);
+const updateProfileSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, "El nombre debe tener al menos 2 caracteres")
+      .optional(),
+    email: z.string().email("Email inválido").optional(),
+    image: z
+      .string()
+      .url("Imagen debe ser una URL válida")
+      .optional()
+      .nullable(),
+    currentPassword: z.string().min(6).optional(),
+    newPassword: z
+      .string()
+      .min(6, "La nueva contraseña debe tener al menos 6 caracteres")
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      // Si proporciona newPassword, debe proporcionar currentPassword
+      if (data.newPassword && !data.currentPassword) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Se requiere la contraseña actual para cambiar la contraseña",
+      path: ["currentPassword"],
+    },
+  );
 
 /**
  * PATCH /api/users/profile
  * Actualiza el perfil del usuario autenticado
- * 
+ *
  * Body:
  * - name?: string
  * - email?: string
@@ -59,7 +73,10 @@ export async function PATCH(request: NextRequest) {
 
     // Validar status
     if (!validateUserStatus(user.status)) {
-      return errorResponse("Tu cuenta está suspendida o ha sido eliminada", 403);
+      return errorResponse(
+        "Tu cuenta está suspendida o ha sido eliminada",
+        403,
+      );
     }
 
     const body = (await request.json()) as unknown;
@@ -71,7 +88,8 @@ export async function PATCH(request: NextRequest) {
       return errorResponse(firstError?.message ?? "Datos inválidos", 400);
     }
 
-    const { name, email, image, currentPassword, newPassword } = validation.data;
+    const { name, email, image, currentPassword, newPassword } =
+      validation.data;
 
     // Preparar datos a actualizar
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -159,7 +177,7 @@ export async function PATCH(request: NextRequest) {
         message: "Perfil actualizado exitosamente",
         user: updatedUser,
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[USERS_PROFILE_ERROR]", error);

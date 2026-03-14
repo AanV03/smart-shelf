@@ -1,6 +1,10 @@
 import type { NextRequest } from "next/server";
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse } from "@/app/api/users/utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+} from "@/app/api/users/utils";
 
 /**
  * GET /api/team/accept-invitation?token=...
@@ -42,17 +46,19 @@ export async function GET(request: NextRequest) {
       // Si no está autenticado, redirigir a login con token en param
       return errorResponse(
         "Debes estar autenticado para aceptar la invitación",
-        401
+        401,
       );
     }
 
     const { user: sessionUser } = auth.session!;
 
     // Validar que el email coincida
-    if (sessionUser.email?.toLowerCase() !== invitationToken.email.toLowerCase()) {
+    if (
+      sessionUser.email?.toLowerCase() !== invitationToken.email.toLowerCase()
+    ) {
       return errorResponse(
         "El email de tu cuenta no coincide con el de la invitación",
-        403
+        403,
       );
     }
 
@@ -111,7 +117,7 @@ export async function GET(request: NextRequest) {
         },
         role: invitationToken.role,
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[ACCEPT_INVITATION_ERROR]", error);

@@ -62,7 +62,7 @@ export function StoreSettings() {
       });
 
       if (!response.ok) {
-        const data = await response.json() as { message: string };
+        const data = (await response.json()) as { message: string };
         throw new Error(data.message);
       }
 
@@ -82,7 +82,7 @@ export function StoreSettings() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
+        <h1 className="text-foreground flex items-center gap-2 text-3xl font-bold">
           <Settings className="h-8 w-8" />
           Configuración de la Tienda
         </h1>
@@ -92,7 +92,7 @@ export function StoreSettings() {
       </div>
 
       {/* Store Info Card */}
-      <Card className="border-slate-700 bg-white/5 backdrop-blur-md p-6">
+      <Card className="border-slate-700 bg-white/5 p-6 backdrop-blur-md">
         <form onSubmit={handleSaveSettings} className="space-y-6">
           {error && (
             <Alert variant="destructive">
@@ -104,7 +104,9 @@ export function StoreSettings() {
           {success && (
             <Alert className="border-emerald-500/50 bg-emerald-500/10">
               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-              <span className="text-emerald-300">Configuración guardada correctamente</span>
+              <span className="text-emerald-300">
+                Configuración guardada correctamente
+              </span>
             </Alert>
           )}
 
@@ -117,8 +119,7 @@ export function StoreSettings() {
               id="store-name"
               value={settings.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
-              className="bg-slate-900/50 border-slate-700 text-foreground
-                        focus:border-emerald-500 focus:ring-emerald-500"
+              className="text-foreground border-slate-700 bg-slate-900/50 focus:border-emerald-500 focus:ring-emerald-500"
               placeholder="Ej: La Esperanza"
             />
           </div>
@@ -132,8 +133,7 @@ export function StoreSettings() {
               id="location"
               value={settings.location}
               onChange={(e) => handleInputChange("location", e.target.value)}
-              className="bg-slate-900/50 border-slate-700 text-foreground
-                        focus:border-emerald-500 focus:ring-emerald-500"
+              className="text-foreground border-slate-700 bg-slate-900/50 focus:border-emerald-500 focus:ring-emerald-500"
               placeholder="Ej: Avenida Principal 123"
             />
           </div>
@@ -148,8 +148,7 @@ export function StoreSettings() {
               type="tel"
               value={settings.phone}
               onChange={(e) => handleInputChange("phone", e.target.value)}
-              className="bg-slate-900/50 border-slate-700 text-foreground
-                        focus:border-emerald-500 focus:ring-emerald-500"
+              className="text-foreground border-slate-700 bg-slate-900/50 focus:border-emerald-500 focus:ring-emerald-500"
               placeholder="Ej: +34 912 345 678"
             />
           </div>
@@ -164,8 +163,7 @@ export function StoreSettings() {
               type="email"
               value={settings.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
-              className="bg-slate-900/50 border-slate-700 text-foreground
-                        focus:border-emerald-500 focus:ring-emerald-500"
+              className="text-foreground border-slate-700 bg-slate-900/50 focus:border-emerald-500 focus:ring-emerald-500"
               placeholder="Ej: contacto@laesperanza.com"
             />
           </div>
@@ -173,8 +171,7 @@ export function StoreSettings() {
           <Button
             type="submit"
             disabled={saving}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white
-                      flex items-center justify-center gap-2"
+            className="flex w-full items-center justify-center gap-2 bg-emerald-600 text-white hover:bg-emerald-700"
           >
             {saving ? (
               <>
@@ -192,18 +189,14 @@ export function StoreSettings() {
       </Card>
 
       {/* Danger Zone */}
-      <Card className="border-destructive/30 bg-destructive/5 backdrop-blur-md p-6">
-        <h3 className="text-lg font-semibold text-destructive mb-3">
+      <Card className="border-destructive/30 bg-destructive/5 p-6 backdrop-blur-md">
+        <h3 className="text-destructive mb-3 text-lg font-semibold">
           Zona de Peligro
         </h3>
-        <p className="text-sm text-muted-foreground mb-4">
+        <p className="text-muted-foreground mb-4 text-sm">
           Acciones irreversibles que afectarán tu tienda
         </p>
-        <Button
-          variant="destructive"
-          className="w-full"
-          disabled
-        >
+        <Button variant="destructive" className="w-full" disabled>
           Eliminar Tienda (Próximamente)
         </Button>
       </Card>

@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useState, useRef } from "react"
-import { format } from "date-fns"
-import { Package, Loader2, CheckCircle2, AlertCircle } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { api } from "@/trpc/react"
+import { useState, useRef } from "react";
+import { format } from "date-fns";
+import { Package, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { api } from "@/trpc/react";
 
 interface BatchEntryFormProps {
-  onSuccess?: () => void
+  onSuccess?: () => void;
 }
 
 export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
@@ -20,58 +20,59 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
     quantity: "",
     costPerUnit: "",
     expiresAt: format(new Date(), "yyyy-MM-dd"),
-  })
+  });
 
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
-  const batchNumberInputRef = useRef<HTMLInputElement>(null)
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const batchNumberInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch productos disponibles para el autocomplete
   const { data: products = [], isLoading: productsLoading } =
-    api.inventory.getProducts.useQuery()
+    api.inventory.getProducts.useQuery();
 
   // Mutation crear batch
-  const { mutate: createBatch, isPending } = api.inventory.createBatch.useMutation({
-    onSuccess: () => {
-      setSuccess(true)
-      setError(null)
-      
-      // Reset form
-      setFormData({
-        productId: "",
-        batchNumber: "",
-        quantity: "",
-        costPerUnit: "",
-        expiresAt: format(new Date(), "yyyy-MM-dd"),
-      })
+  const { mutate: createBatch, isPending } =
+    api.inventory.createBatch.useMutation({
+      onSuccess: () => {
+        setSuccess(true);
+        setError(null);
 
-      // Auto-focus batch number input para siguiente entrada
-      setTimeout(() => {
-        batchNumberInputRef.current?.focus()
-        setSuccess(false)
-      }, 1500)
+        // Reset form
+        setFormData({
+          productId: "",
+          batchNumber: "",
+          quantity: "",
+          costPerUnit: "",
+          expiresAt: format(new Date(), "yyyy-MM-dd"),
+        });
 
-      onSuccess?.()
-    },
-    onError: (err) => {
-      setError(err.message || "Error al crear el lote")
-      setSuccess(false)
-    },
-  })
+        // Auto-focus batch number input para siguiente entrada
+        setTimeout(() => {
+          batchNumberInputRef.current?.focus();
+          setSuccess(false);
+        }, 1500);
+
+        onSuccess?.();
+      },
+      onError: (err) => {
+        setError(err.message || "Error al crear el lote");
+        setSuccess(false);
+      },
+    });
 
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({ ...formData, productId: e.target.value })
-    setError(null)
-  }
+    setFormData({ ...formData, productId: e.target.value });
+    setError(null);
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: keyof typeof formData
+    field: keyof typeof formData,
   ) => {
-    const value = e.target.value
-    setFormData({ ...formData, [field]: value })
-    setError(null)
-  }
+    const value = e.target.value;
+    setFormData({ ...formData, [field]: value });
+    setError(null);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     // Tab para siguiente campo
@@ -80,28 +81,28 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
       // Permitir enter sin submit para que fluya al siguiente campo
       // Se controla con el form submission normal
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
 
     // Validaciones
     if (!formData.productId) {
-      setError("Selecciona un producto")
-      return
+      setError("Selecciona un producto");
+      return;
     }
     if (!formData.batchNumber.trim()) {
-      setError("Ingresa el número de lote")
-      return
+      setError("Ingresa el número de lote");
+      return;
     }
     if (!formData.quantity || parseInt(formData.quantity) <= 0) {
-      setError("Ingresa una cantidad válida")
-      return
+      setError("Ingresa una cantidad válida");
+      return;
     }
     if (!formData.costPerUnit || parseFloat(formData.costPerUnit) <= 0) {
-      setError("Ingresa un costo unitario válido")
-      return
+      setError("Ingresa un costo unitario válido");
+      return;
     }
 
     createBatch({
@@ -110,14 +111,14 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
       quantity: parseInt(formData.quantity),
       costPerUnit: parseFloat(formData.costPerUnit),
       expiresAt: new Date(formData.expiresAt),
-    })
-  }
+    });
+  };
 
   return (
-    <Card className="border-border/50 bg-linear-to-br from-card to-card/80 backdrop-blur-sm">
+    <Card className="border-border/50 from-card to-card/80 bg-linear-to-br backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Package className="h-5 w-5 text-primary" />
+          <Package className="text-primary h-5 w-5" />
           Nuevo Lote
         </CardTitle>
       </CardHeader>
@@ -125,17 +126,19 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Error Alert */}
           {error && (
-            <div className="flex items-center gap-3 rounded-lg bg-destructive/10 border border-destructive/30 px-4 py-3">
-              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
-              <p className="text-sm text-destructive font-medium">{error}</p>
+            <div className="bg-destructive/10 border-destructive/30 flex items-center gap-3 rounded-lg border px-4 py-3">
+              <AlertCircle className="text-destructive h-5 w-5 flex-shrink-0" />
+              <p className="text-destructive text-sm font-medium">{error}</p>
             </div>
           )}
 
           {/* Success Alert */}
           {success && (
-            <div className="flex items-center gap-3 rounded-lg bg-primary/10 border border-primary/30 px-4 py-3">
-              <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
-              <p className="text-sm text-primary font-medium">✓ Lote creado exitosamente</p>
+            <div className="bg-primary/10 border-primary/30 flex items-center gap-3 rounded-lg border px-4 py-3">
+              <CheckCircle2 className="text-primary h-5 w-5 flex-shrink-0" />
+              <p className="text-primary text-sm font-medium">
+                ✓ Lote creado exitosamente
+              </p>
             </div>
           )}
 
@@ -149,7 +152,7 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
               value={formData.productId}
               onChange={handleProductChange}
               disabled={productsLoading || isPending}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               aria-required="true"
               aria-invalid={!!error && !formData.productId}
             >
@@ -239,10 +242,14 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
 
           {/* Total Cost Display */}
           {formData.quantity && formData.costPerUnit && (
-            <div className="rounded-lg bg-muted/50 p-3">
-              <p className="text-sm text-muted-foreground">Costo Total:</p>
-              <p className="text-lg font-bold text-foreground tabular-nums">
-                ${(parseFloat(formData.quantity || "0") * parseFloat(formData.costPerUnit || "0")).toFixed(2)}
+            <div className="bg-muted/50 rounded-lg p-3">
+              <p className="text-muted-foreground text-sm">Costo Total:</p>
+              <p className="text-foreground text-lg font-bold tabular-nums">
+                $
+                {(
+                  parseFloat(formData.quantity || "0") *
+                  parseFloat(formData.costPerUnit || "0")
+                ).toFixed(2)}
               </p>
             </div>
           )}
@@ -251,28 +258,29 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
           <Button
             type="submit"
             disabled={isPending}
-            className="w-full h-10 font-medium"
+            className="h-10 w-full font-medium"
           >
             {isPending ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Registrando lote...
               </>
             ) : (
               <>
-                <CheckCircle2 className="h-4 w-4 mr-2" />
+                <CheckCircle2 className="mr-2 h-4 w-4" />
                 Registrar Lote
               </>
             )}
           </Button>
 
           {/* Keyboard Shortcuts Hint */}
-          <p className="text-xs text-muted-foreground text-center pt-2">
-            💡 Presiona <kbd className="bg-muted px-2 py-1 rounded">Tab</kbd> para navegar
-            entre campos • <kbd className="bg-muted px-2 py-1 rounded">Enter</kbd> para enviar
+          <p className="text-muted-foreground pt-2 text-center text-xs">
+            💡 Presiona <kbd className="bg-muted rounded px-2 py-1">Tab</kbd>{" "}
+            para navegar entre campos •{" "}
+            <kbd className="bg-muted rounded px-2 py-1">Enter</kbd> para enviar
           </p>
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

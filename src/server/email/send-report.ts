@@ -1,6 +1,6 @@
 /**
  * Email Service: Financial Reports
- * 
+ *
  * Utiliza Resend para enviar reportes financieros a managers
  */
 
@@ -37,7 +37,9 @@ export async function sendReportEmail({
   });
 
   if (!env.RESEND_API_KEY) {
-    console.warn("[EMAIL_SERVICE_REPORT] RESEND_API_KEY not configured, skipping email");
+    console.warn(
+      "[EMAIL_SERVICE_REPORT] RESEND_API_KEY not configured, skipping email",
+    );
     return;
   }
 
@@ -65,7 +67,10 @@ export async function sendReportEmail({
     }
 
     const { id } = (await response.json()) as { id: string };
-    console.log("[EMAIL_SERVICE_REPORT] Report email sent successfully", { id, to });
+    console.log("[EMAIL_SERVICE_REPORT] Report email sent successfully", {
+      id,
+      to,
+    });
   } catch (error) {
     console.error("[EMAIL_SERVICE_REPORT] Error sending report email", error);
     throw error; // Propagate error for logging
@@ -221,17 +226,17 @@ function generateReportHTML({
         <div class="summary">
           <div class="metric">
             <div class="metric-label">Ingresos Totales</div>
-            <div class="metric-value">$${reportData.totalRevenue.toLocaleString('es-MX')}</div>
+            <div class="metric-value">$${reportData.totalRevenue.toLocaleString("es-MX")}</div>
           </div>
           
           <div class="metric">
             <div class="metric-label">Costos Totales</div>
-            <div class="metric-value">$${reportData.totalCost.toLocaleString('es-MX')}</div>
+            <div class="metric-value">$${reportData.totalCost.toLocaleString("es-MX")}</div>
           </div>
           
           <div class="metric success">
             <div class="metric-label">Ganancia Neta</div>
-            <div class="metric-value positive">$${reportData.netProfit.toLocaleString('es-MX')}</div>
+            <div class="metric-value positive">$${reportData.netProfit.toLocaleString("es-MX")}</div>
           </div>
           
           <div class="metric">
@@ -259,9 +264,9 @@ function generateReportHTML({
               <tr>
                 <td>${product.name}</td>
                 <td>${product.quantity}</td>
-                <td>$${product.revenue.toLocaleString('es-MX')}</td>
+                <td>$${product.revenue.toLocaleString("es-MX")}</td>
               </tr>
-            `
+            `,
               )
               .join("")}
           </tbody>

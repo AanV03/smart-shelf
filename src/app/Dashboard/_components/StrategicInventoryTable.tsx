@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import { format, differenceInDays, isPast } from "date-fns"
-import { es } from "date-fns/locale"
+import { useMemo } from "react";
+import { format, differenceInDays, isPast } from "date-fns";
+import { es } from "date-fns/locale";
 import {
   TrendingUp,
   AlertTriangle,
   DollarSign,
   Loader2,
   Eye,
-} from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { api } from "@/trpc/react"
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { api } from "@/trpc/react";
 
 export function StrategicInventoryTable() {
   // Fetch all batches
@@ -21,46 +21,49 @@ export function StrategicInventoryTable() {
       status: "ACTIVE",
       limit: 500,
       offset: 0,
-    })
+    });
 
   // Fetch inventory value
   const { data: valueData, isLoading: valueLoading } =
-    api.inventory.getTotalInventoryValue.useQuery()
+    api.inventory.getTotalInventoryValue.useQuery();
 
   // Fetch expiring batches for risk analysis
   const { data: expiringData, isLoading: expiringLoading } =
-    api.inventory.getExpiringBatches.useQuery({ daysThreshold: 30 })
+    api.inventory.getExpiringBatches.useQuery({ daysThreshold: 30 });
 
-  const batches = useMemo(() => batchesData?.batches ?? [], [batchesData?.batches])
-  const totalValue = valueData?.totalValue ?? 0
-  const expiringBatches = useMemo(() => expiringData ?? [], [expiringData])
+  const batches = useMemo(
+    () => batchesData?.batches ?? [],
+    [batchesData?.batches],
+  );
+  const totalValue = valueData?.totalValue ?? 0;
+  const expiringBatches = useMemo(() => expiringData ?? [], [expiringData]);
 
-  const isLoading = batchesLoading || valueLoading || expiringLoading
+  const isLoading = batchesLoading || valueLoading || expiringLoading;
 
   // Calculate financial metrics
   const metrics = useMemo(() => {
-    const today = new Date()
+    const today = new Date();
 
     // Value at risk (high-value items expiring soon)
     const valueAtRisk = expiringBatches
       .filter((b) => differenceInDays(new Date(b.expiresAt), today) <= 7)
-      .reduce((sum, b) => sum + b.totalCost, 0)
+      .reduce((sum, b) => sum + b.totalCost, 0);
 
     // Retention days (average days until expiration)
     const avgRetentionDays =
       batches.length > 0
         ? batches.reduce((sum, b) => {
-            const days = differenceInDays(new Date(b.expiresAt), today)
-            return sum + Math.max(0, days)
+            const days = differenceInDays(new Date(b.expiresAt), today);
+            return sum + Math.max(0, days);
           }, 0) / batches.length
-        : 0
+        : 0;
 
     // High-value retention (products > $1000)
-    const highValueBatches = batches.filter((b) => b.totalCost > 1000)
+    const highValueBatches = batches.filter((b) => b.totalCost > 1000);
     const highValueTotal = highValueBatches.reduce(
       (sum, b) => sum + b.totalCost,
-      0
-    )
+      0,
+    );
 
     return {
       valueAtRisk,
@@ -68,35 +71,33 @@ export function StrategicInventoryTable() {
       highValueBatches: highValueBatches.length,
       highValueTotal,
       totalBatches: batches.length,
-    }
-  }, [batches, expiringBatches])
+    };
+  }, [batches, expiringBatches]);
 
   // Sort batches by value (highest first) for strategic decision
   const sortedBatches = useMemo(() => {
-    return [...batches]
-      .sort((a, b) => b.totalCost - a.totalCost)
-      .slice(0, 50) // Top 50 products by value
-  }, [batches])
+    return [...batches].sort((a, b) => b.totalCost - a.totalCost).slice(0, 50); // Top 50 products by value
+  }, [batches]);
 
   if (isLoading) {
     return (
-      <Card className="border-border/50 bg-linear-to-br from-card to-card/80 backdrop-blur-sm">
+      <Card className="border-border/50 from-card to-card/80 bg-linear-to-br backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
+            <TrendingUp className="text-primary h-5 w-5" />
             Inventario Estratégico - Análisis de Valor y Riesgo
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span className="ml-2 text-muted-foreground">
+            <Loader2 className="text-primary h-6 w-6 animate-spin" />
+            <span className="text-muted-foreground ml-2">
               Analizando inventario...
             </span>
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -108,17 +109,18 @@ export function StrategicInventoryTable() {
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
+                <p className="text-muted-foreground mb-1 text-xs font-medium">
                   Valor Total Inventario
                 </p>
-                <p className="text-2xl font-bold text-foreground tabular-nums">
-                  ${totalValue.toLocaleString(undefined, {
+                <p className="text-foreground text-2xl font-bold tabular-nums">
+                  $
+                  {totalValue.toLocaleString(undefined, {
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
                   })}
                 </p>
               </div>
-              <DollarSign className="h-5 w-5 text-primary flex-shrink-0" />
+              <DollarSign className="text-primary h-5 w-5 flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
@@ -134,19 +136,20 @@ export function StrategicInventoryTable() {
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
+                <p className="text-muted-foreground mb-1 text-xs font-medium">
                   Valor en Riesgo (7 días)
                 </p>
                 <p
                   className={`text-2xl font-bold tabular-nums ${metrics.valueAtRisk > 0 ? "text-warning" : "text-primary"}`}
                 >
-                  ${metrics.valueAtRisk.toLocaleString(undefined, {
+                  $
+                  {metrics.valueAtRisk.toLocaleString(undefined, {
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
                   })}
                 </p>
               </div>
-              <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0" />
+              <AlertTriangle className="text-warning h-5 w-5 flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
@@ -156,14 +159,14 @@ export function StrategicInventoryTable() {
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
+                <p className="text-muted-foreground mb-1 text-xs font-medium">
                   Días Retención Promedio
                 </p>
-                <p className="text-2xl font-bold text-foreground">
+                <p className="text-foreground text-2xl font-bold">
                   {metrics.avgRetentionDays}
                 </p>
               </div>
-              <Eye className="h-5 w-5 text-primary flex-shrink-0" />
+              <Eye className="text-primary h-5 w-5 flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
@@ -173,27 +176,28 @@ export function StrategicInventoryTable() {
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground mb-1">
+                <p className="text-muted-foreground mb-1 text-xs font-medium">
                   Productos Alto Valor (&gt;$1K)
                 </p>
-                <p className="text-2xl font-bold text-foreground">
+                <p className="text-foreground text-2xl font-bold">
                   {metrics.highValueBatches}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  ${metrics.highValueTotal.toLocaleString(undefined, {
+                <p className="text-muted-foreground mt-1 text-xs">
+                  $
+                  {metrics.highValueTotal.toLocaleString(undefined, {
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
                   })}
                 </p>
               </div>
-              <TrendingUp className="h-5 w-5 text-primary flex-shrink-0" />
+              <TrendingUp className="text-primary h-5 w-5 flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Main Strategic Table (Top products by value) */}
-      <Card className="border-border/50 bg-linear-to-br from-card to-card/80 backdrop-blur-sm">
+      <Card className="border-border/50 from-card to-card/80 bg-linear-to-br backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-lg">
             Top 50 Productos por Valor de Retención
@@ -203,40 +207,40 @@ export function StrategicInventoryTable() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border/30">
-                  <th className="text-left px-3 py-3 font-semibold text-foreground">
+                <tr className="border-border/30 border-b">
+                  <th className="text-foreground px-3 py-3 text-left font-semibold">
                     Producto
                   </th>
-                  <th className="text-right px-3 py-3 font-semibold text-foreground">
+                  <th className="text-foreground px-3 py-3 text-right font-semibold">
                     Unidades
                   </th>
-                  <th className="text-right px-3 py-3 font-semibold text-foreground">
+                  <th className="text-foreground px-3 py-3 text-right font-semibold">
                     Valor Total
                   </th>
-                  <th className="text-right px-3 py-3 font-semibold text-foreground">
+                  <th className="text-foreground px-3 py-3 text-right font-semibold">
                     Costo Unit.
                   </th>
-                  <th className="text-center px-3 py-3 font-semibold text-foreground">
+                  <th className="text-foreground px-3 py-3 text-center font-semibold">
                     Vence
                   </th>
-                  <th className="text-center px-3 py-3 font-semibold text-foreground">
+                  <th className="text-foreground px-3 py-3 text-center font-semibold">
                     Riesgo
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/20">
+              <tbody className="divide-border/20 divide-y">
                 {sortedBatches.map((batch) => {
-                  const today = new Date()
+                  const today = new Date();
                   const daysLeft = differenceInDays(
                     new Date(batch.expiresAt),
-                    today
-                  )
-                  const isExpired = isPast(new Date(batch.expiresAt))
+                    today,
+                  );
+                  const isExpired = isPast(new Date(batch.expiresAt));
 
-                  let riskLevel: "critical" | "high" | "medium" | "low" = "low"
-                  if (isExpired) riskLevel = "critical"
-                  else if (daysLeft <= 3) riskLevel = "high"
-                  else if (daysLeft <= 7) riskLevel = "medium"
+                  let riskLevel: "critical" | "high" | "medium" | "low" = "low";
+                  if (isExpired) riskLevel = "critical";
+                  else if (daysLeft <= 3) riskLevel = "high";
+                  else if (daysLeft <= 7) riskLevel = "medium";
 
                   const riskConfig = {
                     critical: {
@@ -259,9 +263,9 @@ export function StrategicInventoryTable() {
                       bgColor: "bg-muted/20",
                       label: "🟢 BAJO",
                     },
-                  }
+                  };
 
-                  const config = riskConfig[riskLevel]
+                  const config = riskConfig[riskLevel];
 
                   return (
                     <tr
@@ -271,32 +275,36 @@ export function StrategicInventoryTable() {
                       {/* Product */}
                       <td className="px-3 py-4">
                         <div>
-                          <p className="font-bold text-foreground">
-                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
-                              {(batch as any).product.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
-                              {(batch as any).product.sku} • Lote: {batch.batchNumber}
+                          <p className="text-foreground font-bold">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
+                            {(batch as any).product.name}
+                          </p>
+                          <p className="text-muted-foreground text-xs">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
+                            {(batch as any).product.sku} • Lote:{" "}
+                            {batch.batchNumber}
                           </p>
                         </div>
                       </td>
 
                       {/* Quantity */}
-                      <td className="px-3 py-4 text-right font-mono text-foreground">
+                      <td className="text-foreground px-3 py-4 text-right font-mono">
                         {batch.quantity.toLocaleString()}
                       </td>
 
                       {/* Total Value */}
-                      <td className={`px-3 py-4 text-right font-bold font-mono ${config.color}`}>
-                        ${batch.totalCost.toLocaleString(undefined, {
+                      <td
+                        className={`px-3 py-4 text-right font-mono font-bold ${config.color}`}
+                      >
+                        $
+                        {batch.totalCost.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </td>
 
                       {/* Cost Per Unit */}
-                      <td className="px-3 py-4 text-right font-mono text-muted-foreground">
+                      <td className="text-muted-foreground px-3 py-4 text-right font-mono">
                         ${batch.costPerUnit.toFixed(2)}
                       </td>
 
@@ -311,11 +319,9 @@ export function StrategicInventoryTable() {
                             }
                             className="text-xs"
                           >
-                            {isExpired
-                              ? "EXPIRADO"
-                              : `${daysLeft}d`}
+                            {isExpired ? "EXPIRADO" : `${daysLeft}d`}
                           </Badge>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-muted-foreground text-xs">
                             {format(new Date(batch.expiresAt), "dd MMM", {
                               locale: es,
                             })}
@@ -339,18 +345,18 @@ export function StrategicInventoryTable() {
                         </Badge>
                       </td>
                     </tr>
-                  )
+                  );
                 })}
               </tbody>
             </table>
           </div>
 
           {/* Footer insights */}
-          <div className="mt-6 pt-4 border-t border-border/20 space-y-3">
-            <p className="text-xs font-semibold text-foreground">
+          <div className="border-border/20 mt-6 space-y-3 border-t pt-4">
+            <p className="text-foreground text-xs font-semibold">
               📊 Insights para Decisiones:
             </p>
-            <ul className="grid grid-cols-1 gap-2 text-xs text-muted-foreground sm:grid-cols-2">
+            <ul className="text-muted-foreground grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
               <li>
                 ✓ Enfócate en reducir valor en riesgo mediante promociones
               </li>
@@ -364,5 +370,5 @@ export function StrategicInventoryTable() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 /**
  * Report Generator Service
- * 
+ *
  * Genera reportes financieros para tiendas y los guarda en Vercel Blob
  * Luego envía el reporte por email a los managers de la tienda
  */
@@ -26,10 +26,13 @@ interface ReportData {
  */
 export async function generateFinancialReport(
   storeId: string,
-  period: string = format(new Date(), "yyyy-MM")
+  period: string = format(new Date(), "yyyy-MM"),
 ): Promise<ReportData | null> {
   try {
-    console.log("[REPORT_GENERATOR] Generating report for store:", { storeId, period });
+    console.log("[REPORT_GENERATOR] Generating report for store:", {
+      storeId,
+      period,
+    });
 
     // Parsear el período (ej: "2026-03" para marzo 2026)
     const [year, month] = period.split("-");
@@ -46,7 +49,7 @@ export async function generateFinancialReport(
         },
       },
       include: {
-        product: true,
+        Product: true,
       },
     });
 
@@ -59,7 +62,10 @@ export async function generateFinancialReport(
     let totalCost = 0;
     let totalRevenue = 0;
     let totalItems = 0;
-    const productStats: Record<string, { name: string; quantity: number; revenue: number }> = {};
+    const productStats: Record<
+      string,
+      { name: string; quantity: number; revenue: number }
+    > = {};
 
     for (const batch of batches) {
       const batchCost = batch.costPerUnit * batch.quantity;
@@ -71,15 +77,16 @@ export async function generateFinancialReport(
       totalRevenue += estimatedRevenue;
 
       // Agrupar por producto
-      if (!productStats[batch.productId]) {
-        productStats[batch.productId] = {
-          name: batch.product.name,
-          quantity: 0,
-          revenue: 0,
-        };
+      productStats[batch.productId] ??= {
+        name: batch.Product.name,
+        quantity: 0,
+        revenue: 0,
+      };
+      const stats = productStats[batch.productId];
+      if (stats) {
+        stats.quantity += batch.quantity;
+        stats.revenue += estimatedRevenue;
       }
-      productStats[batch.productId].quantity += batch.quantity;
-      productStats[batch.productId].revenue += estimatedRevenue;
     }
 
     const netProfit = totalRevenue - totalCost;
@@ -115,7 +122,7 @@ export async function generateFinancialReport(
  */
 export async function saveReportToBlob(
   reportData: ReportData,
-  userId: string
+  userId: string,
 ): Promise<{ blobUrl: string; blobFileName: string }> {
   try {
     // Generar PDF/CSV del reporte
@@ -145,7 +152,7 @@ export async function saveReportToBlob(
         totalCost: reportData.totalCost,
         netProfit: reportData.netProfit,
         blobUrl: blob.url,
-        blobFileName: blob.filename,
+        blobFileName: fileName,
         generatedAt: new Date(),
         generatedBy: userId,
       },
@@ -156,16 +163,20 @@ export async function saveReportToBlob(
         totalCost: reportData.totalCost,
         netProfit: reportData.netProfit,
         blobUrl: blob.url,
-        blobFileName: blob.filename,
+        blobFileName: fileName,
         generatedBy: userId,
       },
     });
 
-    console.log("[REPORT_GENERATOR] Saved to database:", { reportId: report.id });
+    console.log("[REPORT_GENERATOR] Saved to database:", {
+      reportId: report.id,
+      blobUrl: blob.url,
+      blobFileName: fileName,
+    });
 
     return {
       blobUrl: blob.url,
-      blobFileName: blob.filename,
+      blobFileName: fileName,
     };
   } catch (error) {
     console.error("[REPORT_GENERATOR_BLOB_ERROR]", error);
@@ -176,9 +187,14 @@ export async function saveReportToBlob(
 /**
  * Envía el reporte por email a todos los managers de la tienda
  */
-export async function sendReportToManagers(reportData: ReportData): Promise<void> {
+export async function sendReportToManagers(
+  reportData: ReportData,
+): Promise<void> {
   try {
-    console.log("[REPORT_GENERATOR] Fetching managers for store:", reportData.storeId);
+    console.log(
+      "[REPORT_GENERATOR] Fetching managers for store:",
+      reportData.storeId,
+    );
 
     // Obtener todos los managers de la tienda
     const managers = await db.storeMember.findMany({
@@ -197,12 +213,16 @@ export async function sendReportToManagers(reportData: ReportData): Promise<void
       return;
     }
 
-    console.log("[REPORT_GENERATOR] Found managers:", { count: managers.length });
+    console.log("[REPORT_GENERATOR] Found managers:", {
+      count: managers.length,
+    });
 
     // Enviar email a cada manager
     for (const manager of managers) {
       if (!manager.user.email) {
-        console.warn("[REPORT_GENERATOR] Manager without email:", { managerId: manager.id });
+        console.warn("[REPORT_GENERATOR] Manager without email:", {
+          managerId: manager.id,
+        });
         continue;
       }
 
@@ -229,7 +249,10 @@ export async function sendReportToManagers(reportData: ReportData): Promise<void
           },
         });
 
-        console.log("[REPORT_GENERATOR] Email sent successfully to:", manager.user.email);
+        console.log(
+          "[REPORT_GENERATOR] Email sent successfully to:",
+          manager.user.email,
+        );
       } catch (emailError) {
         console.error("[REPORT_GENERATOR_EMAIL_ERROR]", emailError);
         // Continuar con el siguiente manager
@@ -260,7 +283,7 @@ function generateCSV(reportData: ReportData): string {
     "TOP 5 PRODUCTOS",
     "Producto,Cantidad,Ingresos",
     ...reportData.topProducts.map(
-      (p) => `"${p.name}",${p.quantity},${p.revenue}`
+      (p) => `"${p.name}",${p.quantity},${p.revenue}`,
     ),
   ];
 
@@ -271,7 +294,9 @@ function generateCSV(reportData: ReportData): string {
  * Procesa reportes diarios para todas las tiendas
  * Debería ejecutarse como un cron job diario
  */
-export async function processAllStoreReports(userId: string = "system"): Promise<void> {
+export async function processAllStoreReports(
+  userId = "system",
+): Promise<void> {
   try {
     console.log("[REPORT_GENERATOR_BATCH] Starting daily report generation");
 
@@ -296,9 +321,15 @@ export async function processAllStoreReports(userId: string = "system"): Promise
         // Enviar por email
         await sendReportToManagers(reportData);
 
-        console.log("[REPORT_GENERATOR_BATCH] Completed report for store:", store.id);
+        console.log(
+          "[REPORT_GENERATOR_BATCH] Completed report for store:",
+          store.id,
+        );
       } catch (storeError) {
-        console.error("[REPORT_GENERATOR_BATCH_STORE_ERROR]", { storeId: store.id, error: storeError });
+        console.error("[REPORT_GENERATOR_BATCH_STORE_ERROR]", {
+          storeId: store.id,
+          error: storeError,
+        });
         // Continuar con la siguiente tienda
       }
     }

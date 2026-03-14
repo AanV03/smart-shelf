@@ -2,7 +2,12 @@ import type { NextRequest } from "next/server";
 import { z } from "zod";
 
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse, validateUserStatus } from "../../utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+  validateUserStatus,
+} from "../../utils";
 
 const suspendAccountSchema = z.object({
   reason: z.string().optional().default(""),
@@ -12,7 +17,7 @@ const suspendAccountSchema = z.object({
  * PATCH /api/users/account/suspend
  * Suspende la cuenta del usuario (soft delete)
  * El usuario no podrá hacer login pero sus datos se mantienen
- * 
+ *
  * Body:
  * - reason?: string (opcional, para logging)
  */
@@ -36,16 +41,19 @@ export async function PATCH(request: NextRequest) {
 
     // Validar que la cuenta esté activa
     if (user.status !== "ACTIVE") {
-      return errorResponse("Tu cuenta ya está suspendida o ha sido eliminada", 400);
+      return errorResponse(
+        "Tu cuenta ya está suspendida o ha sido eliminada",
+        400,
+      );
     }
 
     const body = (await request.json()) as unknown;
     const validation = suspendAccountSchema.safeParse(body);
-    
+
     if (!validation.success) {
       return errorResponse("Datos de entrada inválidos", 400);
     }
-    
+
     const { reason } = validation.data;
 
     // Suspender la cuenta
@@ -77,10 +85,11 @@ export async function PATCH(request: NextRequest) {
 
     return successResponse(
       {
-        message: "Tu cuenta ha sido suspendida exitosamente. No podrás iniciar sesión hasta que la reactives.",
+        message:
+          "Tu cuenta ha sido suspendida exitosamente. No podrás iniciar sesión hasta que la reactives.",
         user: suspendedUser,
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[USERS_ACCOUNT_SUSPEND_ERROR]", error);

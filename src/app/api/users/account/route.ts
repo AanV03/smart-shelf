@@ -3,27 +3,36 @@ import { z } from "zod";
 import { compare } from "bcryptjs";
 
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse, validateUserStatus } from "../utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+  validateUserStatus,
+} from "../utils";
 
 const deleteAccountSchema = z.object({
-  password: z.string().min(6, "Se requiere contraseña para confirmar eliminación"),
+  password: z
+    .string()
+    .min(6, "Se requiere contraseña para confirmar eliminación"),
   confirmation: z.literal(true, {
-    errorMap: () => ({ message: "Debes confirmar la eliminación de tu cuenta" }),
+    errorMap: () => ({
+      message: "Debes confirmar la eliminación de tu cuenta",
+    }),
   }),
 });
 
 /**
  * DELETE /api/users/account
  * Elimina definitivamente la cuenta del usuario y todos sus datos asociados
- * 
+ *
  * Body:
  * - password: string (requerido para confirmar identidad)
  * - confirmation: true (confirmación explícita)
- * 
+ *
  * Validación Multi-Tenant:
  * - Si el usuario es el único ADMIN de una tienda, la eliminación falla
  * - Debe transferir a otro ADMIN o eliminar la tienda primero
- * 
+ *
  * Eliminación en cascada:
  * - Elimina StoreMember (relaciones con tiendas)
  * - Elimina todas las sesiones
@@ -85,12 +94,17 @@ export async function DELETE(request: NextRequest) {
       }
     } else if (!user.Account || user.Account.length === 0) {
       // Si no tiene contraseña ni accounts OAuth, algo está mal
-      return errorResponse("No se puede verificar la identidad del usuario", 400);
+      return errorResponse(
+        "No se puede verificar la identidad del usuario",
+        400,
+      );
     }
 
     // NEW: Multi-tenant validation
     // Verificar si el usuario es el único ADMIN de alguna tienda
-    const adminStores = user.storeMembers.filter((member) => member.role === "ADMIN");
+    const adminStores = user.storeMembers.filter(
+      (member) => member.role === "ADMIN",
+    );
 
     if (adminStores.length > 0) {
       // Para cada tienda donde es ADMIN, contar otros ADMINs
@@ -107,8 +121,8 @@ export async function DELETE(request: NextRequest) {
         if (otherAdmins === 0) {
           return errorResponse(
             `No puedes eliminar tu cuenta porque eres el único administrador de la tienda "${adminStore.store.name}". ` +
-            `Por favor, transfiere el rol de administrador a otro usuario o elimina la tienda primero.`,
-            400
+              `Por favor, transfiere el rol de administrador a otro usuario o elimina la tienda primero.`,
+            400,
           );
         }
       }
@@ -146,9 +160,10 @@ export async function DELETE(request: NextRequest) {
 
     return successResponse(
       {
-        message: "Tu cuenta y todos tus datos asociados han sido eliminados permanentemente.",
+        message:
+          "Tu cuenta y todos tus datos asociados han sido eliminados permanentemente.",
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[USERS_ACCOUNT_DELETE_ERROR]", error);

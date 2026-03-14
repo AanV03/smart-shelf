@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import React, { useCallback } from "react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { useCallback } from "react";
 import {
   Package,
   BarChart3,
@@ -12,7 +12,7 @@ import {
   Users,
   Settings,
   CreditCard,
-} from "lucide-react"
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -28,32 +28,32 @@ import {
   SidebarMenuSubButton,
   SidebarSeparator,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { Badge } from "@/components/ui/badge"
-import { ChevronUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/collapsible";
+import { Badge } from "@/components/ui/badge";
+import { ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface AppSidebarProps {
-  role?: "ADMIN" | "MANAGER" | "EMPLOYEE"
+  role?: "ADMIN" | "MANAGER" | "EMPLOYEE";
 }
 
 interface NavItem {
-  id: string
-  href?: string
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-  isNew?: boolean
-  children?: NavItem[] | undefined
+  id: string;
+  href?: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  isNew?: boolean;
+  children?: NavItem[] | undefined;
 }
 
 export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
-  const pathname = usePathname()
-  const { isMobile, setOpenMobile } = useSidebar()
+  const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   // Manager navigation with operational focus (inventory, reports, catalog)
   const managerNav: NavItem[] = [
@@ -89,7 +89,7 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
         },
       ],
     },
-  ]
+  ];
 
   // Admin navigation - Store management only (NOT inventory/reports)
   const adminNav: NavItem[] = [
@@ -124,7 +124,7 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
       label: "Planes",
       icon: CreditCard,
     },
-  ]
+  ];
 
   // Employee navigation - Floor operations only (batch entry, inventory)
   const employeeNav: NavItem[] = [
@@ -146,27 +146,35 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
       label: "Inventario FEFO",
       icon: Package,
     },
-  ]
+  ];
 
-  const navItems = role === "ADMIN" ? adminNav : role === "MANAGER" ? managerNav : employeeNav
+  const navItems =
+    role === "ADMIN" ? adminNav : role === "MANAGER" ? managerNav : employeeNav;
 
   const isPathActive = useCallback(
     (href?: string) => {
-      if (!href) return false
-      return pathname === href || pathname.startsWith(href + "/")
+      if (!href) return false;
+      return pathname === href || pathname.startsWith(href + "/");
     },
-    [pathname]
-  )
+    [pathname],
+  );
 
   return (
-    <Sidebar collapsible="icon" variant="sidebar" className="bg-gradient-to-b from-sidebar via-sidebar to-sidebar dark:from-[#0a0e27] dark:via-[#162e40] dark:to-[#0a0e27] from-[#f5f5f7] via-[#e8f4f0] to-[#f5f5f7]">
+    <Sidebar
+      collapsible="icon"
+      variant="sidebar"
+      className="from-sidebar via-sidebar to-sidebar bg-gradient-to-b from-[#f5f5f7] via-[#e8f4f0] to-[#f5f5f7] dark:from-[#0a0e27] dark:via-[#162e40] dark:to-[#0a0e27]"
+    >
       {/* HEADER - LOGO */}
-      <SidebarHeader className="border-b border-sidebar-border h-16 flex items-center px-2">
+      <SidebarHeader className="border-sidebar-border flex h-16 items-center border-b px-2">
         <div className="flex flex-1 items-center gap-2">
-          <div className="flex size-8 items-center justify-center rounded-md bg-primary flex-shrink-0">
-            <Package className="size-5 text-primary-foreground" aria-hidden="true" />
+          <div className="bg-primary flex size-8 flex-shrink-0 items-center justify-center rounded-md">
+            <Package
+              className="text-primary-foreground size-5"
+              aria-hidden="true"
+            />
           </div>
-          <h1 className="text-sm font-bold tracking-tight text-sidebar-foreground whitespace-nowrap overflow-hidden group-data-[collapsible=icon]:hidden">
+          <h1 className="text-sidebar-foreground overflow-hidden text-sm font-bold tracking-tight whitespace-nowrap group-data-[collapsible=icon]:hidden">
             Smart-Shelf
           </h1>
         </div>
@@ -178,8 +186,11 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
-                const hasChildren = item.children && item.children.length > 0
-                const isActive = isPathActive(item.href) || (hasChildren && item.children?.some(child => isPathActive(child.href)))
+                const hasChildren = item.children && item.children.length > 0;
+                const isActive =
+                  isPathActive(item.href) ||
+                  (hasChildren &&
+                    item.children?.some((child) => isPathActive(child.href)));
 
                 if (!hasChildren) {
                   // Simple menu item without children
@@ -194,19 +205,26 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
                           <item.icon aria-hidden="true" />
                           <span>{item.label}</span>
                           {item.isNew && (
-                            <Badge variant="default" className="ml-auto h-5 py-0 px-1.5 text-xs">
+                            <Badge
+                              variant="default"
+                              className="ml-auto h-5 px-1.5 py-0 text-xs"
+                            >
                               Nuevo
                             </Badge>
                           )}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
-                  )
+                  );
                 }
 
                 // Collapsible group with children
                 return (
-                  <Collapsible key={item.id} defaultOpen={isActive} className="group/collapsible">
+                  <Collapsible
+                    key={item.id}
+                    defaultOpen={isActive}
+                    className="group/collapsible"
+                  >
                     <SidebarMenuItem>
                       <CollapsibleTrigger asChild>
                         <SidebarMenuButton
@@ -224,7 +242,7 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
                       <CollapsibleContent>
                         <SidebarMenuSub>
                           {item.children?.map((child) => {
-                            const childIsActive = isPathActive(child.href)
+                            const childIsActive = isPathActive(child.href);
                             return (
                               <SidebarMenuSubItem key={child.id}>
                                 <SidebarMenuSubButton
@@ -235,20 +253,23 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
                                     <child.icon aria-hidden="true" />
                                     <span>{child.label}</span>
                                     {child.isNew && (
-                                      <Badge variant="default" className="ml-auto h-4 py-0 px-1 text-xs">
+                                      <Badge
+                                        variant="default"
+                                        className="ml-auto h-4 px-1 py-0 text-xs"
+                                      >
                                         Nuevo
                                       </Badge>
                                     )}
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
-                            )
+                            );
                           })}
                         </SidebarMenuSub>
                       </CollapsibleContent>
                     </SidebarMenuItem>
                   </Collapsible>
-                )
+                );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -259,9 +280,11 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
       <SidebarSeparator className="my-0" />
 
       {/* FOOTER - ROLE */}
-      <SidebarFooter className="border-t-0 h-16 flex items-center justify-between px-2">
-        <div className="text-xs text-sidebar-foreground/70">
-          <span className="group-data-[collapsible=icon]:hidden">© Smart-Shelf</span>
+      <SidebarFooter className="flex h-16 items-center justify-between border-t-0 px-2">
+        <div className="text-sidebar-foreground/70 text-xs">
+          <span className="group-data-[collapsible=icon]:hidden">
+            © Smart-Shelf
+          </span>
           <span className="hidden group-data-[collapsible=icon]:inline">©</span>
         </div>
         {isMobile && (
@@ -277,6 +300,5 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
         )}
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
-

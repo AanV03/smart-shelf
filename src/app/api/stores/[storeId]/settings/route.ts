@@ -1,6 +1,10 @@
 import type { NextRequest } from "next/server";
 import { db } from "@/server/db";
-import { requireAuth, errorResponse, successResponse } from "@/app/api/users/utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+} from "@/app/api/users/utils";
 
 /**
  * PATCH /api/stores/[storeId]/settings
@@ -8,7 +12,7 @@ import { requireAuth, errorResponse, successResponse } from "@/app/api/users/uti
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ storeId: string }> }
+  { params }: { params: Promise<{ storeId: string }> },
 ) {
   try {
     const auth = await requireAuth();
@@ -21,14 +25,14 @@ export async function PATCH(
 
     // Validar que el usuario sea ADMIN de esta tienda
     const isAdmin = sessionUser.stores?.some(
-      (store) => store.id === storeId && store.role === "ADMIN"
+      (store) => store.id === storeId && store.role === "ADMIN",
     );
 
     if (!isAdmin) {
       return errorResponse("No tienes permiso para modificar esta tienda", 403);
     }
 
-    const body = await request.json() as {
+    const body = (await request.json()) as {
       name?: string;
       location?: string;
       phone?: string;
@@ -61,7 +65,7 @@ export async function PATCH(
         message: "Configuración actualizada correctamente",
         store: updatedStore,
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[SETTINGS_UPDATE_ERROR]", error);

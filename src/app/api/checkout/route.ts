@@ -10,10 +10,10 @@ import { requireAuth, errorResponse, successResponse } from "../users/utils";
  */
 export async function POST(request: NextRequest) {
   console.log("[CHECKOUT] Request received");
-  
+
   try {
     console.log("[CHECKOUT] Step 1: Checking Stripe config");
-    
+
     // ✅ Validar que Stripe esté configurado
     if (!env.STRIPE_SECRET_KEY) {
       console.error("[CHECKOUT] STRIPE_SECRET_KEY not configured");
@@ -21,12 +21,12 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("[CHECKOUT] Step 2: Initializing Stripe");
-    
+
     // Inicializar cliente de Stripe
     const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
     console.log("[CHECKOUT] Step 3: Validating auth");
-    
+
     // ✅ Validar autenticación
     const auth = await requireAuth();
     if (!auth.isValid) {
@@ -35,14 +35,14 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("[CHECKOUT] Step 4: Getting session user");
-    
+
     const { user: sessionUser } = auth.session!;
 
     console.log("[CHECKOUT] Step 5: Checking ADMIN role");
-    
+
     // ✅ Validar que el usuario tenga rol ADMIN en al menos una store
     const hasAdminRole = sessionUser.stores?.some(
-      (store) => store.role === "ADMIN" && store.status === "ACTIVE"
+      (store) => store.role === "ADMIN" && store.status === "ACTIVE",
     );
 
     if (!hasAdminRole) {
@@ -52,27 +52,30 @@ export async function POST(request: NextRequest) {
       });
       return errorResponse(
         "Solo administradores pueden acceder al checkout",
-        403
+        403,
       );
     }
 
     console.log("[CHECKOUT] Step 6: Parsing request body");
-    
+
     // ✅ Parsear y validar el body
-    const body = await request.json() as {
+    const body = (await request.json()) as {
       storeId?: string;
       priceId?: string;
       successUrl?: string;
       cancelUrl?: string;
     };
 
-    console.log("[CHECKOUT] Body received:", { storeId: body.storeId, priceId: body.priceId });
+    console.log("[CHECKOUT] Body received:", {
+      storeId: body.storeId,
+      priceId: body.priceId,
+    });
 
     const {
       storeId,
       priceId,
-      successUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/dashboard`,
+      successUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/dashboard`,
     } = body;
 
     if (!storeId) {
@@ -86,10 +89,10 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("[CHECKOUT] Step 7: Checking store access");
-    
+
     // ✅ Validar que el usuario tenga acceso a esta store como ADMIN
     const hasAccessToStore = sessionUser.stores?.some(
-      (store) => store.id === storeId && store.role === "ADMIN"
+      (store) => store.id === storeId && store.role === "ADMIN",
     );
 
     if (!hasAccessToStore) {
@@ -142,26 +145,33 @@ export async function POST(request: NextRequest) {
           url: session.url,
         },
       },
-      200
+      200,
     );
   } catch (error) {
     console.error("[CHECKOUT_ERROR] Exception caught");
-    console.error("[CHECKOUT_ERROR] Error type:", error instanceof Error ? "Error" : typeof error);
-    
+    console.error(
+      "[CHECKOUT_ERROR] Error type:",
+      error instanceof Error ? "Error" : typeof error,
+    );
+
     if (error instanceof Error) {
       console.error("[CHECKOUT_ERROR_MESSAGE]", error.message);
-      console.error("[CHECKOUT_ERROR] Partial stack:", error.message.substring(0, 500));
-      
+      console.error(
+        "[CHECKOUT_ERROR] Partial stack:",
+        error.message.substring(0, 500),
+      );
+
       // Manejar errores específicos de Stripe
       if (error.message.includes("stripe") || error.message.includes("price")) {
         console.log("[CHECKOUT] Returning Stripe-specific error");
-        return errorResponse(
-          `Error de Stripe: ${error.message}`,
-          402
-        );
+        return errorResponse(`Error de Stripe: ${error.message}`, 402);
       }
     } else {
-      console.error("[CHECKOUT_ERROR] Non-Error exception:", typeof error, String(error).substring(0, 200));
+      console.error(
+        "[CHECKOUT_ERROR] Non-Error exception:",
+        typeof error,
+        String(error).substring(0, 200),
+      );
     }
 
     console.log("[CHECKOUT] Returning generic 500 error");

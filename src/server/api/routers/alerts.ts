@@ -13,7 +13,7 @@ export const alertsRouter = createTRPCRouter({
         severity: z.enum(["INFO", "WARNING", "CRITICAL"]).optional(),
         limit: z.number().default(50),
         offset: z.number().default(0),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const storeId = ctx.session.user.stores?.[0]?.id;
@@ -40,7 +40,11 @@ export const alertsRouter = createTRPCRouter({
 
       const total = await ctx.db.alert.count({ where });
 
-      return { alerts, total, pageInfo: { limit: input.limit, offset: input.offset } };
+      return {
+        alerts,
+        total,
+        pageInfo: { limit: input.limit, offset: input.offset },
+      };
     }),
 
   /**
@@ -172,7 +176,7 @@ export const alertsRouter = createTRPCRouter({
         message: z.string().min(1),
         batchId: z.string().optional(),
         productId: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const storeId = ctx.session.user.stores?.[0]?.id;

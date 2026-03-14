@@ -12,7 +12,7 @@ export const productRouter = createTRPCRouter({
         categoryId: z.string().optional(),
         limit: z.number().default(50),
         offset: z.number().default(0),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const storeId = ctx.session.user.stores?.[0]?.id;
@@ -39,7 +39,11 @@ export const productRouter = createTRPCRouter({
 
       const total = await ctx.db.product.count({ where });
 
-      return { products, total, pageInfo: { limit: input.limit, offset: input.offset } };
+      return {
+        products,
+        total,
+        pageInfo: { limit: input.limit, offset: input.offset },
+      };
     }),
 
   /**
@@ -99,7 +103,7 @@ export const productRouter = createTRPCRouter({
         name: z.string().min(1),
         sku: z.string().min(1),
         categoryId: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const storeId = ctx.session.user.stores?.[0]?.id;
@@ -155,7 +159,7 @@ export const productRouter = createTRPCRouter({
         productId: z.string(),
         name: z.string().min(1).optional(),
         categoryId: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const storeId = ctx.session.user.stores?.[0]?.id;
@@ -196,7 +200,8 @@ export const productRouter = createTRPCRouter({
         }
       }
 
-      const updateData: Parameters<typeof ctx.db.product.update>[0]["data"] = {};
+      const updateData: Parameters<typeof ctx.db.product.update>[0]["data"] =
+        {};
 
       if (input.name) updateData.name = input.name;
       if (input.categoryId) updateData.categoryId = input.categoryId;

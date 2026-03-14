@@ -121,7 +121,7 @@ export const statsRouter = createTRPCRouter({
     }
 
     return Array.from(categoryMap.values()).sort((a, b) =>
-      a.category.localeCompare(b.category)
+      a.category.localeCompare(b.category),
     );
   }),
 

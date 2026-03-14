@@ -3,10 +3,10 @@ import { processAllStoreReports } from "@/server/services/report-generator";
 
 /**
  * POST /api/cron/generate-reports
- * 
+ *
  * Cron job que se ejecuta diariamente para generar reportes financieros
  * y enviarlos por email a los managers
- * 
+ *
  * Requerimientos:
  * - CRON_SECRET debe estar configurado en variables de entorno
  * - El job debe ejecutarse desde un servicio de cron (Vercel Cron, etc)
@@ -23,16 +23,13 @@ export async function POST(request: NextRequest) {
       console.warn("[CRON_REPORTS] CRON_SECRET not configured");
       return NextResponse.json(
         { error: "CRON_SECRET not configured" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     if (authHeader !== `Bearer ${cronSecret}`) {
       console.warn("[CRON_REPORTS] Unauthorized request");
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     console.log("[CRON_REPORTS] Starting report generation process");
@@ -47,7 +44,7 @@ export async function POST(request: NextRequest) {
         message: "Report generation completed successfully",
         timestamp: new Date().toISOString(),
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[CRON_REPORTS_ERROR]", error);
@@ -57,7 +54,7 @@ export async function POST(request: NextRequest) {
         error: error instanceof Error ? error.message : "Unknown error",
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

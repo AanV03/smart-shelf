@@ -17,9 +17,10 @@ export default function AuthPage() {
   // - If authenticated but NO active stores → redirect to onboarding
   // - If not authenticated → show login/register forms
   if (status === "authenticated" && session?.user) {
-    const activeStores = session.user.stores?.filter(
-      (s) => s.status === "ACTIVE" && s.role !== "PENDING"
-    ) ?? [];
+    const activeStores =
+      session.user.stores?.filter(
+        (s) => s.status === "ACTIVE" && s.role !== "PENDING",
+      ) ?? [];
 
     if (activeStores.length > 0) {
       redirect("/dashboard");
@@ -29,27 +30,27 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-4">
       {/* Animated Background Gradients */}
-      <div className="absolute inset-0 -z-10 bg-linear-to-br from-background via-background to-background">
+      <div className="from-background via-background to-background absolute inset-0 -z-10 bg-linear-to-br">
         {/* Blob 1 - Primary */}
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/15 rounded-full mix-blend-multiply filter blur-3xl animate-blob opacity-40 pointer-events-none"></div>
+        <div className="bg-primary/15 animate-blob pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full opacity-40 mix-blend-multiply blur-3xl filter"></div>
 
         {/* Blob 2 - Secondary */}
-        <div className="absolute top-1/3 -right-32 w-96 h-96 bg-secondary/15 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000 opacity-40 pointer-events-none"></div>
+        <div className="bg-secondary/15 animate-blob animation-delay-2000 pointer-events-none absolute top-1/3 -right-32 h-96 w-96 rounded-full opacity-40 mix-blend-multiply blur-3xl filter"></div>
 
         {/* Blob 3 - Primary again */}
-        <div className="absolute -bottom-40 left-1/3 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000 opacity-30 pointer-events-none"></div>
+        <div className="bg-primary/10 animate-blob animation-delay-4000 pointer-events-none absolute -bottom-40 left-1/3 h-96 w-96 rounded-full opacity-30 mix-blend-multiply blur-3xl filter"></div>
 
         {/* Ambient Light Effect */}
-        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-background opacity-50"></div>
+        <div className="bg-gradient-radial to-background absolute inset-0 from-transparent via-transparent opacity-50"></div>
       </div>
 
       {/* Content Container */}
       <div className="relative w-full max-w-md">
         {/* Header Animation */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-primary via-primary to-secondary bg-clip-text text-transparent mb-3">
+        <div className="animate-fade-in mb-12 text-center">
+          <h1 className="from-primary via-primary to-secondary mb-3 bg-linear-to-r bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
             Smart-Shelf
           </h1>
           <p className="text-muted-foreground text-lg">
@@ -69,7 +70,7 @@ export default function AuthPage() {
         </div>
 
         {/* Footer Info */}
-        <div className="mt-8 text-center text-sm text-muted-foreground animate-fade-in">
+        <div className="text-muted-foreground animate-fade-in mt-8 text-center text-sm">
           <p>
             Mantén tu inventario{" "}
             <span className="text-primary font-semibold">organizado</span> y{" "}
