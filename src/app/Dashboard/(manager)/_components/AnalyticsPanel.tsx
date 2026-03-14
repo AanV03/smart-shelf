@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import {
   BarChart3,
@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 
 export function AnalyticsPanel() {
+  const [isExporting, setIsExporting] = useState(false);
   // Main dashboard stats
   const { data: dashboardStats, isLoading: statsLoading } =
     api.stats.getDashboardStats.useQuery();
@@ -66,6 +67,43 @@ export function AnalyticsPanel() {
       </Card>
     );
   }
+
+  // Handle export functionality
+  const handleExportTrend = () => {
+    if (!trendData || trendData.length === 0) return;
+    
+    setIsExporting(true);
+    try {
+      // Create CSV content
+      const headers = ["Fecha", "Unidades Expirando"];
+      const rows = trendData.map((point) => [
+        format(new Date(point.date), "yyyy-MM-dd"),
+        point.expiringCount,
+      ]);
+      
+      const csvContent = [
+        headers.join(","),
+        ...rows.map((row) => row.join(",")),
+      ].join("\n");
+      
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute("href", url);
+      link.setAttribute("download", `tendencia-expiracion-${format(new Date(), "yyyy-MM-dd")}.csv`);
+      link.style.visibility = "hidden";
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("[ANALYTICS_EXPORT_ERROR]", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -171,9 +209,15 @@ export function AnalyticsPanel() {
               <TrendingDown className="text-primary h-5 w-5" />
               Tendencia de Expiración (30 días)
             </CardTitle>
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
+              onClick={handleExportTrend}
+              disabled={isExporting || !trendData || trendData.length === 0}
+            >
               <Download className="h-4 w-4" />
-              Exportar
+              {isExporting ? "Exportando..." : "Exportar"}
             </Button>
           </div>
         </CardHeader>

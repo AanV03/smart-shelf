@@ -136,11 +136,11 @@ export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
                       <div>
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
                         <p className="font-medium">
-                          {(batch as any).product.name}
+                          {(batch as any).Product.name}
                         </p>
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
                         <p className="text-muted-foreground text-xs">
-                          {(batch as any).product.sku}
+                          {(batch as any).Product.sku}
                         </p>
                       </div>
                     </td>

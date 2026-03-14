@@ -277,11 +277,11 @@ export function StrategicInventoryTable() {
                         <div>
                           <p className="text-foreground font-bold">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
-                            {(batch as any).product.name}
+                            {(batch as any).Product.name}
                           </p>
                           <p className="text-muted-foreground text-xs">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access */}
-                            {(batch as any).product.sku} • Lote:{" "}
+                            {(batch as any).Product.sku} • Lote:{" "}
                             {batch.batchNumber}
                           </p>
                         </div>
