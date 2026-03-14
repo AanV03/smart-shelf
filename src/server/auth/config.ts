@@ -36,6 +36,13 @@ declare module "next-auth" {
   }
 }
 
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    status: string;
+  }
+}
+
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -210,7 +217,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         // ✅ When user object is passed (login/register), use its ID
         token.id = user.id;
-        token.email = user.email || token.email;
+        token.email = user.email ?? token.email;
         token.status = (user as any)?.status ?? "ACTIVE";
 
         console.log("[AUTH_JWT] Token updated from user", {
@@ -273,7 +280,7 @@ export const authOptions: NextAuthOptions = {
           });
           // ✅ Try to find by email as fallback
           const userByEmail = await db.user.findUnique({
-            where: { email: token.email as string },
+            where: { email: token.email! },
           });
           if (userByEmail) {
             console.log("[AUTH_SESSION] Found user by email, updating token.id", {
@@ -291,7 +298,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Set user id and status from token
-        session.user.id = token.id as string;
+        session.user.id = token.id!
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         session.user.status = (token.status ?? "ACTIVE") as string;
 
@@ -299,7 +306,7 @@ export const authOptions: NextAuthOptions = {
 
         // Fetch stores and roles from StoreMember
         const storeMembers = await db.storeMember.findMany({
-          where: { userId: token.id as string },
+          where: { userId: token.id! },
           include: {
             store: {
               select: {

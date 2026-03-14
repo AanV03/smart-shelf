@@ -1,5 +1,6 @@
 import ManagerDashboard from "@/app/_components/ManagerDashboard/ManagerDashboard";
 import EmployeeDashboard from "@/app/_components/EmployeeDashboard/EmployeeDashboard";
+import AdminDashboard from "@/app/_components/AdminDashboard/AdminDashboard";
 import { getServerAuthSession } from "@/server/auth"; // Magia de T3
 import { redirect } from "next/navigation";
 
@@ -12,5 +13,10 @@ export default async function DashboardPage() {
 
     // 3. Renderizamos el componente correcto según su rol
     const userRole = session.user.stores?.[0]?.role;
-    return userRole === "MANAGER" || userRole === "ADMIN" ? <ManagerDashboard /> : <EmployeeDashboard />;
+    
+    if (userRole === "ADMIN") {
+        return <AdminDashboard />;
+    }
+    
+    return userRole === "MANAGER" ? <ManagerDashboard /> : <EmployeeDashboard />;
 }

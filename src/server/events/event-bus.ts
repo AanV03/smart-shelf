@@ -117,7 +117,7 @@ export function subscribe(
  * ```
  */
 export async function getPendingEvents(
-  limit: number = 100
+  limit = 100
 ): Promise<Event[]> {
   // TODO: Query from database when Event model is added
   // For now, return from in-memory queue

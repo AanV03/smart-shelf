@@ -33,7 +33,7 @@ export const inventoryRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       // ✅ Multi-tenant: Get store from input or use default from middleware
       const requestedStoreId = input.storeId ?? ctx.defaultStoreId;
-      
+
       // ✅ SECURITY: Verify user has access to requested store
       const hasAccess = ctx.session.user.stores?.some(s => s.id === requestedStoreId);
       if (!hasAccess) {
@@ -119,7 +119,8 @@ export const inventoryRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const storeId = ctx.defaultStoreId;
+      // ✅ Protected by protectedProcedureWithStore - garantiza que defaultStoreId existe
+      const storeId = ctx.defaultStoreId!
 
       // Verify product exists and belongs to store
       const product = await ctx.db.product.findFirst({

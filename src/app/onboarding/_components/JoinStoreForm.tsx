@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { api } from "@/trpc/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,15 +12,22 @@ import { Loader2, AlertCircle, LogIn } from "lucide-react";
 
 export function JoinStoreForm() {
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const [invitationCode, setInvitationCode] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const joinStoreMutation = api.stores.joinStoreWithInvitationCode.useMutation({
-    onSuccess: (data) => {
-      // Redirect to dashboard after successful join
+    onSuccess: async (data) => {
+      console.log("[JoinStoreForm] Success:", data);
+      
+      // ✅ Refresh session to get new stores and role
+      await updateSession();
+      
+      // Redirect to dashboard after session update
       router.push("/dashboard");
     },
     onError: (error) => {
+      console.error("[JoinStoreForm] Error:", error);
       setError(error.message || "Error al unirse a la tienda");
     },
   });

@@ -5,7 +5,6 @@ import { RecentEntries } from "./RecentEntries"
 import { Boxes, TrendingUp, CheckCircle2, ArrowRight, AlertCircle } from "lucide-react"
 import { api } from "@/trpc/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 
 export default function EmployeeDashboard() {
   // Get batches for today
@@ -134,7 +133,7 @@ export default function EmployeeDashboard() {
             {/* Quick Action - Ingresar Lote */}
             <div className="lg:col-span-3">
               <Link href="/dashboard/batch-entry">
-                <Card className="border-primary/40 bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm hover:shadow-lg transition-all cursor-pointer hover:border-primary/60 group">
+                <Card className="border-primary/40 bg-linear-to-br from-primary/10 to-primary/5 backdrop-blur-sm hover:shadow-lg transition-all cursor-pointer hover:border-primary/60 group">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="space-y-2">

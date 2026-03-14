@@ -24,7 +24,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { DarkModeSwitch } from "./dark-mode-switch"
 
 interface AppTopBarProps {
-  role?: "MANAGER" | "EMPLOYEE"
+  role?: "ADMIN" | "MANAGER" | "EMPLOYEE"
 }
 
 export function AppTopBar({ role = "EMPLOYEE" }: AppTopBarProps) {
@@ -53,7 +53,7 @@ export function AppTopBar({ role = "EMPLOYEE" }: AppTopBarProps) {
     : "US"
 
   return (
-    <header className="h-16 sticky top-0 z-40 flex shrink-0 items-center justify-between border-b border-border bg-gradient-to-r dark:from-[#0a0e27] dark:via-[#1a4d3e] dark:to-[#0a0e27] from-[#f5f5f7] via-[#c8e6e0] to-[#f5f5f7] backdrop-blur-sm px-6">
+    <header className="h-16 sticky top-0 z-40 flex shrink-0 items-center justify-between border-b border-border bg-linear-to-r dark:from-[#0a0e27] dark:via-[#1a4d3e] dark:to-[#0a0e27] from-[#f5f5f7] via-[#c8e6e0] to-[#f5f5f7] backdrop-blur-sm px-6">
       {/* Left: Sidebar Trigger + Logo/Title */}
       <div className="flex items-center gap-4">
         <SidebarTrigger className="text-foreground" />
@@ -92,15 +92,15 @@ export function AppTopBar({ role = "EMPLOYEE" }: AppTopBarProps) {
               variant="ghost"
               className="relative gap-2 px-2 sm:pr-3 h-9 w-auto sm:w-auto justify-between"
             >
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold flex-shrink-0">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold shrink-0">
                 {userInitials}
               </div>
               <div className="hidden flex-col text-left sm:flex">
-                <div className="text-xs font-medium leading-tight truncate max-w-[150px]">
+                <div className="text-xs font-medium leading-tight truncate max-w-37.5">
                   {session?.user?.email ?? "User"}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {role === "MANAGER" ? "Manager" : "Employee"}
+                  {role === "ADMIN" ? "Admin" : role === "MANAGER" ? "Manager" : "Employee"}
                 </div>
               </div>
               <ChevronsUpDown className="ml-1 h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />

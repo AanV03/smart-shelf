@@ -40,7 +40,7 @@ export async function onManagerInvited(event: Event): Promise<void> {
       select: { name: true, email: true },
     });
 
-    if (!manager || !manager.email) {
+    if (!manager?.email) {
       throw new Error(`Manager not found or has no email: ${payload.userId}`);
     }
 
@@ -64,12 +64,12 @@ export async function onManagerInvited(event: Event): Promise<void> {
       })
     ).toString("base64");
 
-    const acceptUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/invitations/accept?token=${acceptToken}`;
+    const acceptUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/invitations/accept?token=${acceptToken}`;
 
     // Send email
     await sendInvitationEmail({
       to: manager.email,
-      recipientName: manager.name || "Gerente",
+      recipientName: manager.name ?? "Gerente",
       storeName: store.name,
       role: "Manager",
       acceptUrl,
@@ -110,7 +110,7 @@ export async function onEmployeeInvited(event: Event): Promise<void> {
       select: { name: true, email: true },
     });
 
-    if (!employee || !employee.email) {
+    if (!employee?.email) {
       throw new Error(`Employee not found or has no email: ${payload.userId}`);
     }
 
@@ -134,12 +134,12 @@ export async function onEmployeeInvited(event: Event): Promise<void> {
       })
     ).toString("base64");
 
-    const acceptUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/invitations/accept?token=${acceptToken}`;
+    const acceptUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/invitations/accept?token=${acceptToken}`;
 
     // Send email
     await sendInvitationEmail({
       to: employee.email,
-      recipientName: employee.name || "Empleado",
+      recipientName: employee.name ?? "Empleado",
       storeName: store.name,
       role: "Empleado",
       acceptUrl,

@@ -50,7 +50,7 @@ export async function sendInvitationEmail({
         Authorization: `Bearer ${env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: env.RESEND_FROM_EMAIL || "noreply@smart-shelf.app",
+        from: env.RESEND_FROM_EMAIL ?? "noreply@smart-shelf.app",
         to,
         subject: `¡Bienvenido a ${storeName}!`,
         html: generateInvitationHTML({

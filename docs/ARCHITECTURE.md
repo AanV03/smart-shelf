@@ -371,6 +371,8 @@ Usuario solicita eliminar cuenta
 │ id: String (cuid) PRIMARY KEY                   │
 │ name: String                                    │
 │ location: String?                               │
+│ stripeCustomerId: String?  <-- NUEVO (Para Stripe) │
+│ subscriptionStatus: String? <-- NUEVO (ACTIVE, INACTIVE) │
 │ createdAt: DateTime DEFAULT(now())              │
 │ updatedAt: DateTime AUTO_UPDATE                 │
 │                                                 │
@@ -379,6 +381,17 @@ Usuario solicita eliminar cuenta
 │ - products: Product[]                           │
 │ - batches: Batch[]                              │
 │ - alerts: Alert[]                               │
+│ - reports: Report[]        <-- NUEVO (Para Blob)│
+└─────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────┐
+│ Report (NUEVO - Para Vercel Blob)               │
+├─────────────────────────────────────────────────┤
+│ id: String (cuid) PRIMARY KEY                   │
+│ title: String                                   │
+│ fileUrl: String  <-- (Aquí va la URL de Vercel Blob) │
+│ storeId: String FK → Store                      │
+│ createdAt: DateTime DEFAULT(now())              │
 └─────────────────────────────────────────────────┘
 ```
 

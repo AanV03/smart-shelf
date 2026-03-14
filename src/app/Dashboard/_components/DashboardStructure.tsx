@@ -7,7 +7,7 @@ import { AppTopBar } from "@/app/_components/shared/app-top-bar";
 
 interface DashboardStructureProps {
   children: React.ReactNode;
-  role: "MANAGER" | "EMPLOYEE";
+  role: "ADMIN" | "MANAGER" | "EMPLOYEE";
 }
 
 export function DashboardStructure({ children, role }: DashboardStructureProps) {

@@ -8,6 +8,7 @@
  */
 
 import { initTRPC, TRPCError } from "@trpc/server";
+import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -133,6 +134,16 @@ export const protectedProcedure = t.procedure
   });
 
 /**
+ * Context type for procedures with store validation
+ */
+export type ProtectedWithStoreContext = {
+  session: Session & { user: Session["user"] };
+  defaultStoreId: string;
+  db: typeof db;
+  headers: Headers;
+};
+
+/**
  * Protected procedure with store validation (MULTI-TENANT)
  *
  * Use this for procedures that require user to be authenticated AND
@@ -163,11 +174,14 @@ export const protectedProcedureWithStore = t.procedure
       });
     }
 
+    const enrichedCtx = {
+      ...ctx,
+      session: { ...ctx.session, user: ctx.session.user },
+      // ✅ ADD: Default storeId for easy access in procedures
+      defaultStoreId: activeStores[0]!.id,
+    } as ProtectedWithStoreContext;
+
     return next({
-      ctx: {
-        session: { ...ctx.session, user: ctx.session.user },
-        // ✅ ADD: Default storeId for easy access in procedures
-        defaultStoreId: activeStores[0]?.id,
-      },
+      ctx: enrichedCtx,
     });
   });

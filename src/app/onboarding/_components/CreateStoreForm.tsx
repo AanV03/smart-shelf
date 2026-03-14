@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { api } from "@/trpc/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,14 +12,19 @@ import { Loader2, AlertCircle, CheckCircle } from "lucide-react";
 
 export function CreateStoreForm() {
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const createStoreMutation = api.stores.createStore.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       console.log("[CreateStoreForm] Success:", data);
-      // Redirect to dashboard after successful creation
+      
+      // ✅ Refresh session to get new stores and role
+      await updateSession();
+      
+      // Redirect to dashboard after session update
       router.push("/dashboard");
     },
     onError: (error) => {

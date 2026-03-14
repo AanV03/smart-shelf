@@ -9,6 +9,8 @@ import {
   Home,
   Grid3x3,
   ChevronDown,
+  Users,
+  Settings,
 } from "lucide-react"
 import {
   Sidebar,
@@ -36,7 +38,7 @@ import { ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface AppSidebarProps {
-  role?: "MANAGER" | "EMPLOYEE"
+  role?: "ADMIN" | "MANAGER" | "EMPLOYEE"
 }
 
 interface NavItem {
@@ -52,7 +54,7 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
   const pathname = usePathname()
   const { isMobile, setOpenMobile } = useSidebar()
 
-  // Manager navigation with collapsible groups
+  // Manager navigation with operational focus (inventory, reports, catalog)
   const managerNav: NavItem[] = [
     {
       id: "home",
@@ -88,7 +90,36 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
     },
   ]
 
-  // Employee navigation (simpler)
+  // Admin navigation - Store management only (NOT inventory/reports)
+  const adminNav: NavItem[] = [
+    {
+      id: "home",
+      href: "/dashboard",
+      label: "Home",
+      icon: Home,
+    },
+    {
+      id: "team-group",
+      label: "Gestión",
+      icon: Users,
+      children: [
+        {
+          id: "team-management",
+          href: "/dashboard/team",
+          label: "Equipo",
+          icon: Users,
+        },
+        {
+          id: "store-settings",
+          href: "/dashboard/settings",
+          label: "Configuración",
+          icon: Settings,
+        },
+      ],
+    },
+  ]
+
+  // Employee navigation - Floor operations only (batch entry, inventory)
   const employeeNav: NavItem[] = [
     {
       id: "home",
@@ -110,7 +141,7 @@ export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
     },
   ]
 
-  const navItems = role === "MANAGER" ? managerNav : employeeNav
+  const navItems = role === "ADMIN" ? adminNav : role === "MANAGER" ? managerNav : employeeNav
 
   const isPathActive = useCallback(
     (href?: string) => {
