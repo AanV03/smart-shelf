@@ -127,6 +127,7 @@ model Store {
   Batch     Batch[]
   Product   Product[]
   members   StoreMember[]
+  invitations InvitationToken[] @relation("InvitationTokens")
 
   @@index([name])
 }
@@ -156,6 +157,24 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model InvitationToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  storeId   String
+  role      StoreRole @default(EMPLOYEE)
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  usedAt    DateTime?
+  usedBy    String?
+
+  store     Store    @relation("InvitationTokens", fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([storeId])
+  @@index([expiresAt])
 }
 
 enum StoreRole {

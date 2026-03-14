@@ -224,6 +224,18 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.InvitationTokenScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token',
+  storeId: 'storeId',
+  role: 'role',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  usedBy: 'usedBy'
+};
+
 exports.Prisma.StoreMemberScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -271,6 +283,7 @@ exports.Prisma.ModelName = {
   Store: 'Store',
   User: 'User',
   VerificationToken: 'VerificationToken',
+  InvitationToken: 'InvitationToken',
   StoreMember: 'StoreMember'
 };
 

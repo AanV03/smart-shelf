@@ -64,6 +64,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTokenPayload>
 /**
+ * Model InvitationToken
+ * 
+ */
+export type InvitationToken = $Result.DefaultSelection<Prisma.$InvitationTokenPayload>
+/**
  * Model StoreMember
  * 
  */
@@ -318,6 +323,16 @@ export class PrismaClient<
     * ```
     */
   get verificationToken(): Prisma.VerificationTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.invitationToken`: Exposes CRUD operations for the **InvitationToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InvitationTokens
+    * const invitationTokens = await prisma.invitationToken.findMany()
+    * ```
+    */
+  get invitationToken(): Prisma.InvitationTokenDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.storeMember`: Exposes CRUD operations for the **StoreMember** model.
@@ -779,6 +794,7 @@ export namespace Prisma {
     Store: 'Store',
     User: 'User',
     VerificationToken: 'VerificationToken',
+    InvitationToken: 'InvitationToken',
     StoreMember: 'StoreMember'
   };
 
@@ -798,7 +814,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "alert" | "batch" | "category" | "post" | "product" | "session" | "store" | "user" | "verificationToken" | "storeMember"
+      modelProps: "account" | "alert" | "batch" | "category" | "post" | "product" | "session" | "store" | "user" | "verificationToken" | "invitationToken" | "storeMember"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1542,6 +1558,80 @@ export namespace Prisma {
           }
         }
       }
+      InvitationToken: {
+        payload: Prisma.$InvitationTokenPayload<ExtArgs>
+        fields: Prisma.InvitationTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InvitationTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InvitationTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.InvitationTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InvitationTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>
+          }
+          findMany: {
+            args: Prisma.InvitationTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>[]
+          }
+          create: {
+            args: Prisma.InvitationTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>
+          }
+          createMany: {
+            args: Prisma.InvitationTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InvitationTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.InvitationTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>
+          }
+          update: {
+            args: Prisma.InvitationTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.InvitationTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InvitationTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InvitationTokenUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>[]
+          }
+          upsert: {
+            args: Prisma.InvitationTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvitationTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.InvitationTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInvitationToken>
+          }
+          groupBy: {
+            args: Prisma.InvitationTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InvitationTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InvitationTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<InvitationTokenCountAggregateOutputType> | number
+          }
+        }
+      }
       StoreMember: {
         payload: Prisma.$StoreMemberPayload<ExtArgs>
         fields: Prisma.StoreMemberFieldRefs
@@ -1722,6 +1812,7 @@ export namespace Prisma {
     store?: StoreOmit
     user?: UserOmit
     verificationToken?: VerificationTokenOmit
+    invitationToken?: InvitationTokenOmit
     storeMember?: StoreMemberOmit
   }
 
@@ -1869,6 +1960,7 @@ export namespace Prisma {
     Batch: number
     Product: number
     members: number
+    invitations: number
   }
 
   export type StoreCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1876,6 +1968,7 @@ export namespace Prisma {
     Batch?: boolean | StoreCountOutputTypeCountBatchArgs
     Product?: boolean | StoreCountOutputTypeCountProductArgs
     members?: boolean | StoreCountOutputTypeCountMembersArgs
+    invitations?: boolean | StoreCountOutputTypeCountInvitationsArgs
   }
 
   // Custom InputTypes
@@ -1915,6 +2008,13 @@ export namespace Prisma {
    */
   export type StoreCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StoreMemberWhereInput
+  }
+
+  /**
+   * StoreCountOutputType without action
+   */
+  export type StoreCountOutputTypeCountInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InvitationTokenWhereInput
   }
 
 
@@ -10016,6 +10116,7 @@ export namespace Prisma {
     Batch?: boolean | Store$BatchArgs<ExtArgs>
     Product?: boolean | Store$ProductArgs<ExtArgs>
     members?: boolean | Store$membersArgs<ExtArgs>
+    invitations?: boolean | Store$invitationsArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["store"]>
 
@@ -10049,6 +10150,7 @@ export namespace Prisma {
     Batch?: boolean | Store$BatchArgs<ExtArgs>
     Product?: boolean | Store$ProductArgs<ExtArgs>
     members?: boolean | Store$membersArgs<ExtArgs>
+    invitations?: boolean | Store$invitationsArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -10061,6 +10163,7 @@ export namespace Prisma {
       Batch: Prisma.$BatchPayload<ExtArgs>[]
       Product: Prisma.$ProductPayload<ExtArgs>[]
       members: Prisma.$StoreMemberPayload<ExtArgs>[]
+      invitations: Prisma.$InvitationTokenPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10466,6 +10569,7 @@ export namespace Prisma {
     Batch<T extends Store$BatchArgs<ExtArgs> = {}>(args?: Subset<T, Store$BatchArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Product<T extends Store$ProductArgs<ExtArgs> = {}>(args?: Subset<T, Store$ProductArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     members<T extends Store$membersArgs<ExtArgs> = {}>(args?: Subset<T, Store$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoreMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invitations<T extends Store$invitationsArgs<ExtArgs> = {}>(args?: Subset<T, Store$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10981,6 +11085,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StoreMemberScalarFieldEnum | StoreMemberScalarFieldEnum[]
+  }
+
+  /**
+   * Store.invitations
+   */
+  export type Store$invitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    where?: InvitationTokenWhereInput
+    orderBy?: InvitationTokenOrderByWithRelationInput | InvitationTokenOrderByWithRelationInput[]
+    cursor?: InvitationTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InvitationTokenScalarFieldEnum | InvitationTokenScalarFieldEnum[]
   }
 
   /**
@@ -13206,6 +13334,1116 @@ export namespace Prisma {
 
 
   /**
+   * Model InvitationToken
+   */
+
+  export type AggregateInvitationToken = {
+    _count: InvitationTokenCountAggregateOutputType | null
+    _min: InvitationTokenMinAggregateOutputType | null
+    _max: InvitationTokenMaxAggregateOutputType | null
+  }
+
+  export type InvitationTokenMinAggregateOutputType = {
+    id: string | null
+    email: string | null
+    token: string | null
+    storeId: string | null
+    role: $Enums.StoreRole | null
+    createdAt: Date | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    usedBy: string | null
+  }
+
+  export type InvitationTokenMaxAggregateOutputType = {
+    id: string | null
+    email: string | null
+    token: string | null
+    storeId: string | null
+    role: $Enums.StoreRole | null
+    createdAt: Date | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    usedBy: string | null
+  }
+
+  export type InvitationTokenCountAggregateOutputType = {
+    id: number
+    email: number
+    token: number
+    storeId: number
+    role: number
+    createdAt: number
+    expiresAt: number
+    usedAt: number
+    usedBy: number
+    _all: number
+  }
+
+
+  export type InvitationTokenMinAggregateInputType = {
+    id?: true
+    email?: true
+    token?: true
+    storeId?: true
+    role?: true
+    createdAt?: true
+    expiresAt?: true
+    usedAt?: true
+    usedBy?: true
+  }
+
+  export type InvitationTokenMaxAggregateInputType = {
+    id?: true
+    email?: true
+    token?: true
+    storeId?: true
+    role?: true
+    createdAt?: true
+    expiresAt?: true
+    usedAt?: true
+    usedBy?: true
+  }
+
+  export type InvitationTokenCountAggregateInputType = {
+    id?: true
+    email?: true
+    token?: true
+    storeId?: true
+    role?: true
+    createdAt?: true
+    expiresAt?: true
+    usedAt?: true
+    usedBy?: true
+    _all?: true
+  }
+
+  export type InvitationTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InvitationToken to aggregate.
+     */
+    where?: InvitationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InvitationTokens to fetch.
+     */
+    orderBy?: InvitationTokenOrderByWithRelationInput | InvitationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InvitationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InvitationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InvitationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InvitationTokens
+    **/
+    _count?: true | InvitationTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InvitationTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InvitationTokenMaxAggregateInputType
+  }
+
+  export type GetInvitationTokenAggregateType<T extends InvitationTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregateInvitationToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInvitationToken[P]>
+      : GetScalarType<T[P], AggregateInvitationToken[P]>
+  }
+
+
+
+
+  export type InvitationTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InvitationTokenWhereInput
+    orderBy?: InvitationTokenOrderByWithAggregationInput | InvitationTokenOrderByWithAggregationInput[]
+    by: InvitationTokenScalarFieldEnum[] | InvitationTokenScalarFieldEnum
+    having?: InvitationTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InvitationTokenCountAggregateInputType | true
+    _min?: InvitationTokenMinAggregateInputType
+    _max?: InvitationTokenMaxAggregateInputType
+  }
+
+  export type InvitationTokenGroupByOutputType = {
+    id: string
+    email: string
+    token: string
+    storeId: string
+    role: $Enums.StoreRole
+    createdAt: Date
+    expiresAt: Date
+    usedAt: Date | null
+    usedBy: string | null
+    _count: InvitationTokenCountAggregateOutputType | null
+    _min: InvitationTokenMinAggregateOutputType | null
+    _max: InvitationTokenMaxAggregateOutputType | null
+  }
+
+  type GetInvitationTokenGroupByPayload<T extends InvitationTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InvitationTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InvitationTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InvitationTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], InvitationTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InvitationTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    token?: boolean
+    storeId?: boolean
+    role?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    usedBy?: boolean
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["invitationToken"]>
+
+  export type InvitationTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    token?: boolean
+    storeId?: boolean
+    role?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    usedBy?: boolean
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["invitationToken"]>
+
+  export type InvitationTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    token?: boolean
+    storeId?: boolean
+    role?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    usedBy?: boolean
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["invitationToken"]>
+
+  export type InvitationTokenSelectScalar = {
+    id?: boolean
+    email?: boolean
+    token?: boolean
+    storeId?: boolean
+    role?: boolean
+    createdAt?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    usedBy?: boolean
+  }
+
+  export type InvitationTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "token" | "storeId" | "role" | "createdAt" | "expiresAt" | "usedAt" | "usedBy", ExtArgs["result"]["invitationToken"]>
+  export type InvitationTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
+  export type InvitationTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
+  export type InvitationTokenIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
+
+  export type $InvitationTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InvitationToken"
+    objects: {
+      store: Prisma.$StorePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      email: string
+      token: string
+      storeId: string
+      role: $Enums.StoreRole
+      createdAt: Date
+      expiresAt: Date
+      usedAt: Date | null
+      usedBy: string | null
+    }, ExtArgs["result"]["invitationToken"]>
+    composites: {}
+  }
+
+  type InvitationTokenGetPayload<S extends boolean | null | undefined | InvitationTokenDefaultArgs> = $Result.GetResult<Prisma.$InvitationTokenPayload, S>
+
+  type InvitationTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InvitationTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InvitationTokenCountAggregateInputType | true
+    }
+
+  export interface InvitationTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InvitationToken'], meta: { name: 'InvitationToken' } }
+    /**
+     * Find zero or one InvitationToken that matches the filter.
+     * @param {InvitationTokenFindUniqueArgs} args - Arguments to find a InvitationToken
+     * @example
+     * // Get one InvitationToken
+     * const invitationToken = await prisma.invitationToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InvitationTokenFindUniqueArgs>(args: SelectSubset<T, InvitationTokenFindUniqueArgs<ExtArgs>>): Prisma__InvitationTokenClient<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InvitationToken that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InvitationTokenFindUniqueOrThrowArgs} args - Arguments to find a InvitationToken
+     * @example
+     * // Get one InvitationToken
+     * const invitationToken = await prisma.invitationToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InvitationTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, InvitationTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InvitationTokenClient<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InvitationToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvitationTokenFindFirstArgs} args - Arguments to find a InvitationToken
+     * @example
+     * // Get one InvitationToken
+     * const invitationToken = await prisma.invitationToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InvitationTokenFindFirstArgs>(args?: SelectSubset<T, InvitationTokenFindFirstArgs<ExtArgs>>): Prisma__InvitationTokenClient<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InvitationToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvitationTokenFindFirstOrThrowArgs} args - Arguments to find a InvitationToken
+     * @example
+     * // Get one InvitationToken
+     * const invitationToken = await prisma.invitationToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InvitationTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, InvitationTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__InvitationTokenClient<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InvitationTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvitationTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InvitationTokens
+     * const invitationTokens = await prisma.invitationToken.findMany()
+     * 
+     * // Get first 10 InvitationTokens
+     * const invitationTokens = await prisma.invitationToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const invitationTokenWithIdOnly = await prisma.invitationToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InvitationTokenFindManyArgs>(args?: SelectSubset<T, InvitationTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InvitationToken.
+     * @param {InvitationTokenCreateArgs} args - Arguments to create a InvitationToken.
+     * @example
+     * // Create one InvitationToken
+     * const InvitationToken = await prisma.invitationToken.create({
+     *   data: {
+     *     // ... data to create a InvitationToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends InvitationTokenCreateArgs>(args: SelectSubset<T, InvitationTokenCreateArgs<ExtArgs>>): Prisma__InvitationTokenClient<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InvitationTokens.
+     * @param {InvitationTokenCreateManyArgs} args - Arguments to create many InvitationTokens.
+     * @example
+     * // Create many InvitationTokens
+     * const invitationToken = await prisma.invitationToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InvitationTokenCreateManyArgs>(args?: SelectSubset<T, InvitationTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InvitationTokens and returns the data saved in the database.
+     * @param {InvitationTokenCreateManyAndReturnArgs} args - Arguments to create many InvitationTokens.
+     * @example
+     * // Create many InvitationTokens
+     * const invitationToken = await prisma.invitationToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InvitationTokens and only return the `id`
+     * const invitationTokenWithIdOnly = await prisma.invitationToken.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InvitationTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, InvitationTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InvitationToken.
+     * @param {InvitationTokenDeleteArgs} args - Arguments to delete one InvitationToken.
+     * @example
+     * // Delete one InvitationToken
+     * const InvitationToken = await prisma.invitationToken.delete({
+     *   where: {
+     *     // ... filter to delete one InvitationToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InvitationTokenDeleteArgs>(args: SelectSubset<T, InvitationTokenDeleteArgs<ExtArgs>>): Prisma__InvitationTokenClient<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InvitationToken.
+     * @param {InvitationTokenUpdateArgs} args - Arguments to update one InvitationToken.
+     * @example
+     * // Update one InvitationToken
+     * const invitationToken = await prisma.invitationToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InvitationTokenUpdateArgs>(args: SelectSubset<T, InvitationTokenUpdateArgs<ExtArgs>>): Prisma__InvitationTokenClient<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InvitationTokens.
+     * @param {InvitationTokenDeleteManyArgs} args - Arguments to filter InvitationTokens to delete.
+     * @example
+     * // Delete a few InvitationTokens
+     * const { count } = await prisma.invitationToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InvitationTokenDeleteManyArgs>(args?: SelectSubset<T, InvitationTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InvitationTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvitationTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InvitationTokens
+     * const invitationToken = await prisma.invitationToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InvitationTokenUpdateManyArgs>(args: SelectSubset<T, InvitationTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InvitationTokens and returns the data updated in the database.
+     * @param {InvitationTokenUpdateManyAndReturnArgs} args - Arguments to update many InvitationTokens.
+     * @example
+     * // Update many InvitationTokens
+     * const invitationToken = await prisma.invitationToken.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InvitationTokens and only return the `id`
+     * const invitationTokenWithIdOnly = await prisma.invitationToken.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InvitationTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, InvitationTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InvitationToken.
+     * @param {InvitationTokenUpsertArgs} args - Arguments to update or create a InvitationToken.
+     * @example
+     * // Update or create a InvitationToken
+     * const invitationToken = await prisma.invitationToken.upsert({
+     *   create: {
+     *     // ... data to create a InvitationToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InvitationToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InvitationTokenUpsertArgs>(args: SelectSubset<T, InvitationTokenUpsertArgs<ExtArgs>>): Prisma__InvitationTokenClient<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InvitationTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvitationTokenCountArgs} args - Arguments to filter InvitationTokens to count.
+     * @example
+     * // Count the number of InvitationTokens
+     * const count = await prisma.invitationToken.count({
+     *   where: {
+     *     // ... the filter for the InvitationTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends InvitationTokenCountArgs>(
+      args?: Subset<T, InvitationTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InvitationTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InvitationToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvitationTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InvitationTokenAggregateArgs>(args: Subset<T, InvitationTokenAggregateArgs>): Prisma.PrismaPromise<GetInvitationTokenAggregateType<T>>
+
+    /**
+     * Group by InvitationToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvitationTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InvitationTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InvitationTokenGroupByArgs['orderBy'] }
+        : { orderBy?: InvitationTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InvitationTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInvitationTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InvitationToken model
+   */
+  readonly fields: InvitationTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InvitationToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InvitationTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    store<T extends StoreDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoreDefaultArgs<ExtArgs>>): Prisma__StoreClient<$Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InvitationToken model
+   */
+  interface InvitationTokenFieldRefs {
+    readonly id: FieldRef<"InvitationToken", 'String'>
+    readonly email: FieldRef<"InvitationToken", 'String'>
+    readonly token: FieldRef<"InvitationToken", 'String'>
+    readonly storeId: FieldRef<"InvitationToken", 'String'>
+    readonly role: FieldRef<"InvitationToken", 'StoreRole'>
+    readonly createdAt: FieldRef<"InvitationToken", 'DateTime'>
+    readonly expiresAt: FieldRef<"InvitationToken", 'DateTime'>
+    readonly usedAt: FieldRef<"InvitationToken", 'DateTime'>
+    readonly usedBy: FieldRef<"InvitationToken", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InvitationToken findUnique
+   */
+  export type InvitationTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which InvitationToken to fetch.
+     */
+    where: InvitationTokenWhereUniqueInput
+  }
+
+  /**
+   * InvitationToken findUniqueOrThrow
+   */
+  export type InvitationTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which InvitationToken to fetch.
+     */
+    where: InvitationTokenWhereUniqueInput
+  }
+
+  /**
+   * InvitationToken findFirst
+   */
+  export type InvitationTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which InvitationToken to fetch.
+     */
+    where?: InvitationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InvitationTokens to fetch.
+     */
+    orderBy?: InvitationTokenOrderByWithRelationInput | InvitationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InvitationTokens.
+     */
+    cursor?: InvitationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InvitationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InvitationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InvitationTokens.
+     */
+    distinct?: InvitationTokenScalarFieldEnum | InvitationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * InvitationToken findFirstOrThrow
+   */
+  export type InvitationTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which InvitationToken to fetch.
+     */
+    where?: InvitationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InvitationTokens to fetch.
+     */
+    orderBy?: InvitationTokenOrderByWithRelationInput | InvitationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InvitationTokens.
+     */
+    cursor?: InvitationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InvitationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InvitationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InvitationTokens.
+     */
+    distinct?: InvitationTokenScalarFieldEnum | InvitationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * InvitationToken findMany
+   */
+  export type InvitationTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which InvitationTokens to fetch.
+     */
+    where?: InvitationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InvitationTokens to fetch.
+     */
+    orderBy?: InvitationTokenOrderByWithRelationInput | InvitationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InvitationTokens.
+     */
+    cursor?: InvitationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InvitationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InvitationTokens.
+     */
+    skip?: number
+    distinct?: InvitationTokenScalarFieldEnum | InvitationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * InvitationToken create
+   */
+  export type InvitationTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InvitationToken.
+     */
+    data: XOR<InvitationTokenCreateInput, InvitationTokenUncheckedCreateInput>
+  }
+
+  /**
+   * InvitationToken createMany
+   */
+  export type InvitationTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InvitationTokens.
+     */
+    data: InvitationTokenCreateManyInput | InvitationTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InvitationToken createManyAndReturn
+   */
+  export type InvitationTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * The data used to create many InvitationTokens.
+     */
+    data: InvitationTokenCreateManyInput | InvitationTokenCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InvitationToken update
+   */
+  export type InvitationTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InvitationToken.
+     */
+    data: XOR<InvitationTokenUpdateInput, InvitationTokenUncheckedUpdateInput>
+    /**
+     * Choose, which InvitationToken to update.
+     */
+    where: InvitationTokenWhereUniqueInput
+  }
+
+  /**
+   * InvitationToken updateMany
+   */
+  export type InvitationTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InvitationTokens.
+     */
+    data: XOR<InvitationTokenUpdateManyMutationInput, InvitationTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which InvitationTokens to update
+     */
+    where?: InvitationTokenWhereInput
+    /**
+     * Limit how many InvitationTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InvitationToken updateManyAndReturn
+   */
+  export type InvitationTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * The data used to update InvitationTokens.
+     */
+    data: XOR<InvitationTokenUpdateManyMutationInput, InvitationTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which InvitationTokens to update
+     */
+    where?: InvitationTokenWhereInput
+    /**
+     * Limit how many InvitationTokens to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InvitationToken upsert
+   */
+  export type InvitationTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InvitationToken to update in case it exists.
+     */
+    where: InvitationTokenWhereUniqueInput
+    /**
+     * In case the InvitationToken found by the `where` argument doesn't exist, create a new InvitationToken with this data.
+     */
+    create: XOR<InvitationTokenCreateInput, InvitationTokenUncheckedCreateInput>
+    /**
+     * In case the InvitationToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InvitationTokenUpdateInput, InvitationTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * InvitationToken delete
+   */
+  export type InvitationTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+    /**
+     * Filter which InvitationToken to delete.
+     */
+    where: InvitationTokenWhereUniqueInput
+  }
+
+  /**
+   * InvitationToken deleteMany
+   */
+  export type InvitationTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InvitationTokens to delete
+     */
+    where?: InvitationTokenWhereInput
+    /**
+     * Limit how many InvitationTokens to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InvitationToken without action
+   */
+  export type InvitationTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InvitationToken
+     */
+    select?: InvitationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InvitationToken
+     */
+    omit?: InvitationTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvitationTokenInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model StoreMember
    */
 
@@ -14431,6 +15669,21 @@ export namespace Prisma {
   export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
 
 
+  export const InvitationTokenScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    token: 'token',
+    storeId: 'storeId',
+    role: 'role',
+    createdAt: 'createdAt',
+    expiresAt: 'expiresAt',
+    usedAt: 'usedAt',
+    usedBy: 'usedBy'
+  };
+
+  export type InvitationTokenScalarFieldEnum = (typeof InvitationTokenScalarFieldEnum)[keyof typeof InvitationTokenScalarFieldEnum]
+
+
   export const StoreMemberScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -15089,6 +16342,7 @@ export namespace Prisma {
     Batch?: BatchListRelationFilter
     Product?: ProductListRelationFilter
     members?: StoreMemberListRelationFilter
+    invitations?: InvitationTokenListRelationFilter
   }
 
   export type StoreOrderByWithRelationInput = {
@@ -15101,6 +16355,7 @@ export namespace Prisma {
     Batch?: BatchOrderByRelationAggregateInput
     Product?: ProductOrderByRelationAggregateInput
     members?: StoreMemberOrderByRelationAggregateInput
+    invitations?: InvitationTokenOrderByRelationAggregateInput
   }
 
   export type StoreWhereUniqueInput = Prisma.AtLeast<{
@@ -15116,6 +16371,7 @@ export namespace Prisma {
     Batch?: BatchListRelationFilter
     Product?: ProductListRelationFilter
     members?: StoreMemberListRelationFilter
+    invitations?: InvitationTokenListRelationFilter
   }, "id">
 
   export type StoreOrderByWithAggregationInput = {
@@ -15268,6 +16524,81 @@ export namespace Prisma {
     identifier?: StringWithAggregatesFilter<"VerificationToken"> | string
     token?: StringWithAggregatesFilter<"VerificationToken"> | string
     expires?: DateTimeWithAggregatesFilter<"VerificationToken"> | Date | string
+  }
+
+  export type InvitationTokenWhereInput = {
+    AND?: InvitationTokenWhereInput | InvitationTokenWhereInput[]
+    OR?: InvitationTokenWhereInput[]
+    NOT?: InvitationTokenWhereInput | InvitationTokenWhereInput[]
+    id?: StringFilter<"InvitationToken"> | string
+    email?: StringFilter<"InvitationToken"> | string
+    token?: StringFilter<"InvitationToken"> | string
+    storeId?: StringFilter<"InvitationToken"> | string
+    role?: EnumStoreRoleFilter<"InvitationToken"> | $Enums.StoreRole
+    createdAt?: DateTimeFilter<"InvitationToken"> | Date | string
+    expiresAt?: DateTimeFilter<"InvitationToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"InvitationToken"> | Date | string | null
+    usedBy?: StringNullableFilter<"InvitationToken"> | string | null
+    store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
+  }
+
+  export type InvitationTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    token?: SortOrder
+    storeId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    usedBy?: SortOrderInput | SortOrder
+    store?: StoreOrderByWithRelationInput
+  }
+
+  export type InvitationTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    token?: string
+    AND?: InvitationTokenWhereInput | InvitationTokenWhereInput[]
+    OR?: InvitationTokenWhereInput[]
+    NOT?: InvitationTokenWhereInput | InvitationTokenWhereInput[]
+    email?: StringFilter<"InvitationToken"> | string
+    storeId?: StringFilter<"InvitationToken"> | string
+    role?: EnumStoreRoleFilter<"InvitationToken"> | $Enums.StoreRole
+    createdAt?: DateTimeFilter<"InvitationToken"> | Date | string
+    expiresAt?: DateTimeFilter<"InvitationToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"InvitationToken"> | Date | string | null
+    usedBy?: StringNullableFilter<"InvitationToken"> | string | null
+    store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
+  }, "id" | "token">
+
+  export type InvitationTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    token?: SortOrder
+    storeId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    usedBy?: SortOrderInput | SortOrder
+    _count?: InvitationTokenCountOrderByAggregateInput
+    _max?: InvitationTokenMaxOrderByAggregateInput
+    _min?: InvitationTokenMinOrderByAggregateInput
+  }
+
+  export type InvitationTokenScalarWhereWithAggregatesInput = {
+    AND?: InvitationTokenScalarWhereWithAggregatesInput | InvitationTokenScalarWhereWithAggregatesInput[]
+    OR?: InvitationTokenScalarWhereWithAggregatesInput[]
+    NOT?: InvitationTokenScalarWhereWithAggregatesInput | InvitationTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"InvitationToken"> | string
+    email?: StringWithAggregatesFilter<"InvitationToken"> | string
+    token?: StringWithAggregatesFilter<"InvitationToken"> | string
+    storeId?: StringWithAggregatesFilter<"InvitationToken"> | string
+    role?: EnumStoreRoleWithAggregatesFilter<"InvitationToken"> | $Enums.StoreRole
+    createdAt?: DateTimeWithAggregatesFilter<"InvitationToken"> | Date | string
+    expiresAt?: DateTimeWithAggregatesFilter<"InvitationToken"> | Date | string
+    usedAt?: DateTimeNullableWithAggregatesFilter<"InvitationToken"> | Date | string | null
+    usedBy?: StringNullableWithAggregatesFilter<"InvitationToken"> | string | null
   }
 
   export type StoreMemberWhereInput = {
@@ -15879,6 +17210,7 @@ export namespace Prisma {
     Batch?: BatchCreateNestedManyWithoutStoreInput
     Product?: ProductCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateInput = {
@@ -15891,6 +17223,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUpdateInput = {
@@ -15903,6 +17236,7 @@ export namespace Prisma {
     Batch?: BatchUpdateManyWithoutStoreNestedInput
     Product?: ProductUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateInput = {
@@ -15915,6 +17249,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreCreateManyInput = {
@@ -16085,6 +17420,89 @@ export namespace Prisma {
     identifier?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InvitationTokenCreateInput = {
+    id?: string
+    email: string
+    token: string
+    role?: $Enums.StoreRole
+    createdAt?: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedBy?: string | null
+    store: StoreCreateNestedOneWithoutInvitationsInput
+  }
+
+  export type InvitationTokenUncheckedCreateInput = {
+    id?: string
+    email: string
+    token: string
+    storeId: string
+    role?: $Enums.StoreRole
+    createdAt?: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedBy?: string | null
+  }
+
+  export type InvitationTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    store?: StoreUpdateOneRequiredWithoutInvitationsNestedInput
+  }
+
+  export type InvitationTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    storeId?: StringFieldUpdateOperationsInput | string
+    role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type InvitationTokenCreateManyInput = {
+    id?: string
+    email: string
+    token: string
+    storeId: string
+    role?: $Enums.StoreRole
+    createdAt?: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedBy?: string | null
+  }
+
+  export type InvitationTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type InvitationTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    storeId?: StringFieldUpdateOperationsInput | string
+    role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StoreMemberCreateInput = {
@@ -16661,11 +18079,21 @@ export namespace Prisma {
     none?: StoreMemberWhereInput
   }
 
+  export type InvitationTokenListRelationFilter = {
+    every?: InvitationTokenWhereInput
+    some?: InvitationTokenWhereInput
+    none?: InvitationTokenWhereInput
+  }
+
   export type AlertOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type StoreMemberOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InvitationTokenOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16814,6 +18242,52 @@ export namespace Prisma {
     not?: NestedEnumStoreRoleFilter<$PrismaModel> | $Enums.StoreRole
   }
 
+  export type InvitationTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    token?: SortOrder
+    storeId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    usedBy?: SortOrder
+  }
+
+  export type InvitationTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    token?: SortOrder
+    storeId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    usedBy?: SortOrder
+  }
+
+  export type InvitationTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    token?: SortOrder
+    storeId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    usedBy?: SortOrder
+  }
+
+  export type EnumStoreRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreRole | EnumStoreRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreRole[] | ListEnumStoreRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreRole[] | ListEnumStoreRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreRoleWithAggregatesFilter<$PrismaModel> | $Enums.StoreRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStoreRoleFilter<$PrismaModel>
+    _max?: NestedEnumStoreRoleFilter<$PrismaModel>
+  }
+
   export type EnumStoreMemberStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.StoreMemberStatus | EnumStoreMemberStatusFieldRefInput<$PrismaModel>
     in?: $Enums.StoreMemberStatus[] | ListEnumStoreMemberStatusFieldRefInput<$PrismaModel>
@@ -16851,16 +18325,6 @@ export namespace Prisma {
     role?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type EnumStoreRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.StoreRole | EnumStoreRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.StoreRole[] | ListEnumStoreRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.StoreRole[] | ListEnumStoreRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumStoreRoleWithAggregatesFilter<$PrismaModel> | $Enums.StoreRole
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumStoreRoleFilter<$PrismaModel>
-    _max?: NestedEnumStoreRoleFilter<$PrismaModel>
   }
 
   export type EnumStoreMemberStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -17151,6 +18615,13 @@ export namespace Prisma {
     connect?: StoreMemberWhereUniqueInput | StoreMemberWhereUniqueInput[]
   }
 
+  export type InvitationTokenCreateNestedManyWithoutStoreInput = {
+    create?: XOR<InvitationTokenCreateWithoutStoreInput, InvitationTokenUncheckedCreateWithoutStoreInput> | InvitationTokenCreateWithoutStoreInput[] | InvitationTokenUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: InvitationTokenCreateOrConnectWithoutStoreInput | InvitationTokenCreateOrConnectWithoutStoreInput[]
+    createMany?: InvitationTokenCreateManyStoreInputEnvelope
+    connect?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+  }
+
   export type AlertUncheckedCreateNestedManyWithoutStoreInput = {
     create?: XOR<AlertCreateWithoutStoreInput, AlertUncheckedCreateWithoutStoreInput> | AlertCreateWithoutStoreInput[] | AlertUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: AlertCreateOrConnectWithoutStoreInput | AlertCreateOrConnectWithoutStoreInput[]
@@ -17177,6 +18648,13 @@ export namespace Prisma {
     connectOrCreate?: StoreMemberCreateOrConnectWithoutStoreInput | StoreMemberCreateOrConnectWithoutStoreInput[]
     createMany?: StoreMemberCreateManyStoreInputEnvelope
     connect?: StoreMemberWhereUniqueInput | StoreMemberWhereUniqueInput[]
+  }
+
+  export type InvitationTokenUncheckedCreateNestedManyWithoutStoreInput = {
+    create?: XOR<InvitationTokenCreateWithoutStoreInput, InvitationTokenUncheckedCreateWithoutStoreInput> | InvitationTokenCreateWithoutStoreInput[] | InvitationTokenUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: InvitationTokenCreateOrConnectWithoutStoreInput | InvitationTokenCreateOrConnectWithoutStoreInput[]
+    createMany?: InvitationTokenCreateManyStoreInputEnvelope
+    connect?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
   }
 
   export type AlertUpdateManyWithoutStoreNestedInput = {
@@ -17235,6 +18713,20 @@ export namespace Prisma {
     deleteMany?: StoreMemberScalarWhereInput | StoreMemberScalarWhereInput[]
   }
 
+  export type InvitationTokenUpdateManyWithoutStoreNestedInput = {
+    create?: XOR<InvitationTokenCreateWithoutStoreInput, InvitationTokenUncheckedCreateWithoutStoreInput> | InvitationTokenCreateWithoutStoreInput[] | InvitationTokenUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: InvitationTokenCreateOrConnectWithoutStoreInput | InvitationTokenCreateOrConnectWithoutStoreInput[]
+    upsert?: InvitationTokenUpsertWithWhereUniqueWithoutStoreInput | InvitationTokenUpsertWithWhereUniqueWithoutStoreInput[]
+    createMany?: InvitationTokenCreateManyStoreInputEnvelope
+    set?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+    disconnect?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+    delete?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+    connect?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+    update?: InvitationTokenUpdateWithWhereUniqueWithoutStoreInput | InvitationTokenUpdateWithWhereUniqueWithoutStoreInput[]
+    updateMany?: InvitationTokenUpdateManyWithWhereWithoutStoreInput | InvitationTokenUpdateManyWithWhereWithoutStoreInput[]
+    deleteMany?: InvitationTokenScalarWhereInput | InvitationTokenScalarWhereInput[]
+  }
+
   export type AlertUncheckedUpdateManyWithoutStoreNestedInput = {
     create?: XOR<AlertCreateWithoutStoreInput, AlertUncheckedCreateWithoutStoreInput> | AlertCreateWithoutStoreInput[] | AlertUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: AlertCreateOrConnectWithoutStoreInput | AlertCreateOrConnectWithoutStoreInput[]
@@ -17289,6 +18781,20 @@ export namespace Prisma {
     update?: StoreMemberUpdateWithWhereUniqueWithoutStoreInput | StoreMemberUpdateWithWhereUniqueWithoutStoreInput[]
     updateMany?: StoreMemberUpdateManyWithWhereWithoutStoreInput | StoreMemberUpdateManyWithWhereWithoutStoreInput[]
     deleteMany?: StoreMemberScalarWhereInput | StoreMemberScalarWhereInput[]
+  }
+
+  export type InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput = {
+    create?: XOR<InvitationTokenCreateWithoutStoreInput, InvitationTokenUncheckedCreateWithoutStoreInput> | InvitationTokenCreateWithoutStoreInput[] | InvitationTokenUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: InvitationTokenCreateOrConnectWithoutStoreInput | InvitationTokenCreateOrConnectWithoutStoreInput[]
+    upsert?: InvitationTokenUpsertWithWhereUniqueWithoutStoreInput | InvitationTokenUpsertWithWhereUniqueWithoutStoreInput[]
+    createMany?: InvitationTokenCreateManyStoreInputEnvelope
+    set?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+    disconnect?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+    delete?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+    connect?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+    update?: InvitationTokenUpdateWithWhereUniqueWithoutStoreInput | InvitationTokenUpdateWithWhereUniqueWithoutStoreInput[]
+    updateMany?: InvitationTokenUpdateManyWithWhereWithoutStoreInput | InvitationTokenUpdateManyWithWhereWithoutStoreInput[]
+    deleteMany?: InvitationTokenScalarWhereInput | InvitationTokenScalarWhereInput[]
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -17505,6 +19011,24 @@ export namespace Prisma {
     deleteMany?: StoreMemberScalarWhereInput | StoreMemberScalarWhereInput[]
   }
 
+  export type StoreCreateNestedOneWithoutInvitationsInput = {
+    create?: XOR<StoreCreateWithoutInvitationsInput, StoreUncheckedCreateWithoutInvitationsInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutInvitationsInput
+    connect?: StoreWhereUniqueInput
+  }
+
+  export type EnumStoreRoleFieldUpdateOperationsInput = {
+    set?: $Enums.StoreRole
+  }
+
+  export type StoreUpdateOneRequiredWithoutInvitationsNestedInput = {
+    create?: XOR<StoreCreateWithoutInvitationsInput, StoreUncheckedCreateWithoutInvitationsInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutInvitationsInput
+    upsert?: StoreUpsertWithoutInvitationsInput
+    connect?: StoreWhereUniqueInput
+    update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutInvitationsInput, StoreUpdateWithoutInvitationsInput>, StoreUncheckedUpdateWithoutInvitationsInput>
+  }
+
   export type UserCreateNestedOneWithoutStoreMembersInput = {
     create?: XOR<UserCreateWithoutStoreMembersInput, UserUncheckedCreateWithoutStoreMembersInput>
     connectOrCreate?: UserCreateOrConnectWithoutStoreMembersInput
@@ -17515,10 +19039,6 @@ export namespace Prisma {
     create?: XOR<StoreCreateWithoutMembersInput, StoreUncheckedCreateWithoutMembersInput>
     connectOrCreate?: StoreCreateOrConnectWithoutMembersInput
     connect?: StoreWhereUniqueInput
-  }
-
-  export type EnumStoreRoleFieldUpdateOperationsInput = {
-    set?: $Enums.StoreRole
   }
 
   export type EnumStoreMemberStatusFieldUpdateOperationsInput = {
@@ -17765,13 +19285,6 @@ export namespace Prisma {
     not?: NestedEnumStoreRoleFilter<$PrismaModel> | $Enums.StoreRole
   }
 
-  export type NestedEnumStoreMemberStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.StoreMemberStatus | EnumStoreMemberStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.StoreMemberStatus[] | ListEnumStoreMemberStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.StoreMemberStatus[] | ListEnumStoreMemberStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumStoreMemberStatusFilter<$PrismaModel> | $Enums.StoreMemberStatus
-  }
-
   export type NestedEnumStoreRoleWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.StoreRole | EnumStoreRoleFieldRefInput<$PrismaModel>
     in?: $Enums.StoreRole[] | ListEnumStoreRoleFieldRefInput<$PrismaModel>
@@ -17780,6 +19293,13 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumStoreRoleFilter<$PrismaModel>
     _max?: NestedEnumStoreRoleFilter<$PrismaModel>
+  }
+
+  export type NestedEnumStoreMemberStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreMemberStatus | EnumStoreMemberStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreMemberStatus[] | ListEnumStoreMemberStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreMemberStatus[] | ListEnumStoreMemberStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreMemberStatusFilter<$PrismaModel> | $Enums.StoreMemberStatus
   }
 
   export type NestedEnumStoreMemberStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -17881,6 +19401,7 @@ export namespace Prisma {
     Batch?: BatchCreateNestedManyWithoutStoreInput
     Product?: ProductCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutAlertInput = {
@@ -17892,6 +19413,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutAlertInput = {
@@ -17919,6 +19441,7 @@ export namespace Prisma {
     Batch?: BatchUpdateManyWithoutStoreNestedInput
     Product?: ProductUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutAlertInput = {
@@ -17930,6 +19453,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type UserCreateWithoutBatchInput = {
@@ -18003,6 +19527,7 @@ export namespace Prisma {
     Alert?: AlertCreateNestedManyWithoutStoreInput
     Product?: ProductCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutBatchInput = {
@@ -18014,6 +19539,7 @@ export namespace Prisma {
     Alert?: AlertUncheckedCreateNestedManyWithoutStoreInput
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutBatchInput = {
@@ -18115,6 +19641,7 @@ export namespace Prisma {
     Alert?: AlertUpdateManyWithoutStoreNestedInput
     Product?: ProductUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutBatchInput = {
@@ -18126,6 +19653,7 @@ export namespace Prisma {
     Alert?: AlertUncheckedUpdateManyWithoutStoreNestedInput
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type ProductCreateWithoutCategoryInput = {
@@ -18335,6 +19863,7 @@ export namespace Prisma {
     Alert?: AlertCreateNestedManyWithoutStoreInput
     Batch?: BatchCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutProductInput = {
@@ -18346,6 +19875,7 @@ export namespace Prisma {
     Alert?: AlertUncheckedCreateNestedManyWithoutStoreInput
     Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutProductInput = {
@@ -18433,6 +19963,7 @@ export namespace Prisma {
     Alert?: AlertUpdateManyWithoutStoreNestedInput
     Batch?: BatchUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutProductInput = {
@@ -18444,6 +19975,7 @@ export namespace Prisma {
     Alert?: AlertUncheckedUpdateManyWithoutStoreNestedInput
     Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type UserCreateWithoutSessionInput = {
@@ -18656,6 +20188,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type InvitationTokenCreateWithoutStoreInput = {
+    id?: string
+    email: string
+    token: string
+    role?: $Enums.StoreRole
+    createdAt?: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedBy?: string | null
+  }
+
+  export type InvitationTokenUncheckedCreateWithoutStoreInput = {
+    id?: string
+    email: string
+    token: string
+    role?: $Enums.StoreRole
+    createdAt?: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedBy?: string | null
+  }
+
+  export type InvitationTokenCreateOrConnectWithoutStoreInput = {
+    where: InvitationTokenWhereUniqueInput
+    create: XOR<InvitationTokenCreateWithoutStoreInput, InvitationTokenUncheckedCreateWithoutStoreInput>
+  }
+
+  export type InvitationTokenCreateManyStoreInputEnvelope = {
+    data: InvitationTokenCreateManyStoreInput | InvitationTokenCreateManyStoreInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AlertUpsertWithWhereUniqueWithoutStoreInput = {
     where: AlertWhereUniqueInput
     update: XOR<AlertUpdateWithoutStoreInput, AlertUncheckedUpdateWithoutStoreInput>
@@ -18746,6 +20310,37 @@ export namespace Prisma {
     role?: EnumStoreRoleFilter<"StoreMember"> | $Enums.StoreRole
     status?: EnumStoreMemberStatusFilter<"StoreMember"> | $Enums.StoreMemberStatus
     createdAt?: DateTimeFilter<"StoreMember"> | Date | string
+  }
+
+  export type InvitationTokenUpsertWithWhereUniqueWithoutStoreInput = {
+    where: InvitationTokenWhereUniqueInput
+    update: XOR<InvitationTokenUpdateWithoutStoreInput, InvitationTokenUncheckedUpdateWithoutStoreInput>
+    create: XOR<InvitationTokenCreateWithoutStoreInput, InvitationTokenUncheckedCreateWithoutStoreInput>
+  }
+
+  export type InvitationTokenUpdateWithWhereUniqueWithoutStoreInput = {
+    where: InvitationTokenWhereUniqueInput
+    data: XOR<InvitationTokenUpdateWithoutStoreInput, InvitationTokenUncheckedUpdateWithoutStoreInput>
+  }
+
+  export type InvitationTokenUpdateManyWithWhereWithoutStoreInput = {
+    where: InvitationTokenScalarWhereInput
+    data: XOR<InvitationTokenUpdateManyMutationInput, InvitationTokenUncheckedUpdateManyWithoutStoreInput>
+  }
+
+  export type InvitationTokenScalarWhereInput = {
+    AND?: InvitationTokenScalarWhereInput | InvitationTokenScalarWhereInput[]
+    OR?: InvitationTokenScalarWhereInput[]
+    NOT?: InvitationTokenScalarWhereInput | InvitationTokenScalarWhereInput[]
+    id?: StringFilter<"InvitationToken"> | string
+    email?: StringFilter<"InvitationToken"> | string
+    token?: StringFilter<"InvitationToken"> | string
+    storeId?: StringFilter<"InvitationToken"> | string
+    role?: EnumStoreRoleFilter<"InvitationToken"> | $Enums.StoreRole
+    createdAt?: DateTimeFilter<"InvitationToken"> | Date | string
+    expiresAt?: DateTimeFilter<"InvitationToken"> | Date | string
+    usedAt?: DateTimeNullableFilter<"InvitationToken"> | Date | string | null
+    usedBy?: StringNullableFilter<"InvitationToken"> | string | null
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -19019,6 +20614,70 @@ export namespace Prisma {
     data: XOR<StoreMemberUpdateManyMutationInput, StoreMemberUncheckedUpdateManyWithoutUserInput>
   }
 
+  export type StoreCreateWithoutInvitationsInput = {
+    id?: string
+    name: string
+    location?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Alert?: AlertCreateNestedManyWithoutStoreInput
+    Batch?: BatchCreateNestedManyWithoutStoreInput
+    Product?: ProductCreateNestedManyWithoutStoreInput
+    members?: StoreMemberCreateNestedManyWithoutStoreInput
+  }
+
+  export type StoreUncheckedCreateWithoutInvitationsInput = {
+    id?: string
+    name: string
+    location?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Alert?: AlertUncheckedCreateNestedManyWithoutStoreInput
+    Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
+    Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
+    members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
+  }
+
+  export type StoreCreateOrConnectWithoutInvitationsInput = {
+    where: StoreWhereUniqueInput
+    create: XOR<StoreCreateWithoutInvitationsInput, StoreUncheckedCreateWithoutInvitationsInput>
+  }
+
+  export type StoreUpsertWithoutInvitationsInput = {
+    update: XOR<StoreUpdateWithoutInvitationsInput, StoreUncheckedUpdateWithoutInvitationsInput>
+    create: XOR<StoreCreateWithoutInvitationsInput, StoreUncheckedCreateWithoutInvitationsInput>
+    where?: StoreWhereInput
+  }
+
+  export type StoreUpdateToOneWithWhereWithoutInvitationsInput = {
+    where?: StoreWhereInput
+    data: XOR<StoreUpdateWithoutInvitationsInput, StoreUncheckedUpdateWithoutInvitationsInput>
+  }
+
+  export type StoreUpdateWithoutInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Alert?: AlertUpdateManyWithoutStoreNestedInput
+    Batch?: BatchUpdateManyWithoutStoreNestedInput
+    Product?: ProductUpdateManyWithoutStoreNestedInput
+    members?: StoreMemberUpdateManyWithoutStoreNestedInput
+  }
+
+  export type StoreUncheckedUpdateWithoutInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Alert?: AlertUncheckedUpdateManyWithoutStoreNestedInput
+    Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
+    Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
+    members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
+  }
+
   export type UserCreateWithoutStoreMembersInput = {
     id?: string
     name?: string | null
@@ -19065,6 +20724,7 @@ export namespace Prisma {
     Alert?: AlertCreateNestedManyWithoutStoreInput
     Batch?: BatchCreateNestedManyWithoutStoreInput
     Product?: ProductCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutMembersInput = {
@@ -19076,6 +20736,7 @@ export namespace Prisma {
     Alert?: AlertUncheckedCreateNestedManyWithoutStoreInput
     Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutMembersInput = {
@@ -19146,6 +20807,7 @@ export namespace Prisma {
     Alert?: AlertUpdateManyWithoutStoreNestedInput
     Batch?: BatchUpdateManyWithoutStoreNestedInput
     Product?: ProductUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutMembersInput = {
@@ -19157,6 +20819,7 @@ export namespace Prisma {
     Alert?: AlertUncheckedUpdateManyWithoutStoreNestedInput
     Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type ProductCreateManyCategoryInput = {
@@ -19301,6 +20964,17 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type InvitationTokenCreateManyStoreInput = {
+    id?: string
+    email: string
+    token: string
+    role?: $Enums.StoreRole
+    createdAt?: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedBy?: string | null
+  }
+
   export type AlertUpdateWithoutStoreInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
@@ -19433,6 +21107,39 @@ export namespace Prisma {
     role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
     status?: EnumStoreMemberStatusFieldUpdateOperationsInput | $Enums.StoreMemberStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InvitationTokenUpdateWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type InvitationTokenUncheckedUpdateWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type InvitationTokenUncheckedUpdateManyWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountCreateManyUserInput = {
