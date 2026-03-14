@@ -128,6 +128,7 @@ model Store {
   Product   Product[]
   members   StoreMember[]
   invitations InvitationToken[] @relation("InvitationTokens")
+  reports   FinancialReport[]
 
   @@index([name])
 }
@@ -206,4 +207,29 @@ model StoreMember {
   @@index([storeId])
   @@index([role])
   @@index([status])
+}
+
+model FinancialReport {
+  id              String   @id @default(cuid())
+  storeId        String
+  period         String   // "2026-03" para marzo 2026, o "2026-Q1" para trimestre
+  totalRevenue    Float    @default(0)
+  totalCost       Float    @default(0)
+  netProfit       Float    @default(0)
+  blobUrl         String?  // URL del reporte generado en Vercel Blob
+  blobFileName    String?  // Nombre del archivo en Blob
+  generatedAt     DateTime @default(now())
+  generatedBy     String?  // ID del worker o usuario que generó el reporte
+  sentAt          DateTime? // Fecha cuando se envió por email
+  sentTo          String?  // Email del manager que recibió el reporte
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  store           Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, period])
+  @@index([storeId])
+  @@index([period])
+  @@index([generatedAt])
+  @@index([sentAt])
 }

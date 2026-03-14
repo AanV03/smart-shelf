@@ -245,6 +245,23 @@ exports.Prisma.StoreMemberScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.FinancialReportScalarFieldEnum = {
+  id: 'id',
+  storeId: 'storeId',
+  period: 'period',
+  totalRevenue: 'totalRevenue',
+  totalCost: 'totalCost',
+  netProfit: 'netProfit',
+  blobUrl: 'blobUrl',
+  blobFileName: 'blobFileName',
+  generatedAt: 'generatedAt',
+  generatedBy: 'generatedBy',
+  sentAt: 'sentAt',
+  sentTo: 'sentTo',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -284,7 +301,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   VerificationToken: 'VerificationToken',
   InvitationToken: 'InvitationToken',
-  StoreMember: 'StoreMember'
+  StoreMember: 'StoreMember',
+  FinancialReport: 'FinancialReport'
 };
 
 /**

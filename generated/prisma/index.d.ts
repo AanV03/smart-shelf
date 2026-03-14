@@ -73,6 +73,11 @@ export type InvitationToken = $Result.DefaultSelection<Prisma.$InvitationTokenPa
  * 
  */
 export type StoreMember = $Result.DefaultSelection<Prisma.$StoreMemberPayload>
+/**
+ * Model FinancialReport
+ * 
+ */
+export type FinancialReport = $Result.DefaultSelection<Prisma.$FinancialReportPayload>
 
 /**
  * Enums
@@ -343,6 +348,16 @@ export class PrismaClient<
     * ```
     */
   get storeMember(): Prisma.StoreMemberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.financialReport`: Exposes CRUD operations for the **FinancialReport** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FinancialReports
+    * const financialReports = await prisma.financialReport.findMany()
+    * ```
+    */
+  get financialReport(): Prisma.FinancialReportDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -795,7 +810,8 @@ export namespace Prisma {
     User: 'User',
     VerificationToken: 'VerificationToken',
     InvitationToken: 'InvitationToken',
-    StoreMember: 'StoreMember'
+    StoreMember: 'StoreMember',
+    FinancialReport: 'FinancialReport'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -814,7 +830,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "alert" | "batch" | "category" | "post" | "product" | "session" | "store" | "user" | "verificationToken" | "invitationToken" | "storeMember"
+      modelProps: "account" | "alert" | "batch" | "category" | "post" | "product" | "session" | "store" | "user" | "verificationToken" | "invitationToken" | "storeMember" | "financialReport"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1706,6 +1722,80 @@ export namespace Prisma {
           }
         }
       }
+      FinancialReport: {
+        payload: Prisma.$FinancialReportPayload<ExtArgs>
+        fields: Prisma.FinancialReportFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FinancialReportFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FinancialReportFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>
+          }
+          findFirst: {
+            args: Prisma.FinancialReportFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FinancialReportFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>
+          }
+          findMany: {
+            args: Prisma.FinancialReportFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>[]
+          }
+          create: {
+            args: Prisma.FinancialReportCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>
+          }
+          createMany: {
+            args: Prisma.FinancialReportCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FinancialReportCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>[]
+          }
+          delete: {
+            args: Prisma.FinancialReportDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>
+          }
+          update: {
+            args: Prisma.FinancialReportUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>
+          }
+          deleteMany: {
+            args: Prisma.FinancialReportDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FinancialReportUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FinancialReportUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>[]
+          }
+          upsert: {
+            args: Prisma.FinancialReportUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinancialReportPayload>
+          }
+          aggregate: {
+            args: Prisma.FinancialReportAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFinancialReport>
+          }
+          groupBy: {
+            args: Prisma.FinancialReportGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FinancialReportGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FinancialReportCountArgs<ExtArgs>
+            result: $Utils.Optional<FinancialReportCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1814,6 +1904,7 @@ export namespace Prisma {
     verificationToken?: VerificationTokenOmit
     invitationToken?: InvitationTokenOmit
     storeMember?: StoreMemberOmit
+    financialReport?: FinancialReportOmit
   }
 
   /* Types for Logging */
@@ -1961,6 +2052,7 @@ export namespace Prisma {
     Product: number
     members: number
     invitations: number
+    reports: number
   }
 
   export type StoreCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1969,6 +2061,7 @@ export namespace Prisma {
     Product?: boolean | StoreCountOutputTypeCountProductArgs
     members?: boolean | StoreCountOutputTypeCountMembersArgs
     invitations?: boolean | StoreCountOutputTypeCountInvitationsArgs
+    reports?: boolean | StoreCountOutputTypeCountReportsArgs
   }
 
   // Custom InputTypes
@@ -2015,6 +2108,13 @@ export namespace Prisma {
    */
   export type StoreCountOutputTypeCountInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvitationTokenWhereInput
+  }
+
+  /**
+   * StoreCountOutputType without action
+   */
+  export type StoreCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FinancialReportWhereInput
   }
 
 
@@ -10117,6 +10217,7 @@ export namespace Prisma {
     Product?: boolean | Store$ProductArgs<ExtArgs>
     members?: boolean | Store$membersArgs<ExtArgs>
     invitations?: boolean | Store$invitationsArgs<ExtArgs>
+    reports?: boolean | Store$reportsArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["store"]>
 
@@ -10151,6 +10252,7 @@ export namespace Prisma {
     Product?: boolean | Store$ProductArgs<ExtArgs>
     members?: boolean | Store$membersArgs<ExtArgs>
     invitations?: boolean | Store$invitationsArgs<ExtArgs>
+    reports?: boolean | Store$reportsArgs<ExtArgs>
     _count?: boolean | StoreCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -10164,6 +10266,7 @@ export namespace Prisma {
       Product: Prisma.$ProductPayload<ExtArgs>[]
       members: Prisma.$StoreMemberPayload<ExtArgs>[]
       invitations: Prisma.$InvitationTokenPayload<ExtArgs>[]
+      reports: Prisma.$FinancialReportPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10570,6 +10673,7 @@ export namespace Prisma {
     Product<T extends Store$ProductArgs<ExtArgs> = {}>(args?: Subset<T, Store$ProductArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     members<T extends Store$membersArgs<ExtArgs> = {}>(args?: Subset<T, Store$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoreMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invitations<T extends Store$invitationsArgs<ExtArgs> = {}>(args?: Subset<T, Store$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reports<T extends Store$reportsArgs<ExtArgs> = {}>(args?: Subset<T, Store$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11109,6 +11213,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: InvitationTokenScalarFieldEnum | InvitationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * Store.reports
+   */
+  export type Store$reportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    where?: FinancialReportWhereInput
+    orderBy?: FinancialReportOrderByWithRelationInput | FinancialReportOrderByWithRelationInput[]
+    cursor?: FinancialReportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FinancialReportScalarFieldEnum | FinancialReportScalarFieldEnum[]
   }
 
   /**
@@ -15523,6 +15651,1223 @@ export namespace Prisma {
 
 
   /**
+   * Model FinancialReport
+   */
+
+  export type AggregateFinancialReport = {
+    _count: FinancialReportCountAggregateOutputType | null
+    _avg: FinancialReportAvgAggregateOutputType | null
+    _sum: FinancialReportSumAggregateOutputType | null
+    _min: FinancialReportMinAggregateOutputType | null
+    _max: FinancialReportMaxAggregateOutputType | null
+  }
+
+  export type FinancialReportAvgAggregateOutputType = {
+    totalRevenue: number | null
+    totalCost: number | null
+    netProfit: number | null
+  }
+
+  export type FinancialReportSumAggregateOutputType = {
+    totalRevenue: number | null
+    totalCost: number | null
+    netProfit: number | null
+  }
+
+  export type FinancialReportMinAggregateOutputType = {
+    id: string | null
+    storeId: string | null
+    period: string | null
+    totalRevenue: number | null
+    totalCost: number | null
+    netProfit: number | null
+    blobUrl: string | null
+    blobFileName: string | null
+    generatedAt: Date | null
+    generatedBy: string | null
+    sentAt: Date | null
+    sentTo: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FinancialReportMaxAggregateOutputType = {
+    id: string | null
+    storeId: string | null
+    period: string | null
+    totalRevenue: number | null
+    totalCost: number | null
+    netProfit: number | null
+    blobUrl: string | null
+    blobFileName: string | null
+    generatedAt: Date | null
+    generatedBy: string | null
+    sentAt: Date | null
+    sentTo: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FinancialReportCountAggregateOutputType = {
+    id: number
+    storeId: number
+    period: number
+    totalRevenue: number
+    totalCost: number
+    netProfit: number
+    blobUrl: number
+    blobFileName: number
+    generatedAt: number
+    generatedBy: number
+    sentAt: number
+    sentTo: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FinancialReportAvgAggregateInputType = {
+    totalRevenue?: true
+    totalCost?: true
+    netProfit?: true
+  }
+
+  export type FinancialReportSumAggregateInputType = {
+    totalRevenue?: true
+    totalCost?: true
+    netProfit?: true
+  }
+
+  export type FinancialReportMinAggregateInputType = {
+    id?: true
+    storeId?: true
+    period?: true
+    totalRevenue?: true
+    totalCost?: true
+    netProfit?: true
+    blobUrl?: true
+    blobFileName?: true
+    generatedAt?: true
+    generatedBy?: true
+    sentAt?: true
+    sentTo?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FinancialReportMaxAggregateInputType = {
+    id?: true
+    storeId?: true
+    period?: true
+    totalRevenue?: true
+    totalCost?: true
+    netProfit?: true
+    blobUrl?: true
+    blobFileName?: true
+    generatedAt?: true
+    generatedBy?: true
+    sentAt?: true
+    sentTo?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FinancialReportCountAggregateInputType = {
+    id?: true
+    storeId?: true
+    period?: true
+    totalRevenue?: true
+    totalCost?: true
+    netProfit?: true
+    blobUrl?: true
+    blobFileName?: true
+    generatedAt?: true
+    generatedBy?: true
+    sentAt?: true
+    sentTo?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FinancialReportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FinancialReport to aggregate.
+     */
+    where?: FinancialReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinancialReports to fetch.
+     */
+    orderBy?: FinancialReportOrderByWithRelationInput | FinancialReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FinancialReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinancialReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinancialReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FinancialReports
+    **/
+    _count?: true | FinancialReportCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FinancialReportAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FinancialReportSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FinancialReportMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FinancialReportMaxAggregateInputType
+  }
+
+  export type GetFinancialReportAggregateType<T extends FinancialReportAggregateArgs> = {
+        [P in keyof T & keyof AggregateFinancialReport]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFinancialReport[P]>
+      : GetScalarType<T[P], AggregateFinancialReport[P]>
+  }
+
+
+
+
+  export type FinancialReportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FinancialReportWhereInput
+    orderBy?: FinancialReportOrderByWithAggregationInput | FinancialReportOrderByWithAggregationInput[]
+    by: FinancialReportScalarFieldEnum[] | FinancialReportScalarFieldEnum
+    having?: FinancialReportScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FinancialReportCountAggregateInputType | true
+    _avg?: FinancialReportAvgAggregateInputType
+    _sum?: FinancialReportSumAggregateInputType
+    _min?: FinancialReportMinAggregateInputType
+    _max?: FinancialReportMaxAggregateInputType
+  }
+
+  export type FinancialReportGroupByOutputType = {
+    id: string
+    storeId: string
+    period: string
+    totalRevenue: number
+    totalCost: number
+    netProfit: number
+    blobUrl: string | null
+    blobFileName: string | null
+    generatedAt: Date
+    generatedBy: string | null
+    sentAt: Date | null
+    sentTo: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FinancialReportCountAggregateOutputType | null
+    _avg: FinancialReportAvgAggregateOutputType | null
+    _sum: FinancialReportSumAggregateOutputType | null
+    _min: FinancialReportMinAggregateOutputType | null
+    _max: FinancialReportMaxAggregateOutputType | null
+  }
+
+  type GetFinancialReportGroupByPayload<T extends FinancialReportGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FinancialReportGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FinancialReportGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FinancialReportGroupByOutputType[P]>
+            : GetScalarType<T[P], FinancialReportGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FinancialReportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    storeId?: boolean
+    period?: boolean
+    totalRevenue?: boolean
+    totalCost?: boolean
+    netProfit?: boolean
+    blobUrl?: boolean
+    blobFileName?: boolean
+    generatedAt?: boolean
+    generatedBy?: boolean
+    sentAt?: boolean
+    sentTo?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financialReport"]>
+
+  export type FinancialReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    storeId?: boolean
+    period?: boolean
+    totalRevenue?: boolean
+    totalCost?: boolean
+    netProfit?: boolean
+    blobUrl?: boolean
+    blobFileName?: boolean
+    generatedAt?: boolean
+    generatedBy?: boolean
+    sentAt?: boolean
+    sentTo?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financialReport"]>
+
+  export type FinancialReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    storeId?: boolean
+    period?: boolean
+    totalRevenue?: boolean
+    totalCost?: boolean
+    netProfit?: boolean
+    blobUrl?: boolean
+    blobFileName?: boolean
+    generatedAt?: boolean
+    generatedBy?: boolean
+    sentAt?: boolean
+    sentTo?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financialReport"]>
+
+  export type FinancialReportSelectScalar = {
+    id?: boolean
+    storeId?: boolean
+    period?: boolean
+    totalRevenue?: boolean
+    totalCost?: boolean
+    netProfit?: boolean
+    blobUrl?: boolean
+    blobFileName?: boolean
+    generatedAt?: boolean
+    generatedBy?: boolean
+    sentAt?: boolean
+    sentTo?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FinancialReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "storeId" | "period" | "totalRevenue" | "totalCost" | "netProfit" | "blobUrl" | "blobFileName" | "generatedAt" | "generatedBy" | "sentAt" | "sentTo" | "createdAt" | "updatedAt", ExtArgs["result"]["financialReport"]>
+  export type FinancialReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
+  export type FinancialReportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
+  export type FinancialReportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    store?: boolean | StoreDefaultArgs<ExtArgs>
+  }
+
+  export type $FinancialReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FinancialReport"
+    objects: {
+      store: Prisma.$StorePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      storeId: string
+      period: string
+      totalRevenue: number
+      totalCost: number
+      netProfit: number
+      blobUrl: string | null
+      blobFileName: string | null
+      generatedAt: Date
+      generatedBy: string | null
+      sentAt: Date | null
+      sentTo: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["financialReport"]>
+    composites: {}
+  }
+
+  type FinancialReportGetPayload<S extends boolean | null | undefined | FinancialReportDefaultArgs> = $Result.GetResult<Prisma.$FinancialReportPayload, S>
+
+  type FinancialReportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FinancialReportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FinancialReportCountAggregateInputType | true
+    }
+
+  export interface FinancialReportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FinancialReport'], meta: { name: 'FinancialReport' } }
+    /**
+     * Find zero or one FinancialReport that matches the filter.
+     * @param {FinancialReportFindUniqueArgs} args - Arguments to find a FinancialReport
+     * @example
+     * // Get one FinancialReport
+     * const financialReport = await prisma.financialReport.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FinancialReportFindUniqueArgs>(args: SelectSubset<T, FinancialReportFindUniqueArgs<ExtArgs>>): Prisma__FinancialReportClient<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FinancialReport that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FinancialReportFindUniqueOrThrowArgs} args - Arguments to find a FinancialReport
+     * @example
+     * // Get one FinancialReport
+     * const financialReport = await prisma.financialReport.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FinancialReportFindUniqueOrThrowArgs>(args: SelectSubset<T, FinancialReportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FinancialReportClient<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FinancialReport that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialReportFindFirstArgs} args - Arguments to find a FinancialReport
+     * @example
+     * // Get one FinancialReport
+     * const financialReport = await prisma.financialReport.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FinancialReportFindFirstArgs>(args?: SelectSubset<T, FinancialReportFindFirstArgs<ExtArgs>>): Prisma__FinancialReportClient<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FinancialReport that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialReportFindFirstOrThrowArgs} args - Arguments to find a FinancialReport
+     * @example
+     * // Get one FinancialReport
+     * const financialReport = await prisma.financialReport.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FinancialReportFindFirstOrThrowArgs>(args?: SelectSubset<T, FinancialReportFindFirstOrThrowArgs<ExtArgs>>): Prisma__FinancialReportClient<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FinancialReports that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialReportFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FinancialReports
+     * const financialReports = await prisma.financialReport.findMany()
+     * 
+     * // Get first 10 FinancialReports
+     * const financialReports = await prisma.financialReport.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const financialReportWithIdOnly = await prisma.financialReport.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FinancialReportFindManyArgs>(args?: SelectSubset<T, FinancialReportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FinancialReport.
+     * @param {FinancialReportCreateArgs} args - Arguments to create a FinancialReport.
+     * @example
+     * // Create one FinancialReport
+     * const FinancialReport = await prisma.financialReport.create({
+     *   data: {
+     *     // ... data to create a FinancialReport
+     *   }
+     * })
+     * 
+     */
+    create<T extends FinancialReportCreateArgs>(args: SelectSubset<T, FinancialReportCreateArgs<ExtArgs>>): Prisma__FinancialReportClient<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FinancialReports.
+     * @param {FinancialReportCreateManyArgs} args - Arguments to create many FinancialReports.
+     * @example
+     * // Create many FinancialReports
+     * const financialReport = await prisma.financialReport.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FinancialReportCreateManyArgs>(args?: SelectSubset<T, FinancialReportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FinancialReports and returns the data saved in the database.
+     * @param {FinancialReportCreateManyAndReturnArgs} args - Arguments to create many FinancialReports.
+     * @example
+     * // Create many FinancialReports
+     * const financialReport = await prisma.financialReport.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FinancialReports and only return the `id`
+     * const financialReportWithIdOnly = await prisma.financialReport.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FinancialReportCreateManyAndReturnArgs>(args?: SelectSubset<T, FinancialReportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FinancialReport.
+     * @param {FinancialReportDeleteArgs} args - Arguments to delete one FinancialReport.
+     * @example
+     * // Delete one FinancialReport
+     * const FinancialReport = await prisma.financialReport.delete({
+     *   where: {
+     *     // ... filter to delete one FinancialReport
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FinancialReportDeleteArgs>(args: SelectSubset<T, FinancialReportDeleteArgs<ExtArgs>>): Prisma__FinancialReportClient<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FinancialReport.
+     * @param {FinancialReportUpdateArgs} args - Arguments to update one FinancialReport.
+     * @example
+     * // Update one FinancialReport
+     * const financialReport = await prisma.financialReport.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FinancialReportUpdateArgs>(args: SelectSubset<T, FinancialReportUpdateArgs<ExtArgs>>): Prisma__FinancialReportClient<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FinancialReports.
+     * @param {FinancialReportDeleteManyArgs} args - Arguments to filter FinancialReports to delete.
+     * @example
+     * // Delete a few FinancialReports
+     * const { count } = await prisma.financialReport.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FinancialReportDeleteManyArgs>(args?: SelectSubset<T, FinancialReportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FinancialReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialReportUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FinancialReports
+     * const financialReport = await prisma.financialReport.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FinancialReportUpdateManyArgs>(args: SelectSubset<T, FinancialReportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FinancialReports and returns the data updated in the database.
+     * @param {FinancialReportUpdateManyAndReturnArgs} args - Arguments to update many FinancialReports.
+     * @example
+     * // Update many FinancialReports
+     * const financialReport = await prisma.financialReport.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FinancialReports and only return the `id`
+     * const financialReportWithIdOnly = await prisma.financialReport.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FinancialReportUpdateManyAndReturnArgs>(args: SelectSubset<T, FinancialReportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FinancialReport.
+     * @param {FinancialReportUpsertArgs} args - Arguments to update or create a FinancialReport.
+     * @example
+     * // Update or create a FinancialReport
+     * const financialReport = await prisma.financialReport.upsert({
+     *   create: {
+     *     // ... data to create a FinancialReport
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FinancialReport we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FinancialReportUpsertArgs>(args: SelectSubset<T, FinancialReportUpsertArgs<ExtArgs>>): Prisma__FinancialReportClient<$Result.GetResult<Prisma.$FinancialReportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FinancialReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialReportCountArgs} args - Arguments to filter FinancialReports to count.
+     * @example
+     * // Count the number of FinancialReports
+     * const count = await prisma.financialReport.count({
+     *   where: {
+     *     // ... the filter for the FinancialReports we want to count
+     *   }
+     * })
+    **/
+    count<T extends FinancialReportCountArgs>(
+      args?: Subset<T, FinancialReportCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FinancialReportCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FinancialReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialReportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FinancialReportAggregateArgs>(args: Subset<T, FinancialReportAggregateArgs>): Prisma.PrismaPromise<GetFinancialReportAggregateType<T>>
+
+    /**
+     * Group by FinancialReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinancialReportGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FinancialReportGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FinancialReportGroupByArgs['orderBy'] }
+        : { orderBy?: FinancialReportGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FinancialReportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFinancialReportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FinancialReport model
+   */
+  readonly fields: FinancialReportFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FinancialReport.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FinancialReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    store<T extends StoreDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoreDefaultArgs<ExtArgs>>): Prisma__StoreClient<$Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FinancialReport model
+   */
+  interface FinancialReportFieldRefs {
+    readonly id: FieldRef<"FinancialReport", 'String'>
+    readonly storeId: FieldRef<"FinancialReport", 'String'>
+    readonly period: FieldRef<"FinancialReport", 'String'>
+    readonly totalRevenue: FieldRef<"FinancialReport", 'Float'>
+    readonly totalCost: FieldRef<"FinancialReport", 'Float'>
+    readonly netProfit: FieldRef<"FinancialReport", 'Float'>
+    readonly blobUrl: FieldRef<"FinancialReport", 'String'>
+    readonly blobFileName: FieldRef<"FinancialReport", 'String'>
+    readonly generatedAt: FieldRef<"FinancialReport", 'DateTime'>
+    readonly generatedBy: FieldRef<"FinancialReport", 'String'>
+    readonly sentAt: FieldRef<"FinancialReport", 'DateTime'>
+    readonly sentTo: FieldRef<"FinancialReport", 'String'>
+    readonly createdAt: FieldRef<"FinancialReport", 'DateTime'>
+    readonly updatedAt: FieldRef<"FinancialReport", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FinancialReport findUnique
+   */
+  export type FinancialReportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialReport to fetch.
+     */
+    where: FinancialReportWhereUniqueInput
+  }
+
+  /**
+   * FinancialReport findUniqueOrThrow
+   */
+  export type FinancialReportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialReport to fetch.
+     */
+    where: FinancialReportWhereUniqueInput
+  }
+
+  /**
+   * FinancialReport findFirst
+   */
+  export type FinancialReportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialReport to fetch.
+     */
+    where?: FinancialReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinancialReports to fetch.
+     */
+    orderBy?: FinancialReportOrderByWithRelationInput | FinancialReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FinancialReports.
+     */
+    cursor?: FinancialReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinancialReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinancialReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinancialReports.
+     */
+    distinct?: FinancialReportScalarFieldEnum | FinancialReportScalarFieldEnum[]
+  }
+
+  /**
+   * FinancialReport findFirstOrThrow
+   */
+  export type FinancialReportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialReport to fetch.
+     */
+    where?: FinancialReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinancialReports to fetch.
+     */
+    orderBy?: FinancialReportOrderByWithRelationInput | FinancialReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FinancialReports.
+     */
+    cursor?: FinancialReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinancialReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinancialReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinancialReports.
+     */
+    distinct?: FinancialReportScalarFieldEnum | FinancialReportScalarFieldEnum[]
+  }
+
+  /**
+   * FinancialReport findMany
+   */
+  export type FinancialReportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * Filter, which FinancialReports to fetch.
+     */
+    where?: FinancialReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinancialReports to fetch.
+     */
+    orderBy?: FinancialReportOrderByWithRelationInput | FinancialReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FinancialReports.
+     */
+    cursor?: FinancialReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinancialReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinancialReports.
+     */
+    skip?: number
+    distinct?: FinancialReportScalarFieldEnum | FinancialReportScalarFieldEnum[]
+  }
+
+  /**
+   * FinancialReport create
+   */
+  export type FinancialReportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FinancialReport.
+     */
+    data: XOR<FinancialReportCreateInput, FinancialReportUncheckedCreateInput>
+  }
+
+  /**
+   * FinancialReport createMany
+   */
+  export type FinancialReportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FinancialReports.
+     */
+    data: FinancialReportCreateManyInput | FinancialReportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FinancialReport createManyAndReturn
+   */
+  export type FinancialReportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * The data used to create many FinancialReports.
+     */
+    data: FinancialReportCreateManyInput | FinancialReportCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FinancialReport update
+   */
+  export type FinancialReportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FinancialReport.
+     */
+    data: XOR<FinancialReportUpdateInput, FinancialReportUncheckedUpdateInput>
+    /**
+     * Choose, which FinancialReport to update.
+     */
+    where: FinancialReportWhereUniqueInput
+  }
+
+  /**
+   * FinancialReport updateMany
+   */
+  export type FinancialReportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FinancialReports.
+     */
+    data: XOR<FinancialReportUpdateManyMutationInput, FinancialReportUncheckedUpdateManyInput>
+    /**
+     * Filter which FinancialReports to update
+     */
+    where?: FinancialReportWhereInput
+    /**
+     * Limit how many FinancialReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinancialReport updateManyAndReturn
+   */
+  export type FinancialReportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * The data used to update FinancialReports.
+     */
+    data: XOR<FinancialReportUpdateManyMutationInput, FinancialReportUncheckedUpdateManyInput>
+    /**
+     * Filter which FinancialReports to update
+     */
+    where?: FinancialReportWhereInput
+    /**
+     * Limit how many FinancialReports to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FinancialReport upsert
+   */
+  export type FinancialReportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FinancialReport to update in case it exists.
+     */
+    where: FinancialReportWhereUniqueInput
+    /**
+     * In case the FinancialReport found by the `where` argument doesn't exist, create a new FinancialReport with this data.
+     */
+    create: XOR<FinancialReportCreateInput, FinancialReportUncheckedCreateInput>
+    /**
+     * In case the FinancialReport was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FinancialReportUpdateInput, FinancialReportUncheckedUpdateInput>
+  }
+
+  /**
+   * FinancialReport delete
+   */
+  export type FinancialReportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+    /**
+     * Filter which FinancialReport to delete.
+     */
+    where: FinancialReportWhereUniqueInput
+  }
+
+  /**
+   * FinancialReport deleteMany
+   */
+  export type FinancialReportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FinancialReports to delete
+     */
+    where?: FinancialReportWhereInput
+    /**
+     * Limit how many FinancialReports to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinancialReport without action
+   */
+  export type FinancialReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinancialReport
+     */
+    select?: FinancialReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinancialReport
+     */
+    omit?: FinancialReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinancialReportInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -15694,6 +17039,26 @@ export namespace Prisma {
   };
 
   export type StoreMemberScalarFieldEnum = (typeof StoreMemberScalarFieldEnum)[keyof typeof StoreMemberScalarFieldEnum]
+
+
+  export const FinancialReportScalarFieldEnum: {
+    id: 'id',
+    storeId: 'storeId',
+    period: 'period',
+    totalRevenue: 'totalRevenue',
+    totalCost: 'totalCost',
+    netProfit: 'netProfit',
+    blobUrl: 'blobUrl',
+    blobFileName: 'blobFileName',
+    generatedAt: 'generatedAt',
+    generatedBy: 'generatedBy',
+    sentAt: 'sentAt',
+    sentTo: 'sentTo',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FinancialReportScalarFieldEnum = (typeof FinancialReportScalarFieldEnum)[keyof typeof FinancialReportScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -16343,6 +17708,7 @@ export namespace Prisma {
     Product?: ProductListRelationFilter
     members?: StoreMemberListRelationFilter
     invitations?: InvitationTokenListRelationFilter
+    reports?: FinancialReportListRelationFilter
   }
 
   export type StoreOrderByWithRelationInput = {
@@ -16356,6 +17722,7 @@ export namespace Prisma {
     Product?: ProductOrderByRelationAggregateInput
     members?: StoreMemberOrderByRelationAggregateInput
     invitations?: InvitationTokenOrderByRelationAggregateInput
+    reports?: FinancialReportOrderByRelationAggregateInput
   }
 
   export type StoreWhereUniqueInput = Prisma.AtLeast<{
@@ -16372,6 +17739,7 @@ export namespace Prisma {
     Product?: ProductListRelationFilter
     members?: StoreMemberListRelationFilter
     invitations?: InvitationTokenListRelationFilter
+    reports?: FinancialReportListRelationFilter
   }, "id">
 
   export type StoreOrderByWithAggregationInput = {
@@ -16663,6 +18031,109 @@ export namespace Prisma {
     role?: EnumStoreRoleWithAggregatesFilter<"StoreMember"> | $Enums.StoreRole
     status?: EnumStoreMemberStatusWithAggregatesFilter<"StoreMember"> | $Enums.StoreMemberStatus
     createdAt?: DateTimeWithAggregatesFilter<"StoreMember"> | Date | string
+  }
+
+  export type FinancialReportWhereInput = {
+    AND?: FinancialReportWhereInput | FinancialReportWhereInput[]
+    OR?: FinancialReportWhereInput[]
+    NOT?: FinancialReportWhereInput | FinancialReportWhereInput[]
+    id?: StringFilter<"FinancialReport"> | string
+    storeId?: StringFilter<"FinancialReport"> | string
+    period?: StringFilter<"FinancialReport"> | string
+    totalRevenue?: FloatFilter<"FinancialReport"> | number
+    totalCost?: FloatFilter<"FinancialReport"> | number
+    netProfit?: FloatFilter<"FinancialReport"> | number
+    blobUrl?: StringNullableFilter<"FinancialReport"> | string | null
+    blobFileName?: StringNullableFilter<"FinancialReport"> | string | null
+    generatedAt?: DateTimeFilter<"FinancialReport"> | Date | string
+    generatedBy?: StringNullableFilter<"FinancialReport"> | string | null
+    sentAt?: DateTimeNullableFilter<"FinancialReport"> | Date | string | null
+    sentTo?: StringNullableFilter<"FinancialReport"> | string | null
+    createdAt?: DateTimeFilter<"FinancialReport"> | Date | string
+    updatedAt?: DateTimeFilter<"FinancialReport"> | Date | string
+    store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
+  }
+
+  export type FinancialReportOrderByWithRelationInput = {
+    id?: SortOrder
+    storeId?: SortOrder
+    period?: SortOrder
+    totalRevenue?: SortOrder
+    totalCost?: SortOrder
+    netProfit?: SortOrder
+    blobUrl?: SortOrderInput | SortOrder
+    blobFileName?: SortOrderInput | SortOrder
+    generatedAt?: SortOrder
+    generatedBy?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    sentTo?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    store?: StoreOrderByWithRelationInput
+  }
+
+  export type FinancialReportWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    storeId_period?: FinancialReportStoreIdPeriodCompoundUniqueInput
+    AND?: FinancialReportWhereInput | FinancialReportWhereInput[]
+    OR?: FinancialReportWhereInput[]
+    NOT?: FinancialReportWhereInput | FinancialReportWhereInput[]
+    storeId?: StringFilter<"FinancialReport"> | string
+    period?: StringFilter<"FinancialReport"> | string
+    totalRevenue?: FloatFilter<"FinancialReport"> | number
+    totalCost?: FloatFilter<"FinancialReport"> | number
+    netProfit?: FloatFilter<"FinancialReport"> | number
+    blobUrl?: StringNullableFilter<"FinancialReport"> | string | null
+    blobFileName?: StringNullableFilter<"FinancialReport"> | string | null
+    generatedAt?: DateTimeFilter<"FinancialReport"> | Date | string
+    generatedBy?: StringNullableFilter<"FinancialReport"> | string | null
+    sentAt?: DateTimeNullableFilter<"FinancialReport"> | Date | string | null
+    sentTo?: StringNullableFilter<"FinancialReport"> | string | null
+    createdAt?: DateTimeFilter<"FinancialReport"> | Date | string
+    updatedAt?: DateTimeFilter<"FinancialReport"> | Date | string
+    store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
+  }, "id" | "storeId_period">
+
+  export type FinancialReportOrderByWithAggregationInput = {
+    id?: SortOrder
+    storeId?: SortOrder
+    period?: SortOrder
+    totalRevenue?: SortOrder
+    totalCost?: SortOrder
+    netProfit?: SortOrder
+    blobUrl?: SortOrderInput | SortOrder
+    blobFileName?: SortOrderInput | SortOrder
+    generatedAt?: SortOrder
+    generatedBy?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    sentTo?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FinancialReportCountOrderByAggregateInput
+    _avg?: FinancialReportAvgOrderByAggregateInput
+    _max?: FinancialReportMaxOrderByAggregateInput
+    _min?: FinancialReportMinOrderByAggregateInput
+    _sum?: FinancialReportSumOrderByAggregateInput
+  }
+
+  export type FinancialReportScalarWhereWithAggregatesInput = {
+    AND?: FinancialReportScalarWhereWithAggregatesInput | FinancialReportScalarWhereWithAggregatesInput[]
+    OR?: FinancialReportScalarWhereWithAggregatesInput[]
+    NOT?: FinancialReportScalarWhereWithAggregatesInput | FinancialReportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FinancialReport"> | string
+    storeId?: StringWithAggregatesFilter<"FinancialReport"> | string
+    period?: StringWithAggregatesFilter<"FinancialReport"> | string
+    totalRevenue?: FloatWithAggregatesFilter<"FinancialReport"> | number
+    totalCost?: FloatWithAggregatesFilter<"FinancialReport"> | number
+    netProfit?: FloatWithAggregatesFilter<"FinancialReport"> | number
+    blobUrl?: StringNullableWithAggregatesFilter<"FinancialReport"> | string | null
+    blobFileName?: StringNullableWithAggregatesFilter<"FinancialReport"> | string | null
+    generatedAt?: DateTimeWithAggregatesFilter<"FinancialReport"> | Date | string
+    generatedBy?: StringNullableWithAggregatesFilter<"FinancialReport"> | string | null
+    sentAt?: DateTimeNullableWithAggregatesFilter<"FinancialReport"> | Date | string | null
+    sentTo?: StringNullableWithAggregatesFilter<"FinancialReport"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FinancialReport"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FinancialReport"> | Date | string
   }
 
   export type AccountCreateInput = {
@@ -17211,6 +18682,7 @@ export namespace Prisma {
     Product?: ProductCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateInput = {
@@ -17224,6 +18696,7 @@ export namespace Prisma {
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUpdateInput = {
@@ -17237,6 +18710,7 @@ export namespace Prisma {
     Product?: ProductUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateInput = {
@@ -17250,6 +18724,7 @@ export namespace Prisma {
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreCreateManyInput = {
@@ -17564,6 +19039,124 @@ export namespace Prisma {
     role?: EnumStoreRoleFieldUpdateOperationsInput | $Enums.StoreRole
     status?: EnumStoreMemberStatusFieldUpdateOperationsInput | $Enums.StoreMemberStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialReportCreateInput = {
+    id?: string
+    period: string
+    totalRevenue?: number
+    totalCost?: number
+    netProfit?: number
+    blobUrl?: string | null
+    blobFileName?: string | null
+    generatedAt?: Date | string
+    generatedBy?: string | null
+    sentAt?: Date | string | null
+    sentTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    store: StoreCreateNestedOneWithoutReportsInput
+  }
+
+  export type FinancialReportUncheckedCreateInput = {
+    id?: string
+    storeId: string
+    period: string
+    totalRevenue?: number
+    totalCost?: number
+    netProfit?: number
+    blobUrl?: string | null
+    blobFileName?: string | null
+    generatedAt?: Date | string
+    generatedBy?: string | null
+    sentAt?: Date | string | null
+    sentTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FinancialReportUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    netProfit?: FloatFieldUpdateOperationsInput | number
+    blobUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    blobFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    store?: StoreUpdateOneRequiredWithoutReportsNestedInput
+  }
+
+  export type FinancialReportUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storeId?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    netProfit?: FloatFieldUpdateOperationsInput | number
+    blobUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    blobFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialReportCreateManyInput = {
+    id?: string
+    storeId: string
+    period: string
+    totalRevenue?: number
+    totalCost?: number
+    netProfit?: number
+    blobUrl?: string | null
+    blobFileName?: string | null
+    generatedAt?: Date | string
+    generatedBy?: string | null
+    sentAt?: Date | string | null
+    sentTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FinancialReportUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    netProfit?: FloatFieldUpdateOperationsInput | number
+    blobUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    blobFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialReportUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storeId?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    netProfit?: FloatFieldUpdateOperationsInput | number
+    blobUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    blobFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -18085,6 +19678,12 @@ export namespace Prisma {
     none?: InvitationTokenWhereInput
   }
 
+  export type FinancialReportListRelationFilter = {
+    every?: FinancialReportWhereInput
+    some?: FinancialReportWhereInput
+    none?: FinancialReportWhereInput
+  }
+
   export type AlertOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -18094,6 +19693,10 @@ export namespace Prisma {
   }
 
   export type InvitationTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FinancialReportOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -18335,6 +19938,74 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumStoreMemberStatusFilter<$PrismaModel>
     _max?: NestedEnumStoreMemberStatusFilter<$PrismaModel>
+  }
+
+  export type FinancialReportStoreIdPeriodCompoundUniqueInput = {
+    storeId: string
+    period: string
+  }
+
+  export type FinancialReportCountOrderByAggregateInput = {
+    id?: SortOrder
+    storeId?: SortOrder
+    period?: SortOrder
+    totalRevenue?: SortOrder
+    totalCost?: SortOrder
+    netProfit?: SortOrder
+    blobUrl?: SortOrder
+    blobFileName?: SortOrder
+    generatedAt?: SortOrder
+    generatedBy?: SortOrder
+    sentAt?: SortOrder
+    sentTo?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinancialReportAvgOrderByAggregateInput = {
+    totalRevenue?: SortOrder
+    totalCost?: SortOrder
+    netProfit?: SortOrder
+  }
+
+  export type FinancialReportMaxOrderByAggregateInput = {
+    id?: SortOrder
+    storeId?: SortOrder
+    period?: SortOrder
+    totalRevenue?: SortOrder
+    totalCost?: SortOrder
+    netProfit?: SortOrder
+    blobUrl?: SortOrder
+    blobFileName?: SortOrder
+    generatedAt?: SortOrder
+    generatedBy?: SortOrder
+    sentAt?: SortOrder
+    sentTo?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinancialReportMinOrderByAggregateInput = {
+    id?: SortOrder
+    storeId?: SortOrder
+    period?: SortOrder
+    totalRevenue?: SortOrder
+    totalCost?: SortOrder
+    netProfit?: SortOrder
+    blobUrl?: SortOrder
+    blobFileName?: SortOrder
+    generatedAt?: SortOrder
+    generatedBy?: SortOrder
+    sentAt?: SortOrder
+    sentTo?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinancialReportSumOrderByAggregateInput = {
+    totalRevenue?: SortOrder
+    totalCost?: SortOrder
+    netProfit?: SortOrder
   }
 
   export type UserCreateNestedOneWithoutAccountInput = {
@@ -18622,6 +20293,13 @@ export namespace Prisma {
     connect?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
   }
 
+  export type FinancialReportCreateNestedManyWithoutStoreInput = {
+    create?: XOR<FinancialReportCreateWithoutStoreInput, FinancialReportUncheckedCreateWithoutStoreInput> | FinancialReportCreateWithoutStoreInput[] | FinancialReportUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: FinancialReportCreateOrConnectWithoutStoreInput | FinancialReportCreateOrConnectWithoutStoreInput[]
+    createMany?: FinancialReportCreateManyStoreInputEnvelope
+    connect?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+  }
+
   export type AlertUncheckedCreateNestedManyWithoutStoreInput = {
     create?: XOR<AlertCreateWithoutStoreInput, AlertUncheckedCreateWithoutStoreInput> | AlertCreateWithoutStoreInput[] | AlertUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: AlertCreateOrConnectWithoutStoreInput | AlertCreateOrConnectWithoutStoreInput[]
@@ -18655,6 +20333,13 @@ export namespace Prisma {
     connectOrCreate?: InvitationTokenCreateOrConnectWithoutStoreInput | InvitationTokenCreateOrConnectWithoutStoreInput[]
     createMany?: InvitationTokenCreateManyStoreInputEnvelope
     connect?: InvitationTokenWhereUniqueInput | InvitationTokenWhereUniqueInput[]
+  }
+
+  export type FinancialReportUncheckedCreateNestedManyWithoutStoreInput = {
+    create?: XOR<FinancialReportCreateWithoutStoreInput, FinancialReportUncheckedCreateWithoutStoreInput> | FinancialReportCreateWithoutStoreInput[] | FinancialReportUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: FinancialReportCreateOrConnectWithoutStoreInput | FinancialReportCreateOrConnectWithoutStoreInput[]
+    createMany?: FinancialReportCreateManyStoreInputEnvelope
+    connect?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
   }
 
   export type AlertUpdateManyWithoutStoreNestedInput = {
@@ -18727,6 +20412,20 @@ export namespace Prisma {
     deleteMany?: InvitationTokenScalarWhereInput | InvitationTokenScalarWhereInput[]
   }
 
+  export type FinancialReportUpdateManyWithoutStoreNestedInput = {
+    create?: XOR<FinancialReportCreateWithoutStoreInput, FinancialReportUncheckedCreateWithoutStoreInput> | FinancialReportCreateWithoutStoreInput[] | FinancialReportUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: FinancialReportCreateOrConnectWithoutStoreInput | FinancialReportCreateOrConnectWithoutStoreInput[]
+    upsert?: FinancialReportUpsertWithWhereUniqueWithoutStoreInput | FinancialReportUpsertWithWhereUniqueWithoutStoreInput[]
+    createMany?: FinancialReportCreateManyStoreInputEnvelope
+    set?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+    disconnect?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+    delete?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+    connect?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+    update?: FinancialReportUpdateWithWhereUniqueWithoutStoreInput | FinancialReportUpdateWithWhereUniqueWithoutStoreInput[]
+    updateMany?: FinancialReportUpdateManyWithWhereWithoutStoreInput | FinancialReportUpdateManyWithWhereWithoutStoreInput[]
+    deleteMany?: FinancialReportScalarWhereInput | FinancialReportScalarWhereInput[]
+  }
+
   export type AlertUncheckedUpdateManyWithoutStoreNestedInput = {
     create?: XOR<AlertCreateWithoutStoreInput, AlertUncheckedCreateWithoutStoreInput> | AlertCreateWithoutStoreInput[] | AlertUncheckedCreateWithoutStoreInput[]
     connectOrCreate?: AlertCreateOrConnectWithoutStoreInput | AlertCreateOrConnectWithoutStoreInput[]
@@ -18795,6 +20494,20 @@ export namespace Prisma {
     update?: InvitationTokenUpdateWithWhereUniqueWithoutStoreInput | InvitationTokenUpdateWithWhereUniqueWithoutStoreInput[]
     updateMany?: InvitationTokenUpdateManyWithWhereWithoutStoreInput | InvitationTokenUpdateManyWithWhereWithoutStoreInput[]
     deleteMany?: InvitationTokenScalarWhereInput | InvitationTokenScalarWhereInput[]
+  }
+
+  export type FinancialReportUncheckedUpdateManyWithoutStoreNestedInput = {
+    create?: XOR<FinancialReportCreateWithoutStoreInput, FinancialReportUncheckedCreateWithoutStoreInput> | FinancialReportCreateWithoutStoreInput[] | FinancialReportUncheckedCreateWithoutStoreInput[]
+    connectOrCreate?: FinancialReportCreateOrConnectWithoutStoreInput | FinancialReportCreateOrConnectWithoutStoreInput[]
+    upsert?: FinancialReportUpsertWithWhereUniqueWithoutStoreInput | FinancialReportUpsertWithWhereUniqueWithoutStoreInput[]
+    createMany?: FinancialReportCreateManyStoreInputEnvelope
+    set?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+    disconnect?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+    delete?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+    connect?: FinancialReportWhereUniqueInput | FinancialReportWhereUniqueInput[]
+    update?: FinancialReportUpdateWithWhereUniqueWithoutStoreInput | FinancialReportUpdateWithWhereUniqueWithoutStoreInput[]
+    updateMany?: FinancialReportUpdateManyWithWhereWithoutStoreInput | FinancialReportUpdateManyWithWhereWithoutStoreInput[]
+    deleteMany?: FinancialReportScalarWhereInput | FinancialReportScalarWhereInput[]
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -19059,6 +20772,20 @@ export namespace Prisma {
     upsert?: StoreUpsertWithoutMembersInput
     connect?: StoreWhereUniqueInput
     update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutMembersInput, StoreUpdateWithoutMembersInput>, StoreUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type StoreCreateNestedOneWithoutReportsInput = {
+    create?: XOR<StoreCreateWithoutReportsInput, StoreUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutReportsInput
+    connect?: StoreWhereUniqueInput
+  }
+
+  export type StoreUpdateOneRequiredWithoutReportsNestedInput = {
+    create?: XOR<StoreCreateWithoutReportsInput, StoreUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: StoreCreateOrConnectWithoutReportsInput
+    upsert?: StoreUpsertWithoutReportsInput
+    connect?: StoreWhereUniqueInput
+    update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutReportsInput, StoreUpdateWithoutReportsInput>, StoreUncheckedUpdateWithoutReportsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -19402,6 +21129,7 @@ export namespace Prisma {
     Product?: ProductCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutAlertInput = {
@@ -19414,6 +21142,7 @@ export namespace Prisma {
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutAlertInput = {
@@ -19442,6 +21171,7 @@ export namespace Prisma {
     Product?: ProductUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutAlertInput = {
@@ -19454,6 +21184,7 @@ export namespace Prisma {
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type UserCreateWithoutBatchInput = {
@@ -19528,6 +21259,7 @@ export namespace Prisma {
     Product?: ProductCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutBatchInput = {
@@ -19540,6 +21272,7 @@ export namespace Prisma {
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutBatchInput = {
@@ -19642,6 +21375,7 @@ export namespace Prisma {
     Product?: ProductUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutBatchInput = {
@@ -19654,6 +21388,7 @@ export namespace Prisma {
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type ProductCreateWithoutCategoryInput = {
@@ -19864,6 +21599,7 @@ export namespace Prisma {
     Batch?: BatchCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutProductInput = {
@@ -19876,6 +21612,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutProductInput = {
@@ -19964,6 +21701,7 @@ export namespace Prisma {
     Batch?: BatchUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutProductInput = {
@@ -19976,6 +21714,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type UserCreateWithoutSessionInput = {
@@ -20220,6 +21959,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FinancialReportCreateWithoutStoreInput = {
+    id?: string
+    period: string
+    totalRevenue?: number
+    totalCost?: number
+    netProfit?: number
+    blobUrl?: string | null
+    blobFileName?: string | null
+    generatedAt?: Date | string
+    generatedBy?: string | null
+    sentAt?: Date | string | null
+    sentTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FinancialReportUncheckedCreateWithoutStoreInput = {
+    id?: string
+    period: string
+    totalRevenue?: number
+    totalCost?: number
+    netProfit?: number
+    blobUrl?: string | null
+    blobFileName?: string | null
+    generatedAt?: Date | string
+    generatedBy?: string | null
+    sentAt?: Date | string | null
+    sentTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FinancialReportCreateOrConnectWithoutStoreInput = {
+    where: FinancialReportWhereUniqueInput
+    create: XOR<FinancialReportCreateWithoutStoreInput, FinancialReportUncheckedCreateWithoutStoreInput>
+  }
+
+  export type FinancialReportCreateManyStoreInputEnvelope = {
+    data: FinancialReportCreateManyStoreInput | FinancialReportCreateManyStoreInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AlertUpsertWithWhereUniqueWithoutStoreInput = {
     where: AlertWhereUniqueInput
     update: XOR<AlertUpdateWithoutStoreInput, AlertUncheckedUpdateWithoutStoreInput>
@@ -20341,6 +22122,42 @@ export namespace Prisma {
     expiresAt?: DateTimeFilter<"InvitationToken"> | Date | string
     usedAt?: DateTimeNullableFilter<"InvitationToken"> | Date | string | null
     usedBy?: StringNullableFilter<"InvitationToken"> | string | null
+  }
+
+  export type FinancialReportUpsertWithWhereUniqueWithoutStoreInput = {
+    where: FinancialReportWhereUniqueInput
+    update: XOR<FinancialReportUpdateWithoutStoreInput, FinancialReportUncheckedUpdateWithoutStoreInput>
+    create: XOR<FinancialReportCreateWithoutStoreInput, FinancialReportUncheckedCreateWithoutStoreInput>
+  }
+
+  export type FinancialReportUpdateWithWhereUniqueWithoutStoreInput = {
+    where: FinancialReportWhereUniqueInput
+    data: XOR<FinancialReportUpdateWithoutStoreInput, FinancialReportUncheckedUpdateWithoutStoreInput>
+  }
+
+  export type FinancialReportUpdateManyWithWhereWithoutStoreInput = {
+    where: FinancialReportScalarWhereInput
+    data: XOR<FinancialReportUpdateManyMutationInput, FinancialReportUncheckedUpdateManyWithoutStoreInput>
+  }
+
+  export type FinancialReportScalarWhereInput = {
+    AND?: FinancialReportScalarWhereInput | FinancialReportScalarWhereInput[]
+    OR?: FinancialReportScalarWhereInput[]
+    NOT?: FinancialReportScalarWhereInput | FinancialReportScalarWhereInput[]
+    id?: StringFilter<"FinancialReport"> | string
+    storeId?: StringFilter<"FinancialReport"> | string
+    period?: StringFilter<"FinancialReport"> | string
+    totalRevenue?: FloatFilter<"FinancialReport"> | number
+    totalCost?: FloatFilter<"FinancialReport"> | number
+    netProfit?: FloatFilter<"FinancialReport"> | number
+    blobUrl?: StringNullableFilter<"FinancialReport"> | string | null
+    blobFileName?: StringNullableFilter<"FinancialReport"> | string | null
+    generatedAt?: DateTimeFilter<"FinancialReport"> | Date | string
+    generatedBy?: StringNullableFilter<"FinancialReport"> | string | null
+    sentAt?: DateTimeNullableFilter<"FinancialReport"> | Date | string | null
+    sentTo?: StringNullableFilter<"FinancialReport"> | string | null
+    createdAt?: DateTimeFilter<"FinancialReport"> | Date | string
+    updatedAt?: DateTimeFilter<"FinancialReport"> | Date | string
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -20624,6 +22441,7 @@ export namespace Prisma {
     Batch?: BatchCreateNestedManyWithoutStoreInput
     Product?: ProductCreateNestedManyWithoutStoreInput
     members?: StoreMemberCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutInvitationsInput = {
@@ -20636,6 +22454,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutInvitationsInput = {
@@ -20664,6 +22483,7 @@ export namespace Prisma {
     Batch?: BatchUpdateManyWithoutStoreNestedInput
     Product?: ProductUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutInvitationsInput = {
@@ -20676,6 +22496,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
     members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUncheckedUpdateManyWithoutStoreNestedInput
   }
 
   export type UserCreateWithoutStoreMembersInput = {
@@ -20725,6 +22546,7 @@ export namespace Prisma {
     Batch?: BatchCreateNestedManyWithoutStoreInput
     Product?: ProductCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportCreateNestedManyWithoutStoreInput
   }
 
   export type StoreUncheckedCreateWithoutMembersInput = {
@@ -20737,6 +22559,7 @@ export namespace Prisma {
     Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
     Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
     invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
+    reports?: FinancialReportUncheckedCreateNestedManyWithoutStoreInput
   }
 
   export type StoreCreateOrConnectWithoutMembersInput = {
@@ -20808,6 +22631,7 @@ export namespace Prisma {
     Batch?: BatchUpdateManyWithoutStoreNestedInput
     Product?: ProductUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUpdateManyWithoutStoreNestedInput
   }
 
   export type StoreUncheckedUpdateWithoutMembersInput = {
@@ -20819,6 +22643,75 @@ export namespace Prisma {
     Alert?: AlertUncheckedUpdateManyWithoutStoreNestedInput
     Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
     Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
+    reports?: FinancialReportUncheckedUpdateManyWithoutStoreNestedInput
+  }
+
+  export type StoreCreateWithoutReportsInput = {
+    id?: string
+    name: string
+    location?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Alert?: AlertCreateNestedManyWithoutStoreInput
+    Batch?: BatchCreateNestedManyWithoutStoreInput
+    Product?: ProductCreateNestedManyWithoutStoreInput
+    members?: StoreMemberCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenCreateNestedManyWithoutStoreInput
+  }
+
+  export type StoreUncheckedCreateWithoutReportsInput = {
+    id?: string
+    name: string
+    location?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Alert?: AlertUncheckedCreateNestedManyWithoutStoreInput
+    Batch?: BatchUncheckedCreateNestedManyWithoutStoreInput
+    Product?: ProductUncheckedCreateNestedManyWithoutStoreInput
+    members?: StoreMemberUncheckedCreateNestedManyWithoutStoreInput
+    invitations?: InvitationTokenUncheckedCreateNestedManyWithoutStoreInput
+  }
+
+  export type StoreCreateOrConnectWithoutReportsInput = {
+    where: StoreWhereUniqueInput
+    create: XOR<StoreCreateWithoutReportsInput, StoreUncheckedCreateWithoutReportsInput>
+  }
+
+  export type StoreUpsertWithoutReportsInput = {
+    update: XOR<StoreUpdateWithoutReportsInput, StoreUncheckedUpdateWithoutReportsInput>
+    create: XOR<StoreCreateWithoutReportsInput, StoreUncheckedCreateWithoutReportsInput>
+    where?: StoreWhereInput
+  }
+
+  export type StoreUpdateToOneWithWhereWithoutReportsInput = {
+    where?: StoreWhereInput
+    data: XOR<StoreUpdateWithoutReportsInput, StoreUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type StoreUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Alert?: AlertUpdateManyWithoutStoreNestedInput
+    Batch?: BatchUpdateManyWithoutStoreNestedInput
+    Product?: ProductUpdateManyWithoutStoreNestedInput
+    members?: StoreMemberUpdateManyWithoutStoreNestedInput
+    invitations?: InvitationTokenUpdateManyWithoutStoreNestedInput
+  }
+
+  export type StoreUncheckedUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Alert?: AlertUncheckedUpdateManyWithoutStoreNestedInput
+    Batch?: BatchUncheckedUpdateManyWithoutStoreNestedInput
+    Product?: ProductUncheckedUpdateManyWithoutStoreNestedInput
+    members?: StoreMemberUncheckedUpdateManyWithoutStoreNestedInput
     invitations?: InvitationTokenUncheckedUpdateManyWithoutStoreNestedInput
   }
 
@@ -20973,6 +22866,22 @@ export namespace Prisma {
     expiresAt: Date | string
     usedAt?: Date | string | null
     usedBy?: string | null
+  }
+
+  export type FinancialReportCreateManyStoreInput = {
+    id?: string
+    period: string
+    totalRevenue?: number
+    totalCost?: number
+    netProfit?: number
+    blobUrl?: string | null
+    blobFileName?: string | null
+    generatedAt?: Date | string
+    generatedBy?: string | null
+    sentAt?: Date | string | null
+    sentTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AlertUpdateWithoutStoreInput = {
@@ -21140,6 +23049,54 @@ export namespace Prisma {
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     usedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type FinancialReportUpdateWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    netProfit?: FloatFieldUpdateOperationsInput | number
+    blobUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    blobFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialReportUncheckedUpdateWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    netProfit?: FloatFieldUpdateOperationsInput | number
+    blobUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    blobFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinancialReportUncheckedUpdateManyWithoutStoreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    totalRevenue?: FloatFieldUpdateOperationsInput | number
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    netProfit?: FloatFieldUpdateOperationsInput | number
+    blobUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    blobFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountCreateManyUserInput = {
