@@ -288,7 +288,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "c:\\Dev\\smart-shelf\\generated\\prisma",
+      "value": "C:\\Dev\\smart-shelf\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -302,7 +302,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "c:\\Dev\\smart-shelf\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Dev\\smart-shelf\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
