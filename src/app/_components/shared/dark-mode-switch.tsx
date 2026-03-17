@@ -20,7 +20,7 @@ export function DarkModeSwitch() {
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="bg-secondary/50 hover:bg-secondary/70 border-border/30 text-muted-foreground focus-visible:ring-primary focus-visible:ring-offset-background flex h-10 w-10 items-center justify-center rounded-lg border transition-colors focus-visible:ring-2 focus-visible:ring-offset-2"
+      className="bg-transparent hover:bg-transparent/10 border-border/30 text-navbar-button-foreground focus-visible:ring-primary flex h-9 w-9 items-center justify-center rounded-md border transition-colors focus-visible:ring-2"
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       title={`Switch to ${isDark ? "light" : "dark"} mode`}
     >

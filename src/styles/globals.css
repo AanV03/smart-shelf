@@ -80,6 +80,11 @@
     --color-glass-border: oklch(0.90 0.008 260);
     --color-glass-input-bg: oklch(0.97 0.01 260);
     --color-glass-input-border: oklch(0.60 0.02 260);
+
+    /* Navbar button variables (light mode) */
+    --color-navbar-button-bg: oklch(0.90 0.01 260);
+    --color-navbar-button-hover: oklch(0.85 0.01 260);
+    --color-navbar-button-foreground: oklch(0.06 0.01 260);
   }
 
   /* Dark theme */
@@ -136,6 +141,11 @@
     --color-glass-border: rgba(255, 255, 255, 0.12);
     --color-glass-input-bg: oklch(0.26 0.015 260);
     --color-glass-input-border: oklch(0.40 0.01 260);
+
+    /* Navbar button variables (dark mode) */
+    --color-navbar-button-bg: oklch(0.25 0.015 260);
+    --color-navbar-button-hover: oklch(0.30 0.015 260);
+    --color-navbar-button-foreground: oklch(0.96 0 0);
   }
 
   body {

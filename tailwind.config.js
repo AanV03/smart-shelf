@@ -42,6 +42,9 @@ export default {
         "sidebar-accent-foreground": "var(--color-sidebar-accent-foreground)",
         "sidebar-border": "var(--color-sidebar-border)",
         "sidebar-ring": "var(--color-sidebar-ring)",
+        "navbar-button-bg": "var(--color-navbar-button-bg)",
+        "navbar-button-hover": "var(--color-navbar-button-hover)",
+        "navbar-button-foreground": "var(--color-navbar-button-foreground)",
       },
       borderRadius: {
         sm: "var(--radius-sm)",

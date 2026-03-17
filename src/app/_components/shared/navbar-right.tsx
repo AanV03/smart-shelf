@@ -56,7 +56,7 @@ export function NavbarRight({ role = "EMPLOYEE" }: NavbarRightProps) {
       {/* Profile Button */}
       <Link
         href="/dashboard/profile"
-        className="bg-secondary hover:bg-secondary/80 text-secondary-foreground focus-visible:ring-primary flex h-9 w-9 items-center justify-center rounded-md transition-colors focus-visible:ring-2"
+        className="bg-transparent hover:bg-transparent/10 text-navbar-button-foreground focus-visible:ring-primary flex h-9 w-9 items-center justify-center rounded-md transition-colors focus-visible:ring-2"
         aria-label="Go to profile"
       >
         <User className="size-4" aria-hidden="true" />
@@ -65,7 +65,7 @@ export function NavbarRight({ role = "EMPLOYEE" }: NavbarRightProps) {
       {/* Sign Out Button */}
       <button
         onClick={() => void signOut()}
-        className="bg-destructive/10 hover:bg-destructive/20 text-destructive focus-visible:ring-destructive flex h-9 w-9 items-center justify-center rounded-md transition-colors focus-visible:ring-2"
+        className="bg-transparent hover:bg-transparent/10 text-destructive focus-visible:ring-destructive flex h-9 w-9 items-center justify-center rounded-md transition-colors focus-visible:ring-2"
         aria-label="Sign out"
       >
         <LogOut className="size-4" aria-hidden="true" />
