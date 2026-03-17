@@ -16,9 +16,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { format } from "date-fns";
+import { useI18n } from "@/lib/i18n-client";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+  const { t } = useI18n();
 
   // Fetch dashboard stats
   const { data: stats, isLoading: statsLoading } =
@@ -46,10 +48,10 @@ export default function AdminDashboard() {
           <div className="mb-10">
             <h1 className="text-foreground mb-2 flex items-center gap-2 text-4xl font-bold tracking-tight">
               <Building2 className="text-primary h-8 w-8" />
-              Admin Dashboard
+              {t.dashboard.admin.title}
             </h1>
             <p className="text-muted-foreground text-lg">
-              Manage your store, team members, and system configuration
+              {t.dashboard.admin.subtitle}
             </p>
           </div>
 
@@ -61,7 +63,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Inventory Value
+                      {t.dashboard.admin.inventoryValue}
                     </p>
                     <p className="text-foreground text-2xl font-bold tabular-nums">
                       {statsLoading
@@ -88,7 +90,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Products
+                      {t.dashboard.admin.products}
                     </p>
                     <p className="text-foreground text-2xl font-bold tabular-nums">
                       {statsLoading ? "—" : (stats?.activeProductCount ?? 0)}
@@ -107,7 +109,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Team Members
+                      {t.dashboard.admin.teamMembers}
                     </p>
                     <p className="text-foreground text-2xl font-bold tabular-nums">
                       —
@@ -126,10 +128,10 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Status
+                      {t.dashboard.admin.status}
                     </p>
                     <Badge className="border-green-500/30 bg-green-500/20 text-green-700 dark:text-green-400">
-                      Operational
+                      {t.dashboard.admin.operational}
                     </Badge>
                   </div>
                   <div className="rounded-lg bg-green-500/15 p-3">
@@ -150,16 +152,16 @@ export default function AdminDashboard() {
               <div className="border-border/30 border-b px-6 pt-6">
                 <TabsList className="bg-secondary/20 border-border/30 grid w-full grid-cols-4 border">
                   <TabsTrigger value="overview" className="rounded-md">
-                    Overview
+                    {t.dashboard.admin.overviewTab}
                   </TabsTrigger>
                   <TabsTrigger value="team" className="rounded-md">
-                    Team
+                    {t.dashboard.admin.teamTab}
                   </TabsTrigger>
                   <TabsTrigger value="alerts" className="rounded-md">
-                    Alerts
+                    {t.dashboard.admin.alertsTab}
                   </TabsTrigger>
                   <TabsTrigger value="settings" className="rounded-md">
-                    Settings
+                    {t.dashboard.admin.settingsTab}
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -169,33 +171,33 @@ export default function AdminDashboard() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-foreground mb-4 text-lg font-semibold">
-                      Store Configuration
+                      {t.dashboard.admin.storeConfiguration}
                     </h3>
                     <div className="space-y-4">
                       <div className="border-border/30 flex items-center justify-between rounded-lg border p-4">
                         <div>
                           <p className="text-foreground font-medium">
-                            Store Name
+                            {t.dashboard.admin.storeName}
                           </p>
                           <p className="text-muted-foreground text-sm">
-                            Your main store
+                            {t.dashboard.admin.yourMainStore}
                           </p>
                         </div>
                         <Button variant="outline" size="sm">
-                          Edit
+                          {t.actions.edit}
                         </Button>
                       </div>
                       <div className="border-border/30 flex items-center justify-between rounded-lg border p-4">
                         <div>
                           <p className="text-foreground font-medium">
-                            Store Location
+                            {t.dashboard.admin.storeLocation}
                           </p>
                           <p className="text-muted-foreground text-sm">
-                            Update address
+                            {t.dashboard.admin.updateAddress}
                           </p>
                         </div>
                         <Button variant="outline" size="sm">
-                          Edit
+                          {t.actions.edit}
                         </Button>
                       </div>
                     </div>
@@ -207,13 +209,13 @@ export default function AdminDashboard() {
               <TabsContent value="team" className="mt-6 px-6 pb-6">
                 <div className="space-y-4">
                   <h3 className="text-foreground text-lg font-semibold">
-                    Manage Team Members
+                    {t.dashboard.admin.manageTeamMembers}
                   </h3>
                   <div className="border-border/30 bg-secondary/30 rounded-lg border p-8 text-center">
                     <Users className="text-muted-foreground/50 mx-auto mb-4 h-12 w-12" />
-                    <p className="text-muted-foreground text-sm">Coming soon</p>
+                    <p className="text-muted-foreground text-sm">{t.dashboard.admin.comingSoon}</p>
                     <p className="text-muted-foreground/70 mt-2 text-xs">
-                      Invite team members and manage their roles
+                      {t.dashboard.admin.inviteTeamMembers}
                     </p>
                   </div>
                 </div>
@@ -223,7 +225,7 @@ export default function AdminDashboard() {
               <TabsContent value="alerts" className="mt-6 px-6 pb-6">
                 <div className="space-y-4">
                   <h3 className="text-foreground text-lg font-semibold">
-                    Recent Alerts
+                    {t.dashboard.admin.recentAlerts}
                   </h3>
                   {alertsLoading ? (
                     <div className="flex items-center justify-center py-8">
@@ -250,7 +252,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <div className="border-border/30 bg-secondary/30 rounded-lg border p-8 text-center">
-                      <p className="text-muted-foreground text-sm">No alerts</p>
+                      <p className="text-muted-foreground text-sm">{t.dashboard.admin.noAlerts}</p>
                     </div>
                   )}
                 </div>
@@ -260,13 +262,13 @@ export default function AdminDashboard() {
               <TabsContent value="settings" className="mt-6 px-6 pb-6">
                 <div className="space-y-4">
                   <h3 className="text-foreground text-lg font-semibold">
-                    System Settings
+                    {t.dashboard.admin.systemSettings}
                   </h3>
                   <div className="border-border/30 bg-secondary/30 rounded-lg border p-8 text-center">
                     <Settings className="text-muted-foreground/50 mx-auto mb-4 h-12 w-12" />
-                    <p className="text-muted-foreground text-sm">Coming soon</p>
+                    <p className="text-muted-foreground text-sm">{t.dashboard.admin.comingSoon}</p>
                     <p className="text-muted-foreground/70 mt-2 text-xs">
-                      Configure advanced settings for your store
+                      {t.dashboard.admin.configureAdvanced}
                     </p>
                   </div>
                 </div>

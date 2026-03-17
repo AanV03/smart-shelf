@@ -12,9 +12,11 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/lib/i18n-client";
 import { api } from "@/trpc/react";
 
 export function FefoInventoryTable() {
+  const { t } = useI18n();
   // Fetch expiring batches (priority for FEFO)
   const { data: expiringData, isLoading: expiringLoading } =
     api.inventory.getExpiringBatches.useQuery({ daysThreshold: 7 });
@@ -63,14 +65,14 @@ export function FefoInventoryTable() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingDown className="text-primary h-5 w-5" />
-            Inventario FEFO - Productos para Acción Hoy
+            {t.inventoryTables.fefo.title}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-12">
             <Loader2 className="text-primary h-6 w-6 animate-spin" />
             <span className="text-muted-foreground ml-2">
-              Cargando inventario...
+              {t.inventoryTables.fefo.loadingMessage}
             </span>
           </div>
         </CardContent>
@@ -84,18 +86,17 @@ export function FefoInventoryTable() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingDown className="text-primary h-5 w-5" />
-            Inventario FEFO - Productos para Acción Hoy
+            {t.inventoryTables.fefo.title}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center gap-3 py-12">
             <AlertCircle className="text-muted-foreground h-8 w-8" />
             <p className="text-muted-foreground text-center">
-              ✅ Excelente estado. No hay productos próximos a expirar en los
-              próximos 7 días.
+              {t.inventoryTables.fefo.excellentCondition}
             </p>
             <p className="text-muted-foreground text-center text-sm">
-              Total de productos activos: {allBatches.length}
+              {t.inventoryTables.fefo.activeProductsLabel} {allBatches.length}
             </p>
           </div>
         </CardContent>
@@ -113,7 +114,7 @@ export function FefoInventoryTable() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-muted-foreground mb-1 text-xs font-medium">
-                  ⚠️ CRÍTICO (Hoy)
+                  {t.inventoryTables.fefo.critical}
                 </p>
                 <p className="text-destructive text-3xl font-bold">
                   {metrics.critical}
@@ -130,7 +131,7 @@ export function FefoInventoryTable() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-muted-foreground mb-1 text-xs font-medium">
-                  ⏰ URGENTE (1-3 días)
+                  {t.inventoryTables.fefo.warning}
                 </p>
                 <p className="text-warning text-3xl font-bold">
                   {metrics.warning}
@@ -147,7 +148,7 @@ export function FefoInventoryTable() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-muted-foreground mb-1 text-xs font-medium">
-                  📋 PLAN (3-7 días)
+                  {t.inventoryTables.fefo.caution}
                 </p>
                 <p className="text-primary text-3xl font-bold">
                   {metrics.caution}
@@ -164,7 +165,7 @@ export function FefoInventoryTable() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingDown className="text-primary h-5 w-5" />
-            Productos que Requieren Acción ({metrics.total})
+            {t.inventoryTables.fefo.actionsRequired} ({metrics.total})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -173,19 +174,19 @@ export function FefoInventoryTable() {
               <thead>
                 <tr className="border-border/30 border-b">
                   <th className="text-foreground px-3 py-3 text-left font-semibold">
-                    Producto
+                    {t.inventoryTables.fefo.product}
                   </th>
                   <th className="text-foreground px-3 py-3 text-right font-semibold">
-                    Cantidad
+                    {t.inventoryTables.fefo.quantity}
                   </th>
                   <th className="text-foreground px-3 py-3 text-left font-semibold">
-                    Lote
+                    {t.inventoryTables.fefo.batch}
                   </th>
                   <th className="text-foreground px-3 py-3 text-center font-semibold">
-                    Vence
+                    {t.inventoryTables.fefo.expires}
                   </th>
                   <th className="text-foreground px-3 py-3 text-center font-semibold">
-                    Acción
+                    {t.inventoryTables.fefo.action}
                   </th>
                 </tr>
               </thead>
@@ -206,22 +207,22 @@ export function FefoInventoryTable() {
                       bgColor: "bg-destructive/10",
                       borderColor: "border-l-4 border-l-destructive",
                       badgeVariant: "destructive" as const,
-                      label: "Hhoje",
-                      description: "Mueve al frente - VENCE HOY",
+                      label: t.inventoryTables.fefo.today,
+                      description: t.inventoryTables.fefo.criticalAction,
                     },
                     warning: {
                       bgColor: "bg-warning/10",
                       borderColor: "border-l-4 border-l-warning",
                       badgeVariant: "default" as const,
                       label: `${daysLeft}d`,
-                      description: "Próximo a expirar - Prioriza",
+                      description: t.inventoryTables.fefo.warningAction,
                     },
                     caution: {
                       bgColor: "bg-primary/5",
                       borderColor: "border-l-4 border-l-primary",
                       badgeVariant: "default" as const,
                       label: `${daysLeft}d`,
-                      description: "Planifica rotación",
+                      description: t.inventoryTables.fefo.cautionAction,
                     },
                   };
 

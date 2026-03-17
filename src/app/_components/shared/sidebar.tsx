@@ -37,6 +37,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n-client";
 
 interface AppSidebarProps {
   role?: "ADMIN" | "MANAGER" | "EMPLOYEE";
@@ -54,25 +55,26 @@ interface NavItem {
 export function AppSidebar({ role = "EMPLOYEE" }: AppSidebarProps) {
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
+  const { t } = useI18n();
 
   // Manager navigation with operational focus (inventory, reports, catalog)
   const managerNav: NavItem[] = [
     {
       id: "home",
       href: "/dashboard",
-      label: "Home",
+      label: t.sidebar.home,
       icon: Home,
     },
     {
       id: "inventory-fefo",
       href: "/dashboard/inventory",
-      label: "Inventario",
+      label: t.sidebar.inventory,
       icon: Grid3x3,
     },
     {
       id: "analytics",
       href: "/dashboard/analytics",
-      label: "Reportes",
+      label: t.sidebar.reports,
       icon: BarChart3,
     },
   ];
@@ -82,24 +84,24 @@ const adminNav: NavItem[] = [
   {
     id: "home",
     href: "/dashboard",
-    label: "Home",
+    label: t.sidebar.home,
     icon: Home,
   },
   {
     id: "team-group",
-    label: "Gestión",
+    label: t.sidebar.management,
     icon: Users,
     children: [
       {
         id: "team-management",
         href: "/dashboard/team",
-        label: "Equipo",
+        label: t.sidebar.team,
         icon: Users,
       },
       {
         id: "store-settings",
         href: "/dashboard/settings",
-        label: "Configuración",
+        label: t.sidebar.settings,
         icon: Settings,
       },
     ],
@@ -107,7 +109,7 @@ const adminNav: NavItem[] = [
   {
     id: "plans",
     href: "/dashboard/plans",
-    label: "Planes",
+    label: t.sidebar.plans,
     icon: CreditCard,
   },
 ];
@@ -117,19 +119,19 @@ const employeeNav: NavItem[] = [
   {
     id: "home",
     href: "/dashboard",
-    label: "Home",
+    label: t.sidebar.home,
     icon: Home,
   },
   {
     id: "batch-entry",
     href: "/dashboard/batch-entry",
-    label: "Ingreso de Lotes",
+    label: t.sidebar.batchEntry,
     icon: Grid3x3,
   },
   {
     id: "inventory",
     href: "/dashboard/inventory",
-    label: "Inventario FEFO",
+    label: t.sidebar.fefoInventory,
     icon: Package,
   },
 ];
@@ -195,7 +197,7 @@ return (
                             variant="default"
                             className="ml-auto h-5 px-1.5 py-0 text-xs"
                           >
-                            Nuevo
+                            {t.sidebar.new}
                           </Badge>
                         )}
                       </Link>
@@ -243,7 +245,7 @@ return (
                                       variant="default"
                                       className="ml-auto h-4 px-1 py-0 text-xs"
                                     >
-                                      Nuevo
+                                      {t.sidebar.new}
                                     </Badge>
                                   )}
                                 </Link>

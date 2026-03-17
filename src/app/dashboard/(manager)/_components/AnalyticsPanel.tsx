@@ -12,9 +12,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n-client";
 import { api } from "@/trpc/react";
 
 export function AnalyticsPanel() {
+  const { t } = useI18n();
   const [isExporting, setIsExporting] = useState(false);
   // Main dashboard stats
   const { data: dashboardStats, isLoading: statsLoading } =
@@ -58,11 +60,11 @@ export function AnalyticsPanel() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="text-primary h-5 w-5" />
-            Análisis y Reportes
+            {t.analytics.panelTitle}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center py-12">
-          <p className="text-muted-foreground">Cargando análisis...</p>
+          <p className="text-muted-foreground">{t.analytics.loadingMessage}</p>
         </CardContent>
       </Card>
     );
@@ -75,8 +77,9 @@ export function AnalyticsPanel() {
     setIsExporting(true);
     try {
       // Create CSV content
-      const headers = ["Fecha", "Unidades Expirando"];
-      const rows = trendData.map((point) => [
+      const trendLabel = t.analytics.trendTitle?.split("(")[0]?.trim() ?? "Trend";
+      const headers = [trendLabel, t.analytics.unitsExpiringLabel];
+      const rows = (trendData!).map((point) => [
         format(new Date(point.date), "yyyy-MM-dd"),
         point.expiringCount,
       ]);
@@ -113,7 +116,7 @@ export function AnalyticsPanel() {
           <CardHeader>
             <CardTitle className="text-destructive flex items-center gap-2">
               <AlertTriangle className="h-5 w-5" />
-              Alertas Críticas ({alertsData.alerts.length})
+              {t.analytics.criticalAlertsTitle.replace("{count}", alertsData.alerts.length.toString())}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -144,7 +147,7 @@ export function AnalyticsPanel() {
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-4">
             <p className="text-muted-foreground mb-2 text-xs font-medium">
-              Valor Total
+              {t.analytics.totalValue}
             </p>
             <p className="text-foreground text-3xl font-bold tabular-nums">
               $
@@ -162,7 +165,7 @@ export function AnalyticsPanel() {
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-4">
             <p className="text-muted-foreground mb-2 text-xs font-medium">
-              Productos Activos
+              {t.analytics.activeProducts}
             </p>
             <p className="text-foreground text-3xl font-bold">
               {dashboardStats?.activeProductCount ?? 0}
@@ -179,7 +182,7 @@ export function AnalyticsPanel() {
         >
           <CardContent className="p-4">
             <p className="text-muted-foreground mb-2 text-xs font-medium">
-              Expirando (7 días)
+              {t.analytics.expiringNext7}
             </p>
             <p
               className={`text-3xl font-bold tabular-nums ${(dashboardStats?.expiringCount ?? 0 > 10) ? "text-warning" : "text-foreground"}`}
@@ -192,7 +195,7 @@ export function AnalyticsPanel() {
         <Card className="border-destructive/30 bg-destructive/5">
           <CardContent className="p-4">
             <p className="text-muted-foreground mb-2 text-xs font-medium">
-              Alertas Críticas
+              {t.analytics.criticalAlertsCount}
             </p>
             <p className="text-destructive text-3xl font-bold">
               {alertsData?.alerts.length ?? 0}
@@ -207,7 +210,7 @@ export function AnalyticsPanel() {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <TrendingDown className="text-primary h-5 w-5" />
-              Tendencia de Expiración (30 días)
+              {t.analytics.trendTitle}
             </CardTitle>
             <Button 
               variant="outline" 
@@ -217,7 +220,7 @@ export function AnalyticsPanel() {
               disabled={isExporting || !trendData || trendData.length === 0}
             >
               <Download className="h-4 w-4" />
-              {isExporting ? "Exportando..." : "Exportar"}
+              {isExporting ? t.analytics.exportingButton : t.analytics.exportButton}
             </Button>
           </div>
         </CardHeader>
@@ -238,7 +241,7 @@ export function AnalyticsPanel() {
                       <div
                         className="from-warning to-primary w-6 rounded-t bg-gradient-to-t transition-all hover:shadow-lg"
                         style={{ height: `${Math.max(height, 5)}px` }}
-                        title={`${point.expiringCount} items expiring`}
+                        title={t.analytics.chartTooltip.replace("{count}", point.expiringCount.toString())}
                       />
                       {/* Date label */}
                       <span className="text-muted-foreground text-center text-xs">
@@ -249,7 +252,7 @@ export function AnalyticsPanel() {
                 })
               ) : (
                 <p className="text-muted-foreground w-full text-center">
-                  No hay datos de expiración en los próximos 30 días
+                  {t.analytics.noExpirationData}
                 </p>
               )}
             </div>
@@ -259,7 +262,7 @@ export function AnalyticsPanel() {
               <div className="flex items-center gap-2">
                 <div className="from-warning to-primary h-3 w-3 rounded bg-gradient-to-t" />
                 <span className="text-muted-foreground text-xs">
-                  Unidades que vencen por día
+                  {t.analytics.unitsExpiringLabel}
                 </span>
               </div>
             </div>
@@ -272,13 +275,17 @@ export function AnalyticsPanel() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <PieChartIcon className="text-primary h-5 w-5" />
-            Distribución de Valor por Categoría
+            {t.analytics.valueByCategoryTitle}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {categoryData && categoryData.length > 0 ? (
               categoryData.map((category) => {
+                // Translate category name
+                const categoryKey = category.category as keyof typeof t.categories;
+                const translatedCategory = t.categories?.[categoryKey] ?? category.category;
+                
                 const percentage =
                   (category.totalValue /
                     (maxCategoryValue * categoryData.length)) *
@@ -294,10 +301,10 @@ export function AnalyticsPanel() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-foreground font-medium">
-                          {category.category}
+                          {translatedCategory}
                         </p>
                         <p className="text-muted-foreground text-xs">
-                          {category.itemCount} items • $
+                          {t.analytics.categoryItemsLabel.replace("{count}", category.itemCount.toString())} $
                           {category.totalValue.toLocaleString(undefined, {
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 0,
@@ -321,7 +328,7 @@ export function AnalyticsPanel() {
               })
             ) : (
               <p className="text-muted-foreground py-6 text-center">
-                Sin datos de categoría disponibles
+                {t.analytics.noCategoryData}
               </p>
             )}
           </div>
@@ -331,36 +338,41 @@ export function AnalyticsPanel() {
       {/* Insights Section */}
       <Card className="border-primary/30 bg-primary/5">
         <CardHeader>
-          <CardTitle className="text-lg">💡 Insights para Decisiones</CardTitle>
+          <CardTitle className="text-lg">{t.analytics.insightsTitle}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="space-y-2">
             <h4 className="text-foreground font-semibold">
-              Acciones Recomendadas:
+              {t.analytics.recommendedActionsLabel}
             </h4>
             <ul className="text-muted-foreground list-inside list-disc space-y-1 text-sm">
               {(dashboardStats?.expiringCount ?? 0) > 5 && (
                 <li>
-                  🟠 Hay {dashboardStats?.expiringCount} productos próximos a
-                  expirar. Considera ejecutar promociones.
+                  {t.analytics.recommendationExpiringProducts.replace(
+                    "{count}",
+                    (dashboardStats?.expiringCount ?? 0).toString()
+                  )}
                 </li>
               )}
               {(dashboardStats?.alertsUnread ?? 0) > 0 && (
                 <li>
-                  🔴 {dashboardStats?.alertsUnread} alertas críticas sin leer.
-                  Revísalas ahora.
+                  {t.analytics.recommendationCriticalAlerts.replace(
+                    "{count}",
+                    (dashboardStats?.alertsUnread ?? 0).toString()
+                  )}
                 </li>
               )}
               {(dashboardStats?.totalInventoryValue ?? 0) > 50000 && (
                 <li>
-                  💰 Inventario de alto valor. Enfócate en rotación FEFO para
-                  minimizar merma.
+                  {t.analytics.recommendationHighValue}
                 </li>
               )}
               {categoryData && categoryData.length > 0 && (
                 <li>
-                  📊 La categoría con mayor valor es &quot;
-                  {categoryData[0]?.category}&quot;. Monitorea su expiración.
+                  {t.analytics.recommendationTopCategory.replace(
+                    "{category}",
+                    categoryData[0]?.category ?? "N/A"
+                  )}
                 </li>
               )}
             </ul>

@@ -8,9 +8,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { User, Mail, Shield, Store, CheckCircle2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n-client";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
+  const { t } = useI18n();
 
   // Redirect if not authenticated
   if (status === "loading") {
@@ -31,8 +33,8 @@ export default function ProfilePage() {
 
   const getRoleDisplay = (role: string) => {
     const roleLabels = {
-      MANAGER: "Gerente de Tienda",
-      EMPLOYEE: "Empleado",
+      MANAGER: t.profile.storeManager,
+      EMPLOYEE: t.profile.employee,
     };
     return roleLabels[role as keyof typeof roleLabels] ?? role;
   };
@@ -54,10 +56,10 @@ export default function ProfilePage() {
         {/* Header */}
         <div className="mb-6 space-y-1 lg:mb-8">
           <h1 className="text-xl font-bold tracking-tight sm:text-2xl md:text-3xl lg:text-4xl">
-            Mi Perfil
+            {t.profile.title}
           </h1>
           <p className="text-muted-foreground hidden text-xs sm:block sm:text-sm md:text-base">
-            Visualiza tu información personal y configuración de cuenta
+            {t.profile.subtitle}
           </p>
         </div>
 
@@ -67,7 +69,7 @@ export default function ProfilePage() {
             <CardHeader className="px-4 sm:px-6">
               <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
                 <User className="h-4 w-4 sm:h-5 sm:w-5" />
-                Información Personal
+                {t.profile.personalInfo}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 px-4 sm:space-y-6 sm:px-6">
@@ -105,16 +107,16 @@ export default function ProfilePage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
                 <div className="space-y-2">
                   <Label className="text-muted-foreground text-xs font-medium sm:text-sm">
-                    Nombre Completo
+                    {t.profile.fullName}
                   </Label>
                   <p className="text-sm font-medium break-words sm:text-base">
-                    {user.name ?? "No especificado"}
+                    {user.name ?? t.profile.notSpecified}
                   </p>
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-muted-foreground text-xs font-medium sm:text-sm">
-                    Correo Electrónico
+                    {t.profile.email}
                   </Label>
                   <p className="flex items-center gap-2 text-sm font-medium break-all sm:text-base">
                     <Mail className="h-3 w-3 shrink-0 sm:h-4 sm:w-4" />
@@ -124,7 +126,7 @@ export default function ProfilePage() {
 
                 <div className="space-y-2">
                   <Label className="text-muted-foreground text-xs font-medium sm:text-sm">
-                    Rol en el Sistema
+                    {t.profile.role}
                   </Label>
                   <p className="text-sm font-medium sm:text-base">
                     {getRoleDisplay(userRole)}
@@ -133,17 +135,17 @@ export default function ProfilePage() {
 
                 <div className="space-y-2">
                   <Label className="text-muted-foreground text-xs font-medium sm:text-sm">
-                    Tienda Asignada
+                    {t.profile.assignedStore}
                   </Label>
                   <p className="flex items-center gap-2 text-sm font-medium sm:text-base">
                     <Store className="h-3 w-3 shrink-0 sm:h-4 sm:w-4" />
-                    {userStore ? userStore.name : "Sin asignar"}
+                    {userStore ? userStore.name : t.profile.unassigned}
                   </p>
                 </div>
 
                 <div className="space-y-2 sm:col-span-2">
                   <Label className="text-muted-foreground text-xs font-medium sm:text-sm">
-                    ID de Usuario
+                    {t.profile.userId}
                   </Label>
                   <p className="text-muted-foreground font-mono text-xs break-all sm:text-sm">
                     {user.id}
@@ -160,36 +162,36 @@ export default function ProfilePage() {
               <CardHeader className="px-4 sm:px-6">
                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
                   <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Estado de Cuenta
+                  {t.profile.accountStatus}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 px-4 sm:space-y-4 sm:px-6">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-muted-foreground text-xs sm:text-sm">
-                    Estado
+                    {t.profile.status}
                   </span>
                   <Badge variant="default" className="text-xs">
-                    Activo
+                    {t.profile.active}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-muted-foreground text-xs sm:text-sm">
-                    Sesión
+                    {t.profile.session}
                   </span>
                   <div className="flex items-center gap-1">
                     <div className="h-2 w-2 rounded-full bg-green-500" />
                     <span className="text-xs font-medium sm:text-sm">
-                      Conectado
+                      {t.profile.connected}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-muted-foreground text-xs sm:text-sm">
-                    Proveedor
+                    {t.profile.provider}
                   </span>
                   <Badge variant="outline" className="text-xs capitalize">
                     {session?.user?.email?.includes("@")
-                      ? "Credenciales"
+                      ? t.profile.credentials
                       : "OAuth"}
                   </Badge>
                 </div>
@@ -201,13 +203,13 @@ export default function ProfilePage() {
               <CardHeader className="px-4 sm:px-6">
                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
                   <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Autenticación
+                  {t.profile.authentication}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 px-4 sm:px-6">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-muted-foreground text-xs sm:text-sm">
-                    Protocolo
+                    {t.profile.protocol}
                   </span>
                   <Badge variant="outline" className="text-xs">
                     JWT
@@ -215,14 +217,14 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-muted-foreground text-xs sm:text-sm">
-                    Seguridad
+                    {t.profile.security}
                   </span>
                   <Badge variant="default" className="text-xs">
                     HttpOnly
                   </Badge>
                 </div>
                 <div className="text-muted-foreground mt-2 text-xs italic">
-                  La sesión se mantiene durante 30 días de inactividad
+                  {t.profile.sessionDuration}
                 </div>
               </CardContent>
             </Card>

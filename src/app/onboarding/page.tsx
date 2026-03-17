@@ -5,9 +5,11 @@ import { CreateStoreForm } from "@/app/onboarding/_components/CreateStoreForm";
 import { JoinStoreForm } from "@/app/onboarding/_components/JoinStoreForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, UserPlus } from "lucide-react";
+import { useI18n } from "@/lib/i18n-client";
 
 export default function OnboardingPage() {
   const [activeTab, setActiveTab] = useState("create");
+  const { t } = useI18n();
 
   return (
     <div className="from-background via-background to-background/80 flex min-h-screen items-center justify-center bg-gradient-to-br p-4 sm:p-6 lg:p-8">
@@ -24,11 +26,10 @@ export default function OnboardingPage() {
         {/* Header */}
         <div className="mb-12 space-y-3 text-center">
           <h1 className="text-foreground text-4xl font-bold tracking-tight sm:text-5xl">
-            Bienvenido a <span className="text-primary">Smart Shelf</span>
+            {t.onboarding.title.split(" ").slice(0, -2).join(" ")} <span className="text-primary">{t.onboarding.title.split(" ").slice(-2).join(" ")}</span>
           </h1>
           <p className="text-muted-foreground mx-auto max-w-md text-base sm:text-lg">
-            Crea una nueva tienda o únete a una existente para gestionar tu
-            inventario
+            {t.onboarding.subtitle}
           </p>
         </div>
 
@@ -46,16 +47,16 @@ export default function OnboardingPage() {
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-2 transition-all"
               >
                 <Building2 className="h-4 w-4" aria-hidden="true" />
-                <span className="hidden sm:inline">Crear</span>
-                <span className="sm:hidden">Nueva</span>
+                <span className="hidden sm:inline">{t.onboarding.createTabLabel}</span>
+                <span className="sm:hidden">{t.onboarding.createTabLabelMobile}</span>
               </TabsTrigger>
               <TabsTrigger
                 value="join"
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground flex items-center gap-2 transition-all"
               >
                 <UserPlus className="h-4 w-4" aria-hidden="true" />
-                <span className="hidden sm:inline">Unirse</span>
-                <span className="sm:hidden">Código</span>
+                <span className="hidden sm:inline">{t.onboarding.joinTabLabel}</span>
+                <span className="sm:hidden">{t.onboarding.joinTabLabelMobile}</span>
               </TabsTrigger>
             </TabsList>
 

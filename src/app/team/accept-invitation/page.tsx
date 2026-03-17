@@ -7,11 +7,13 @@ import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n-client";
 
 function AcceptInvitationContent() {
   const params = useSearchParams();
   const router = useRouter();
   const { data: session, status } = useSession();
+  const { t } = useI18n();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +35,7 @@ function AcceptInvitationContent() {
 
   const handleAcceptInvitation = async () => {
     if (!token) {
-      setError("Token de invitación no encontrado");
+      setError(t.team.invitations.notFound);
       return;
     }
 
@@ -62,10 +64,10 @@ function AcceptInvitationContent() {
         storeName: data.data.store.name,
         role:
           data.data.role === "MANAGER"
-            ? "Gerente"
+            ? t.team.invitations.managerRole
             : data.data.role === "ADMIN"
-              ? "Administrador"
-              : "Empleado",
+              ? t.team.invitations.adminRole
+              : t.team.invitations.employeeRole,
       });
       setSuccess(true);
 
@@ -91,36 +93,36 @@ function AcceptInvitationContent() {
               <AlertCircle className="text-destructive h-12 w-12" />
             </div>
             <h1 className="text-foreground text-center text-2xl font-bold">
-              Link Inválido
+              {t.team.invitations.invalidLink}
             </h1>
             <p className="text-muted-foreground text-center">
-              El enlace de invitación no es válido o ha expirado.
+              {t.team.invitations.invalidLinkDescription}
             </p>
             <Button
               onClick={() => router.push("/")}
               className="w-full bg-emerald-600 hover:bg-emerald-700"
             >
-              Volver al Inicio
+              {t.team.invitations.returnHome}
             </Button>
           </div>
         ) : status === "loading" ? (
           <div className="space-y-4 text-center">
             <Loader2 className="mx-auto h-12 w-12 animate-spin text-emerald-500" />
-            <p className="text-muted-foreground">Cargando...</p>
+            <p className="text-muted-foreground">{t.team.invitations.loading}</p>
           </div>
         ) : status === "unauthenticated" ? (
           <div className="space-y-4">
             <h1 className="text-foreground text-2xl font-bold">
-              Aceptar Invitación
+              {t.team.invitations.acceptTitle}
             </h1>
             <p className="text-muted-foreground text-sm">
-              Inicia sesión para aceptar tu invitación al equipo
+              {t.team.invitations.acceptDescription}
             </p>
 
             <Alert className="border-amber-500/50 bg-amber-500/10">
               <AlertCircle className="h-4 w-4 text-amber-600" />
               <span className="text-sm text-amber-600">
-                Debes iniciar sesión con el email que recibió la invitación
+                {t.team.invitations.loginRequired}
               </span>
             </Alert>
 
@@ -128,7 +130,7 @@ function AcceptInvitationContent() {
               onClick={() => signIn("credentials", { redirect: false })}
               className="w-full bg-emerald-600 hover:bg-emerald-700"
             >
-              Iniciar Sesión
+              {t.auth.signIn}
             </Button>
 
             <Button
@@ -136,7 +138,7 @@ function AcceptInvitationContent() {
               onClick={() => router.push("/auth/register")}
               className="text-foreground w-full border-slate-700 hover:bg-white/10"
             >
-              Crear Cuenta
+              {t.auth.signUp}
             </Button>
           </div>
         ) : success && invitationDetails ? (
@@ -145,24 +147,24 @@ function AcceptInvitationContent() {
               <CheckCircle2 className="h-12 w-12 text-emerald-500" />
             </div>
             <h1 className="text-foreground text-center text-2xl font-bold">
-              ¡Bienvenido!
+              {t.team.invitations.welcomeTitle}
             </h1>
             <div className="space-y-2 text-center">
               <p className="text-muted-foreground text-sm">
-                Has sido agregado como
+                {t.team.invitations.addedAs}
               </p>
               <p className="font-semibold text-emerald-400">
                 {invitationDetails.role}
               </p>
               <p className="text-muted-foreground text-sm">
-                en la tienda{" "}
+                {t.team.invitations.inStore}{" "}
                 <span className="text-foreground font-semibold">
                   {invitationDetails.storeName}
                 </span>
               </p>
             </div>
             <p className="text-muted-foreground text-center text-xs">
-              Redirigiendo al dashboard...
+              {t.team.invitations.redirecting}
             </p>
           </div>
         ) : error ? (
@@ -171,7 +173,7 @@ function AcceptInvitationContent() {
               <AlertCircle className="text-destructive h-12 w-12" />
             </div>
             <h1 className="text-foreground text-center text-2xl font-bold">
-              Error
+              {t.team.invitations.error}
             </h1>
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -181,7 +183,7 @@ function AcceptInvitationContent() {
               onClick={() => router.push("/")}
               className="w-full bg-slate-700 hover:bg-slate-600"
             >
-              Volver al Inicio
+              {t.team.invitations.returnHome}
             </Button>
           </div>
         ) : null}

@@ -12,9 +12,11 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/lib/i18n-client";
 import { api } from "@/trpc/react";
 
 export function StrategicInventoryTable() {
+  const { t } = useI18n();
   // Fetch all batches
   const { data: batchesData, isLoading: batchesLoading } =
     api.inventory.getBatches.useQuery({
@@ -85,14 +87,14 @@ export function StrategicInventoryTable() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="text-primary h-5 w-5" />
-            Inventario Estratégico - Análisis de Valor y Riesgo
+            {t.inventoryTables.strategic.title}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-12">
             <Loader2 className="text-primary h-6 w-6 animate-spin" />
             <span className="text-muted-foreground ml-2">
-              Analizando inventario...
+              {t.inventoryTables.strategic.loadingMessage}
             </span>
           </div>
         </CardContent>
@@ -110,7 +112,7 @@ export function StrategicInventoryTable() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-muted-foreground mb-1 text-xs font-medium">
-                  Valor Total Inventario
+                  {t.inventoryTables.strategic.totalInventoryValue}
                 </p>
                 <p className="text-foreground text-2xl font-bold tabular-nums">
                   $
@@ -137,7 +139,7 @@ export function StrategicInventoryTable() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-muted-foreground mb-1 text-xs font-medium">
-                  Valor en Riesgo (7 días)
+                  {t.inventoryTables.strategic.valueAtRisk7Days}
                 </p>
                 <p
                   className={`text-2xl font-bold tabular-nums ${metrics.valueAtRisk > 0 ? "text-warning" : "text-primary"}`}
@@ -160,7 +162,7 @@ export function StrategicInventoryTable() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-muted-foreground mb-1 text-xs font-medium">
-                  Días Retención Promedio
+                  {t.inventoryTables.strategic.avgRetentionDays}
                 </p>
                 <p className="text-foreground text-2xl font-bold">
                   {metrics.avgRetentionDays}
@@ -177,7 +179,7 @@ export function StrategicInventoryTable() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-muted-foreground mb-1 text-xs font-medium">
-                  Productos Alto Valor (&gt;$1K)
+                  {t.inventoryTables.strategic.highValueProducts}
                 </p>
                 <p className="text-foreground text-2xl font-bold">
                   {metrics.highValueBatches}
@@ -200,7 +202,7 @@ export function StrategicInventoryTable() {
       <Card className="border-border/50 from-card to-card/80 bg-linear-to-br backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-lg">
-            Top 50 Productos por Valor de Retención
+            {t.inventoryTables.strategic.topProductsByValue}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -209,22 +211,22 @@ export function StrategicInventoryTable() {
               <thead>
                 <tr className="border-border/30 border-b">
                   <th className="text-foreground px-3 py-3 text-left font-semibold">
-                    Producto
+                    {t.inventoryTables.strategic.product}
                   </th>
                   <th className="text-foreground px-3 py-3 text-right font-semibold">
-                    Unidades
+                    {t.inventoryTables.strategic.units}
                   </th>
                   <th className="text-foreground px-3 py-3 text-right font-semibold">
-                    Valor Total
+                    {t.inventoryTables.strategic.totalValue}
                   </th>
                   <th className="text-foreground px-3 py-3 text-right font-semibold">
-                    Costo Unit.
+                    {t.inventoryTables.strategic.costPerUnit}
                   </th>
                   <th className="text-foreground px-3 py-3 text-center font-semibold">
-                    Vence
+                    {t.inventoryTables.strategic.expires}
                   </th>
                   <th className="text-foreground px-3 py-3 text-center font-semibold">
-                    Riesgo
+                    {t.inventoryTables.strategic.risk}
                   </th>
                 </tr>
               </thead>
@@ -246,22 +248,22 @@ export function StrategicInventoryTable() {
                     critical: {
                       color: "text-destructive",
                       bgColor: "bg-destructive/10",
-                      label: "🔴 EXPIRADO",
+                      label: t.inventoryTables.strategic.riskExpired,
                     },
                     high: {
                       color: "text-warning",
                       bgColor: "bg-warning/10",
-                      label: "🟠 ALTO",
+                      label: t.inventoryTables.strategic.riskHigh,
                     },
                     medium: {
                       color: "text-primary",
                       bgColor: "bg-primary/10",
-                      label: "🟡 MEDIO",
+                      label: t.inventoryTables.strategic.riskMedium,
                     },
                     low: {
                       color: "text-muted-foreground",
                       bgColor: "bg-muted/20",
-                      label: "🟢 BAJO",
+                      label: t.inventoryTables.strategic.riskLow,
                     },
                   };
 

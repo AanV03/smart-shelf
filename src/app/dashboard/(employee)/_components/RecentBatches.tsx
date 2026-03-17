@@ -7,6 +7,7 @@ import { Trash2, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n-client";
 import { api } from "@/trpc/react";
 
 interface RecentBatchesProps {
@@ -14,6 +15,7 @@ interface RecentBatchesProps {
 }
 
 export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
+  const { t } = useI18n();
   // Fetch todos los batches para el empleado
   const {
     data: batchesData,
@@ -57,12 +59,12 @@ export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
     return (
       <Card className="border-border/50 from-card to-card/80 bg-linear-to-br backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg">Últimos Lotes Ingresados</CardTitle>
+          <CardTitle className="text-lg">{t.recentBatches.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
             <p className="text-muted-foreground">
-              Cargando últimas entradas...
+              {t.recentBatches.loadingMessage}
             </p>
           </div>
         </CardContent>
@@ -74,12 +76,12 @@ export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
     return (
       <Card className="border-border/50 from-card to-card/80 bg-linear-to-br backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg">Últimos Lotes Ingresados</CardTitle>
+          <CardTitle className="text-lg">{t.recentBatches.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center gap-2 py-8">
             <AlertCircle className="text-muted-foreground h-6 w-6" />
-            <p className="text-muted-foreground">No hay lotes ingresados hoy</p>
+            <p className="text-muted-foreground">{t.recentBatches.noBatchesToday}</p>
           </div>
         </CardContent>
       </Card>
@@ -90,7 +92,7 @@ export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
     <Card className="border-border/50 from-card to-card/80 bg-linear-to-br backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="text-lg">
-          Últimos Lotes Ingresados ({todayBatches.length})
+          {t.recentBatches.title} ({todayBatches.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -99,22 +101,22 @@ export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
             <thead>
               <tr className="border-border/30 border-b">
                 <th className="text-muted-foreground px-2 py-2 text-left font-medium">
-                  Lote
+                  {t.recentBatches.batch}
                 </th>
                 <th className="text-muted-foreground px-2 py-2 text-left font-medium">
-                  Producto
+                  {t.recentBatches.product}
                 </th>
                 <th className="text-muted-foreground px-2 py-2 text-right font-medium">
-                  Cantidad
+                  {t.recentBatches.quantity}
                 </th>
                 <th className="text-muted-foreground px-2 py-2 text-right font-medium">
-                  Total
+                  {t.recentBatches.total}
                 </th>
                 <th className="text-muted-foreground px-2 py-2 text-left font-medium">
-                  Vence
+                  {t.recentBatches.expires}
                 </th>
                 <th className="text-muted-foreground px-2 py-2 text-center font-medium">
-                  Acción
+                  {t.recentBatches.action}
                 </th>
               </tr>
             </thead>
@@ -173,7 +175,7 @@ export function RecentBatches({ refreshTrigger }: RecentBatchesProps) {
                         size="sm"
                         onClick={() => mutation.mutate({ id: batch.id })}
                         disabled={mutation.isPending}
-                        aria-label={`Eliminar lote ${batch.batchNumber}`}
+                        aria-label={t.recentBatches.deleteBatchAriaLabel.replace("{batchNumber}", batch.batchNumber)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

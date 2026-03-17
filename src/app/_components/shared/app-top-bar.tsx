@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { DarkModeSwitch } from "./dark-mode-switch";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface AppTopBarProps {
   role?: "ADMIN" | "MANAGER" | "EMPLOYEE";
@@ -78,6 +79,9 @@ export function AppTopBar({ role = "EMPLOYEE" }: AppTopBarProps) {
 
         {/* Dark Mode Toggle */}
         <DarkModeSwitch />
+
+        {/* Language Switcher */}
+        <LanguageSwitcher />
 
         {/* User Dropdown */}
         <DropdownMenu>

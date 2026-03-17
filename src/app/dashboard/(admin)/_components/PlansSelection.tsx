@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/lib/i18n-client";
 
 interface Plan {
   id: string;
@@ -21,69 +22,36 @@ interface Plan {
   popular?: boolean;
 }
 
-const PLANS: Plan[] = [
-  {
-    id: "starter",
-    name: "Starter",
-    description: "Para pequeños negocios",
+const PLAN_IDS = {
+  starter: "starter",
+  pro: "pro",
+  enterprise: "enterprise",
+};
+
+const PLAN_PRICES = {
+  starter: {
     monthlyPriceId: "price_1TAiPPQrR30p4EpS54xmUqJF",
     yearlyPriceId: "price_1TAiSPQrR30p4EpSgJx7Iom3",
     monthlyPrice: 29,
     yearlyPrice: 290,
-    features: [
-      "Hasta 500 SKUs",
-      "1 usuario (admin)",
-      "Reportes básicos",
-      "Soporte por email",
-      "7 días de historial",
-    ],
-    icon: <Zap className="h-6 w-6" />,
   },
-  {
-    id: "pro",
-    name: "Professional",
-    description: "Para tiendas en crecimiento",
+  pro: {
     monthlyPriceId: "price_1TAiQ2QrR30p4EpSQc6L8MNa",
     yearlyPriceId: "price_1TAiStQrR30p4EpSZICeWEOy",
     monthlyPrice: 79,
     yearlyPrice: 790,
-    features: [
-      "Hasta 5,000 SKUs",
-      "Hasta 10 usuarios",
-      "Reportes avanzados",
-      "Soporte prioritario",
-      "90 días de historial",
-      "Integraciones básicas",
-      "API access",
-    ],
-    icon: <Crown className="h-6 w-6" />,
-    popular: true,
   },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    description: "Para cadenas grandes",
+  enterprise: {
     monthlyPriceId: "price_1TAiRAQrR30p4EpSbYkYYlk2",
     yearlyPriceId: "price_1TAiTPQrR30p4EpS0MMdg2Bp",
     monthlyPrice: 299,
     yearlyPrice: 2990,
-    features: [
-      "SKUs ilimitados",
-      "Usuarios ilimitados",
-      "Reportes personalizados",
-      "Soporte 24/7",
-      "Historial completo",
-      "Integraciones avanzadas",
-      "API access",
-      "Consultoría incluida",
-      "SLA garantizado",
-    ],
-    icon: <Crown className="h-6 w-6" />,
   },
-];
+};
 
 export function PlansSelection() {
   const { data: session } = useSession();
+  const { t } = useI18n();
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "monthly",
   );
@@ -92,6 +60,59 @@ export function PlansSelection() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   const activeStore = session?.user?.stores?.[0];
+
+  // Build plans dynamically with translations
+  const PLANS: Plan[] = [
+    {
+      id: "starter",
+      name: t.plans.starter.name,
+      description: t.plans.starter.description,
+      ...PLAN_PRICES.starter,
+      features: [
+        t.plans.starter.feature1,
+        t.plans.starter.feature2,
+        t.plans.starter.feature3,
+        t.plans.starter.feature4,
+        t.plans.starter.feature5,
+      ],
+      icon: <Zap className="h-6 w-6" />,
+    },
+    {
+      id: "pro",
+      name: t.plans.professional.name,
+      description: t.plans.professional.description,
+      ...PLAN_PRICES.pro,
+      features: [
+        t.plans.professional.feature1,
+        t.plans.professional.feature2,
+        t.plans.professional.feature3,
+        t.plans.professional.feature4,
+        t.plans.professional.feature5,
+        t.plans.professional.feature6,
+        t.plans.professional.feature7,
+      ],
+      icon: <Crown className="h-6 w-6" />,
+      popular: true,
+    },
+    {
+      id: "enterprise",
+      name: t.plans.enterprise.name,
+      description: t.plans.enterprise.description,
+      ...PLAN_PRICES.enterprise,
+      features: [
+        t.plans.enterprise.feature1,
+        t.plans.enterprise.feature2,
+        t.plans.enterprise.feature3,
+        t.plans.enterprise.feature4,
+        t.plans.enterprise.feature5,
+        t.plans.enterprise.feature6,
+        t.plans.enterprise.feature7,
+        t.plans.enterprise.feature8,
+        t.plans.enterprise.feature9,
+      ],
+      icon: <Crown className="h-6 w-6" />,
+    },
+  ];
 
   const handleSelectPlan = async (plan: Plan) => {
     if (!activeStore) {
@@ -144,10 +165,10 @@ export function PlansSelection() {
       <div>
         <h1 className="text-foreground flex items-center gap-2 text-3xl font-bold">
           <CreditCard className="h-8 w-8" />
-          Planes y Precios
+          {t.plans.title}
         </h1>
         <p className="text-muted-foreground mt-1">
-          Elige el plan perfecto para tu tienda
+          {t.plans.subtitle}
         </p>
       </div>
 
@@ -169,7 +190,7 @@ export function PlansSelection() {
                 : "text-muted-foreground"
             }`}
           >
-            Mensual
+            {t.plans.monthly}
           </span>
           <button
             onClick={() =>
@@ -193,7 +214,7 @@ export function PlansSelection() {
                 : "text-muted-foreground"
             }`}
           >
-            Anual <span className="text-emerald-400">(Ahorra 2 meses)</span>
+            {t.plans.yearly} <span className="text-emerald-400">{t.plans.savesMonths}</span>
           </span>
         </div>
       </Card>
@@ -211,7 +232,7 @@ export function PlansSelection() {
           >
             {plan.popular && (
               <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 hover:bg-emerald-700">
-                Popular
+                {t.plans.popular}
               </Badge>
             )}
 
@@ -241,12 +262,12 @@ export function PlansSelection() {
                       : plan.yearlyPrice}
                   </span>
                   <span className="text-muted-foreground text-sm">
-                    /{billingPeriod === "monthly" ? "mes" : "año"}
+                    {billingPeriod === "monthly" ? t.plans.perMonth : t.plans.perYear}
                   </span>
                 </div>
                 {billingPeriod === "yearly" && (
                   <p className="mt-2 text-xs text-emerald-400">
-                    Ahorras ${(plan.monthlyPrice * 2).toFixed(0)} por año
+                    {t.plans.savingText.replace("${amount}", (plan.monthlyPrice * 2).toFixed(0))}
                   </p>
                 )}
               </div>
@@ -274,12 +295,12 @@ export function PlansSelection() {
                 {loading && selectedPlan === plan.id ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                    Procesando...
+                    {t.plans.processingButton}
                   </>
                 ) : (
                   <>
                     <CreditCard className="mr-2 h-4 w-4" />
-                    Seleccionar
+                    {t.plans.selectButton}
                   </>
                 )}
               </Button>
@@ -291,11 +312,10 @@ export function PlansSelection() {
       {/* Info Box */}
       <Card className="border-slate-700 bg-blue-500/5 p-6 backdrop-blur-md">
         <h3 className="text-foreground mb-2 font-semibold">
-          💡 ¿Necesitas ayuda?
+          {t.plans.helpTitle}
         </h3>
         <p className="text-muted-foreground text-sm">
-          Todos los planes incluyen período de prueba gratuito de 14 días. Sin
-          requerimiento de tarjeta de crédito. Cancela en cualquier momento.
+          {t.plans.helpText}
         </p>
       </Card>
     </div>

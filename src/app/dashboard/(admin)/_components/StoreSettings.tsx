@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DeleteStoreModal } from "./DeleteStoreModal";
+import { useI18n } from "@/lib/i18n-client";
 
 interface StoreSettingsData {
   name: string;
@@ -18,6 +20,7 @@ interface StoreSettingsData {
 
 export function StoreSettings() {
   const { data: session } = useSession();
+  const { t } = useI18n();
   const [settings, setSettings] = useState<StoreSettingsData>({
     name: "",
     location: "",
@@ -70,7 +73,7 @@ export function StoreSettings() {
       setTimeout(() => setSuccess(false), 3000);
       console.log("[SETTINGS_SAVED]", settings);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Error al guardar";
+      const message = err instanceof Error ? err.message : t.settings.saveError;
       setError(message);
       console.error("[SETTINGS_ERROR]", err);
     } finally {
@@ -84,10 +87,10 @@ export function StoreSettings() {
       <div>
         <h1 className="text-foreground flex items-center gap-2 text-3xl font-bold">
           <Settings className="h-8 w-8" />
-          Configuración de la Tienda
+          {t.settings.title}
         </h1>
         <p className="text-muted-foreground mt-1">
-          Administra la información de tu tienda
+          {t.settings.storeInfo}
         </p>
       </div>
 
@@ -105,7 +108,7 @@ export function StoreSettings() {
             <Alert className="border-emerald-500/50 bg-emerald-500/10">
               <CheckCircle2 className="h-4 w-4 text-emerald-500" />
               <span className="text-emerald-300">
-                Configuración guardada correctamente
+                {t.settings.saved}
               </span>
             </Alert>
           )}
@@ -113,7 +116,7 @@ export function StoreSettings() {
           {/* Store Name */}
           <div className="space-y-2">
             <Label htmlFor="store-name" className="text-foreground">
-              Nombre de la Tienda
+              {t.settings.storeName}
             </Label>
             <Input
               id="store-name"
@@ -127,7 +130,7 @@ export function StoreSettings() {
           {/* Location */}
           <div className="space-y-2">
             <Label htmlFor="location" className="text-foreground">
-              Ubicación
+              {t.settings.location}
             </Label>
             <Input
               id="location"
@@ -141,7 +144,7 @@ export function StoreSettings() {
           {/* Phone */}
           <div className="space-y-2">
             <Label htmlFor="phone" className="text-foreground">
-              Teléfono
+              {t.settings.phone}
             </Label>
             <Input
               id="phone"
@@ -156,7 +159,7 @@ export function StoreSettings() {
           {/* Email */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-foreground">
-              Email de Contacto
+              {t.settings.contactEmail}
             </Label>
             <Input
               id="email"
@@ -176,12 +179,12 @@ export function StoreSettings() {
             {saving ? (
               <>
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                Guardando...
+                {t.actions.loading}
               </>
             ) : (
               <>
                 <Save className="h-4 w-4" />
-                Guardar Cambios
+                {t.settings.saveChanges}
               </>
             )}
           </Button>
@@ -191,14 +194,17 @@ export function StoreSettings() {
       {/* Danger Zone */}
       <Card className="border-destructive/30 bg-destructive/5 p-6 backdrop-blur-md">
         <h3 className="text-destructive mb-3 text-lg font-semibold">
-          Zona de Peligro
+          {t.settings.dangerZone}
         </h3>
         <p className="text-muted-foreground mb-4 text-sm">
-          Acciones irreversibles que afectarán tu tienda
+          {t.settings.dangerZoneDescription}
         </p>
-        <Button variant="destructive" className="w-full" disabled>
-          Eliminar Tienda (Próximamente)
-        </Button>
+        {activeStore && (
+          <DeleteStoreModal
+            storeName={activeStore.name}
+            storeId={activeStore.id}
+          />
+        )}
       </Card>
     </div>
   );

@@ -6,6 +6,7 @@ import { Geist } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/react";
 import { AuthProvider } from "@/app/_components/auth/AuthProvider";
 import { ThemeProvider } from "next-themes";
+import { I18nProvider } from "@/lib/i18n-client";
 
 export const metadata: Metadata = {
   title: "Smart-Shelf",
@@ -29,9 +30,11 @@ export default function RootLayout({
     >
       <body className="bg-background text-foreground font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <AuthProvider>
-            <TRPCReactProvider>{children}</TRPCReactProvider>
-          </AuthProvider>
+          <I18nProvider>
+            <AuthProvider>
+              <TRPCReactProvider>{children}</TRPCReactProvider>
+            </AuthProvider>
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

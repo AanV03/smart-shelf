@@ -4,6 +4,7 @@
  * Utiliza Resend para enviar emails de invitación
  */
 
+import { Resend } from "resend";
 import { env } from "@/env";
 
 interface SendInvitationEmailInput {
@@ -47,9 +48,18 @@ export async function sendInvitationEmail({
     return;
   }
 
+  const resend = new Resend(env.RESEND_API_KEY);
+  const fromEmail = env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
+
   try {
-    const emailPayload = {
-      from: env.RESEND_FROM_EMAIL ?? "noreply@smart-shelf.app",
+    console.log("[EMAIL_SERVICE] Preparing email payload", {
+      from: fromEmail,
+      to,
+      subject: `¡Bienvenido a ${storeName}!`,
+    });
+
+    const response = await resend.emails.send({
+      from: fromEmail,
       to,
       subject: `¡Bienvenido a ${storeName}!`,
       html: generateInvitationHTML({
@@ -58,42 +68,29 @@ export async function sendInvitationEmail({
         role,
         acceptUrl,
       }),
-    };
-
-    console.log("[EMAIL_SERVICE] Request payload", {
-      from: emailPayload.from,
-      to: emailPayload.to,
-      subject: emailPayload.subject,
     });
 
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      },
-      body: JSON.stringify(emailPayload),
-    });
-
-    const responseData = (await response.json()) as Record<string, unknown>;
-
-    if (!response.ok) {
-      const errorMsg = `Resend API error (${response.status}): ${JSON.stringify(responseData)}`;
-      console.error("[EMAIL_SERVICE]", errorMsg);
+    if (response.error) {
+      const errorMsg = `Resend API error: ${JSON.stringify(response.error)}`;
+      console.error("[EMAIL_SERVICE] Resend error response", {
+        error: response.error,
+        to,
+      });
       throw new Error(errorMsg);
     }
 
-    const { id } = responseData as { id: string };
     console.log("[EMAIL_SERVICE] Invitation email sent successfully", {
-      id,
+      id: response.data?.id,
       to,
     });
   } catch (error) {
-    console.error("[EMAIL_SERVICE] Error sending invitation email", error);
-    if (process.env.NODE_ENV === "development") {
-      throw error;
-    }
-    // In production: log but don't throw - email sending is non-critical
+    console.error("[EMAIL_SERVICE] Error sending invitation email", {
+      error,
+      message: error instanceof Error ? error.message : "Unknown error",
+      to,
+    });
+    // Always throw in both dev and prod to catch configuration issues
+    throw error;
   }
 }
 

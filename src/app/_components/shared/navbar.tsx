@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Package, User, Clock, LogOut, Menu } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { DarkModeSwitch } from "./dark-mode-switch";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useSidebar } from "@/components/ui/sidebar";
 import Link from "next/link";
 
@@ -95,6 +96,9 @@ export function Navbar({ role = "EMPLOYEE" }: NavbarProps) {
 
         {/* Dark Mode Switch */}
         <DarkModeSwitch />
+
+        {/* Language Switcher */}
+        <LanguageSwitcher />
 
         {/* Profile Button */}
         <Link

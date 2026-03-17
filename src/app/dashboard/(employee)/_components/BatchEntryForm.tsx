@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useI18n } from "@/lib/i18n-client";
 import { api } from "@/trpc/react";
 
 interface BatchEntryFormProps {
@@ -14,6 +15,7 @@ interface BatchEntryFormProps {
 }
 
 export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     productId: "",
     batchNumber: "",
@@ -55,7 +57,7 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
         onSuccess?.();
       },
       onError: (err) => {
-        setError(err.message || "Error al crear el lote");
+        setError(err.message || t.batchEntryForm.createError);
         setSuccess(false);
       },
     });
@@ -89,7 +91,7 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
 
     // Validaciones
     if (!formData.productId) {
-      setError("Selecciona un producto");
+      setError(t.batchEntryForm.selectProduct);
       return;
     }
     if (!formData.batchNumber.trim()) {
@@ -97,11 +99,11 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
       return;
     }
     if (!formData.quantity || parseInt(formData.quantity) <= 0) {
-      setError("Ingresa una cantidad válida");
+      setError(t.batchEntryForm.invalidQuantity);
       return;
     }
     if (!formData.costPerUnit || parseFloat(formData.costPerUnit) <= 0) {
-      setError("Ingresa un costo unitario válido");
+      setError(t.batchEntryForm.invalidCostPerUnit);
       return;
     }
 
@@ -119,7 +121,7 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Package className="text-primary h-5 w-5" />
-          Nuevo Lote
+          {t.batchEntryForm.title}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -137,7 +139,7 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
             <div className="bg-primary/10 border-primary/30 flex items-center gap-3 rounded-lg border px-4 py-3">
               <CheckCircle2 className="text-primary h-5 w-5 flex-shrink-0" />
               <p className="text-primary text-sm font-medium">
-                ✓ Lote creado exitosamente
+                {t.batchEntryForm.successMessage}
               </p>
             </div>
           )}
@@ -145,7 +147,7 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
           {/* Product Selection */}
           <div className="space-y-2">
             <Label htmlFor="product" className="text-sm font-medium">
-              Producto
+              {t.batchEntryForm.productLabel}
             </Label>
             <select
               id="product"
@@ -157,7 +159,7 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
               aria-invalid={!!error && !formData.productId}
             >
               <option value="">
-                {productsLoading ? "Cargando..." : "Selecciona un producto"}
+                {productsLoading ? t.batchEntryForm.loading : t.batchEntryForm.selectProduct}
               </option>
               {products.map((product) => (
                 <option key={product.id} value={product.id}>
@@ -170,13 +172,13 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
           {/* Batch Number */}
           <div className="space-y-2">
             <Label htmlFor="batch-number" className="text-sm font-medium">
-              Número de Lote
+              {t.batchEntryForm.batchNumberLabel}
             </Label>
             <Input
               ref={batchNumberInputRef}
               id="batch-number"
               type="text"
-              placeholder="Ej: LOT-2026-001"
+              placeholder={t.batchEntryForm.batchNumberPlaceholder}
               value={formData.batchNumber}
               onChange={(e) => handleInputChange(e, "batchNumber")}
               onKeyDown={handleKeyDown}
@@ -192,12 +194,12 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
             {/* Quantity */}
             <div className="space-y-2">
               <Label htmlFor="quantity" className="text-sm font-medium">
-                Cantidad
+                {t.batchEntryForm.quantityLabel}
               </Label>
               <Input
                 id="quantity"
                 type="number"
-                placeholder="Ej: 50"
+                placeholder={t.batchEntryForm.quantityPlaceholder}
                 value={formData.quantity}
                 onChange={(e) => handleInputChange(e, "quantity")}
                 disabled={isPending}
@@ -209,12 +211,12 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
             {/* Cost Per Unit */}
             <div className="space-y-2">
               <Label htmlFor="cost" className="text-sm font-medium">
-                Costo Unitario ($)
+                {t.batchEntryForm.costPerUnitLabel}
               </Label>
               <Input
                 id="cost"
                 type="number"
-                placeholder="Ej: 15.99"
+                placeholder={t.batchEntryForm.costPerUnitPlaceholder}
                 value={formData.costPerUnit}
                 onChange={(e) => handleInputChange(e, "costPerUnit")}
                 disabled={isPending}
@@ -227,7 +229,7 @@ export function BatchEntryForm({ onSuccess }: BatchEntryFormProps) {
             {/* Expiration Date */}
             <div className="space-y-2">
               <Label htmlFor="expires-at" className="text-sm font-medium">
-                Vence En
+                {t.batchEntryForm.expirationDateLabel}
               </Label>
               <Input
                 id="expires-at"

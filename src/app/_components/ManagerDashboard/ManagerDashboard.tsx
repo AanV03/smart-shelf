@@ -13,9 +13,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/trpc/react";
 import { format } from "date-fns";
+import { useI18n } from "@/lib/i18n-client";
 
 export default function ManagerDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+  const { t } = useI18n();
 
   // Fetch dashboard stats
   const { data: stats, isLoading: statsLoading } =
@@ -42,10 +44,10 @@ export default function ManagerDashboard() {
           {/* Hero section */}
           <div className="mb-10">
             <h1 className="text-foreground mb-2 text-4xl font-bold tracking-tight">
-              Dashboard
+              {t.dashboard.manager.title}
             </h1>
             <p className="text-muted-foreground text-lg">
-              Monitor inventory metrics, alerts, and system performance
+              {t.dashboard.manager.subtitle}
             </p>
           </div>
 
@@ -57,7 +59,7 @@ export default function ManagerDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Inventory Value
+                      {t.dashboard.manager.inventoryValue}
                     </p>
                     <p className="text-foreground text-3xl font-bold tabular-nums">
                       {statsLoading
@@ -84,7 +86,7 @@ export default function ManagerDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Active Products
+                      {t.dashboard.manager.activeProducts}
                     </p>
                     <p className="text-foreground text-3xl font-bold tabular-nums">
                       {statsLoading ? "—" : (stats?.activeProductCount ?? 0)}
@@ -103,12 +105,12 @@ export default function ManagerDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Expiring Soon
+                      {t.dashboard.manager.expiringSoon}
                     </p>
                     <p className="text-foreground text-3xl font-bold tabular-nums">
                       {statsLoading ? "—" : (stats?.expiringCount ?? 0)}
                     </p>
-                    <p className="text-warning mt-1 text-xs">Next 7 days</p>
+                    <p className="text-warning mt-1 text-xs">{t.dashboard.manager.expiringNext7}</p>
                   </div>
                   <div className="bg-warning/15 rounded-lg p-3">
                     <AlertCircle className="text-warning h-6 w-6" />
@@ -128,16 +130,16 @@ export default function ManagerDashboard() {
               <div className="border-border/30 border-b px-6 pt-6">
                 <TabsList className="bg-secondary/20 border-border/30 grid w-full grid-cols-4 border">
                   <TabsTrigger value="overview" className="rounded-md">
-                    Overview
+                    {t.dashboard.manager.title}
                   </TabsTrigger>
                   <TabsTrigger value="inventory" className="rounded-md">
-                    Inventory
+                    {t.inventory.title}
                   </TabsTrigger>
                   <TabsTrigger value="alerts" className="rounded-md">
-                    Alerts
+                    {t.dashboard.manager.activeAlerts}
                   </TabsTrigger>
                   <TabsTrigger value="reports" className="rounded-md">
-                    Reports
+                    {t.reports.title}
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -147,16 +149,17 @@ export default function ManagerDashboard() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-foreground mb-4 text-lg font-semibold">
-                      System Status
+                      {t.dashboard.manager.systemStatus}
                     </h3>
                     <div className="border-primary/30 bg-primary/5 flex items-center gap-3 rounded-lg border p-4">
                       <div className="bg-primary size-3 animate-pulse rounded-full" />
                       <div>
                         <p className="text-primary text-sm font-medium">
-                          All systems operational
+                          {t.dashboard.manager.allSystemsOperational}
                         </p>
                         <p className="text-primary/70 text-xs">
-                          Database connected • API healthy • Sync active
+                          {t.dashboard.manager.databaseConnected} • {t.dashboard.manager.apiHealthy} •{" "}
+                          {t.dashboard.manager.syncActive}
                         </p>
                       </div>
                     </div>
@@ -164,15 +167,15 @@ export default function ManagerDashboard() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="border-border/30 bg-secondary/30 rounded-lg border p-4">
                       <p className="text-muted-foreground mb-2 text-xs font-medium">
-                        Last Sync
+                        {t.dashboard.manager.lastSync}
                       </p>
                       <p className="text-foreground text-sm font-semibold">
-                        2 minutes ago
+                        2 {t.dashboard.manager.minutesAgo}
                       </p>
                     </div>
                     <div className="border-border/30 bg-secondary/30 rounded-lg border p-4">
                       <p className="text-muted-foreground mb-2 text-xs font-medium">
-                        Uptime
+                        {t.dashboard.manager.uptime}
                       </p>
                       <p className="text-foreground text-sm font-semibold">
                         99.9%
@@ -186,12 +189,12 @@ export default function ManagerDashboard() {
               <TabsContent value="inventory" className="mt-6 px-6 pb-6">
                 <div className="space-y-4">
                   <h3 className="text-foreground text-lg font-semibold">
-                    Inventory by Product
+                    {t.dashboard.manager.inventoryByProduct}
                   </h3>
                   <div className="border-border/30 bg-secondary/30 rounded-lg border p-8 text-center">
                     <Package className="text-muted-foreground/50 mx-auto mb-4 h-12 w-12" />
                     <p className="text-muted-foreground text-sm">
-                      Detailed product list loading...
+                      {t.dashboard.manager.detailedProductListLoading}
                     </p>
                   </div>
                 </div>
@@ -201,13 +204,13 @@ export default function ManagerDashboard() {
               <TabsContent value="alerts" className="mt-6 px-6 pb-6">
                 <div className="space-y-4">
                   <h3 className="text-foreground mb-4 text-lg font-semibold">
-                    Active Alerts ({alerts?.alerts?.length ?? 0})
+                    {t.dashboard.manager.activeAlerts} ({alerts?.alerts?.length ?? 0})
                   </h3>
                   {alertsLoading ? (
                     <div className="flex items-center justify-center gap-2 py-12">
                       <Loader2 className="text-primary size-5 animate-spin" />
                       <span className="text-muted-foreground text-sm">
-                        Loading alerts...
+                        {t.dashboard.manager.loadingAlerts}
                       </span>
                     </div>
                   ) : alerts?.alerts && alerts.alerts.length > 0 ? (
@@ -251,10 +254,10 @@ export default function ManagerDashboard() {
                     <div className="border-primary/20 bg-primary/5 rounded-lg border p-6 text-center">
                       <CheckCircle2 className="text-primary mx-auto mb-3 h-8 w-8" />
                       <p className="text-foreground text-sm font-medium">
-                        No unread alerts
+                        {t.dashboard.manager.noUnreadAlerts}
                       </p>
                       <p className="text-muted-foreground mt-1 text-xs">
-                        Everything is operating normally
+                        {t.dashboard.manager.everythingOperatingNormally}
                       </p>
                     </div>
                   )}
@@ -265,12 +268,12 @@ export default function ManagerDashboard() {
               <TabsContent value="reports" className="mt-6 px-6 pb-6">
                 <div className="space-y-4">
                   <h3 className="text-foreground text-lg font-semibold">
-                    Export & Reports
+                    {t.dashboard.manager.exportAndReports}
                   </h3>
                   <div className="border-border/30 bg-secondary/30 rounded-lg border p-8 text-center">
                     <TrendingUp className="text-muted-foreground/50 mx-auto mb-4 h-12 w-12" />
                     <p className="text-muted-foreground text-sm">
-                      CSV/XLSX export and historical reports (coming soon)
+                      {t.dashboard.manager.csvXlsxExport}
                     </p>
                   </div>
                 </div>

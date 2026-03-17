@@ -11,8 +11,10 @@ import {
 } from "lucide-react";
 import { api } from "@/trpc/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useI18n } from "@/lib/i18n-client";
 
 export default function EmployeeDashboard() {
+  const { t } = useI18n();
   // Get batches for today
   const {
     data: batchesData,
@@ -53,17 +55,17 @@ export default function EmployeeDashboard() {
             <div className="flex items-start justify-between">
               <div>
                 <h1 className="text-foreground mb-2 text-4xl font-bold tracking-tight">
-                  Welcome back
+                  {t.dashboard.employee.title}
                 </h1>
                 <p className="text-muted-foreground text-lg">
-                  Log incoming batches and manage your inventory
+                  {t.dashboard.employee.subtitle}
                 </p>
               </div>
               {batches.length > 0 && (
                 <div className="bg-primary/10 border-primary/30 flex items-center gap-2 rounded-lg border px-4 py-2">
                   <CheckCircle2 className="text-primary h-5 w-5" />
                   <span className="text-primary text-sm font-medium">
-                    {batches.length} batches logged
+                    {batches.length} {t.dashboard.employee.batchesLogged}
                   </span>
                 </div>
               )}
@@ -78,7 +80,7 @@ export default function EmployeeDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Batches Today
+                      {t.dashboard.employee.batchesToday}
                     </p>
                     <p className="text-foreground text-3xl font-bold tabular-nums">
                       {isLoading ? "—" : batches.length}
@@ -97,7 +99,7 @@ export default function EmployeeDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Units Logged
+                      {t.dashboard.employee.unitsLogged}
                     </p>
                     <p className="text-foreground text-3xl font-bold tabular-nums">
                       {isLoading ? "—" : totalUnitsToday.toLocaleString()}
@@ -116,7 +118,7 @@ export default function EmployeeDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Total Value
+                      {t.dashboard.employee.totalValue}
                     </p>
                     <p className="text-foreground text-3xl font-bold tabular-nums">
                       {isLoading
@@ -140,7 +142,7 @@ export default function EmployeeDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground mb-2 text-sm font-medium">
-                      Avg/Batch
+                      {t.dashboard.employee.avgBatch}
                     </p>
                     <p className="text-foreground text-3xl font-bold tabular-nums">
                       {isLoading
@@ -169,11 +171,10 @@ export default function EmployeeDashboard() {
                     <div className="flex items-center justify-between">
                       <div className="space-y-2">
                         <h3 className="text-foreground group-hover:text-primary text-lg font-bold transition-colors">
-                          Ingresar Nuevo Lote
+                          {t.dashboard.employee.enterNewBatch}
                         </h3>
                         <p className="text-muted-foreground text-sm">
-                          Accede al formulario optimizado para entrada rápida de
-                          lotes
+                          {t.dashboard.employee.enterBatchOptimized}
                         </p>
                       </div>
                       <div className="bg-primary/15 group-hover:bg-primary/25 rounded-lg p-4 transition-colors">
@@ -190,10 +191,10 @@ export default function EmployeeDashboard() {
               <Card className="border-border/50 from-card via-card/95 to-card/80 bg-linear-to-br shadow-xl backdrop-blur-xl">
                 <CardHeader className="border-border/30 border-b pb-4">
                   <CardTitle className="flex items-center gap-2">
-                    📋 Actividad Reciente
+                    📋 {t.dashboard.employee.recentActivity}
                     {batches.length > 0 && (
                       <span className="text-primary ml-auto text-sm font-normal">
-                        {batches.length} lotes ingresados
+                        {batches.length} {t.dashboard.employee.batchesLogged}
                       </span>
                     )}
                   </CardTitle>
@@ -204,7 +205,7 @@ export default function EmployeeDashboard() {
                       <AlertCircle className="text-destructive mt-0.5 h-5 w-5 shrink-0" />
                       <div>
                         <p className="text-destructive text-sm font-medium">
-                          Falló al cargar lotes
+                          {t.dashboard.employee.failedLoadBatches}
                         </p>
                         <p className="text-destructive/80 mt-1 text-xs">
                           {error.message}
