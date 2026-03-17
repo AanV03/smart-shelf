@@ -65,6 +65,15 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
+
+    /* Auth background gradient (light mode) */
+    --gradient-auth-bg: linear-gradient(135deg, oklch(0.98 0.015 260) 0%, oklch(0.95 0.02 200) 50%, oklch(0.92 0.025 160) 100%);
+    
+    /* Glassmorphism variables (light mode) - very light gray almost white */
+    --color-glass-bg: oklch(0.96 0.005 260);
+    --color-glass-border: oklch(0.90 0.008 260);
+    --color-glass-input-bg: oklch(0.97 0.01 260);
+    --color-glass-input-border: oklch(0.60 0.02 260);
   }
 
   /* Dark theme */
@@ -106,6 +115,15 @@
     --color-theme-border: oklch(0.30 0.015 260);
     --color-primary-bg: oklch(0.13 0.015 260);
     --color-primary-border: oklch(0.30 0.015 260);
+
+    /* Auth background gradient (dark mode) */
+    --gradient-auth-bg: linear-gradient(135deg, oklch(0.13 0.015 260) 0%, oklch(0.15 0.02 200) 50%, oklch(0.18 0.025 160) 100%);
+    
+    /* Glassmorphism variables (dark mode) */
+    --color-glass-bg: rgba(255, 255, 255, 0.10);
+    --color-glass-border: rgba(255, 255, 255, 0.12);
+    --color-glass-input-bg: oklch(0.26 0.015 260);
+    --color-glass-input-border: oklch(0.40 0.01 260);
   }
 
   body {

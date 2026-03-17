@@ -1,12 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/app/_components/auth/LoginForm";
 import { RegisterForm } from "@/app/_components/auth/RegisterForm";
+import { RegisterOAuthSection } from "@/app/_components/auth/RegisterOAuthSection";
 
 type AuthMode = "login" | "register";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "";
+const FAVICON_URL = `${SITE_URL}/favicon.png`;
 
 export default function AuthPage() {
   const { data: session, status } = useSession();
@@ -30,54 +35,77 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-4">
-      {/* Animated Background Gradients */}
-      <div className="from-background via-background to-background absolute inset-0 -z-10 bg-linear-to-br">
-        {/* Blob 1 - Primary */}
-        <div className="bg-primary/15 animate-blob pointer-events-none absolute -top-40 -left-40 h-96 w-96 rounded-full opacity-40 mix-blend-multiply blur-3xl filter"></div>
-
-        {/* Blob 2 - Secondary */}
-        <div className="bg-secondary/15 animate-blob animation-delay-2000 pointer-events-none absolute top-1/3 -right-32 h-96 w-96 rounded-full opacity-40 mix-blend-multiply blur-3xl filter"></div>
-
-        {/* Blob 3 - Primary again */}
-        <div className="bg-primary/10 animate-blob animation-delay-4000 pointer-events-none absolute -bottom-40 left-1/3 h-96 w-96 rounded-full opacity-30 mix-blend-multiply blur-3xl filter"></div>
-
-        {/* Ambient Light Effect */}
-        <div className="bg-gradient-radial to-background absolute inset-0 from-transparent via-transparent opacity-50"></div>
-      </div>
-
+    <div
+      className="relative flex flex-col min-h-screen items-center justify-start overflow-auto py-4 sm:py-6 px-2 sm:px-3"
+      style={{
+        background: "var(--gradient-auth-bg)",
+      }}
+    >
       {/* Content Container */}
-      <div className="relative w-full max-w-md">
-        {/* Header Animation */}
-        <div className="animate-fade-in mb-12 text-center">
-          <h1 className="from-primary via-primary to-secondary mb-3 bg-linear-to-r bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
-            Smart-Shelf
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            {mode === "login"
-              ? "Gestión inteligente de inventario"
-              : "Únete a Smart-Shelf hoy"}
-          </p>
-        </div>
+      {mode === "login" ? (
+        // Login Form Layout (single column)
+        <div className="relative w-full max-w-sm">
+          {/* Header Animation */}
+          <div className="animate-fade-in flex justify-center items-center gap-2.5 sm:gap-3">
+            <Image
+              src={FAVICON_URL}
+              alt="Smart-Shelf Logo"
+              width={40}
+              height={40}
+              priority
+              className="h-8 w-8 sm:h-10 sm:w-10"
+            />
+            <h1 className="text-foreground text-xl sm:text-2xl font-bold">
+              Smart<span className="text-muted-foreground">Shelf</span>
+            </h1>
+          </div>
 
-        {/* Form Container with transition */}
-        <div className="transition-all duration-300">
-          {mode === "login" ? (
+          {/* Form Container with glassmorphism */}
+          <div className="transition-all duration-300 backdrop-blur-md rounded-2xl p-4 sm:p-6 mt-4 sm:mt-6" style={{ backgroundColor: "var(--color-glass-bg)", borderColor: "var(--color-glass-border)", borderWidth: "1px" }}>
             <LoginForm onSwitchToRegister={() => setMode("register")} />
-          ) : (
-            <RegisterForm onSwitchToLogin={() => setMode("login")} />
-          )}
+          </div>
         </div>
 
-        {/* Footer Info */}
-        <div className="text-muted-foreground animate-fade-in mt-8 text-center text-sm">
-          <p>
-            Mantén tu inventario{" "}
-            <span className="text-primary font-semibold">organizado</span> y{" "}
-            <span className="text-primary font-semibold">actualizado</span>
-          </p>
+      ) : (
+        // Register Form Layout (responsive grid)
+        <div className="relative w-full max-w-2xl">
+          {/* Header Animation */}
+          <div className="animate-fade-in flex justify-center items-center gap-2.5 sm:gap-3">
+            <Image
+              src={FAVICON_URL}
+              alt="Smart-Shelf Logo"
+              width={40}
+              height={40}
+              priority
+              className="h-8 w-8 sm:h-10 sm:w-10"
+            />
+            <h1 className="text-foreground text-xl sm:text-2xl font-bold">
+              Smart<span className="text-muted-foreground">Shelf</span>
+            </h1>
+          </div>
+
+          {/* Form Container - Grid Layout with glassmorphism */}
+          <div className="transition-all duration-300 grid grid-cols-1 lg:grid-cols-2 gap-2.5 lg:gap-4 backdrop-blur-md rounded-2xl p-2.5 sm:p-4 relative mt-4 sm:mt-6" style={{ backgroundColor: "var(--color-glass-bg)", borderColor: "var(--color-glass-border)", borderWidth: "1px" }}>
+            {/* Register Form Column */}
+            <div className="md:col-span-1">
+              <RegisterForm onSwitchToLogin={() => setMode("login")} hideOAuthSection={true} />
+            </div>
+
+            {/* Vertical Divider (hidden on mobile) */}
+            <div className="hidden lg:block absolute inset-y-2.5 sm:inset-y-4 left-1/2 w-px bg-white/10 -translate-x-1/2"></div>
+
+            {/* OAuth Section Column (hidden on mobile) */}
+            <div className="hidden lg:flex lg:col-span-1">
+              <RegisterOAuthSection />
+            </div>
+
+            {/* OAuth Section for Mobile (below form) */}
+            <div className="lg:hidden">
+              <RegisterForm onSwitchToLogin={() => setMode("login")} hideOAuthSection={false} />
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
