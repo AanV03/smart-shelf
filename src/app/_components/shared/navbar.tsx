@@ -41,7 +41,8 @@ export function Navbar({ role = "EMPLOYEE" }: NavbarProps) {
   return (
     <header
       role="banner"
-      className="border-border bg-background flex h-16 w-full shrink-0 items-center justify-between border-b px-6"
+      className="border-border flex h-16 w-full shrink-0 items-center justify-between border-b px-6"
+      style={{ backgroundImage: "var(--gradient-navbar-bg)" }}
     >
       {/* Left: Sidebar Toggle & Logo */}
       <div className="flex items-center gap-4">

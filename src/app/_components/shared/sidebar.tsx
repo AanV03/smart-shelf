@@ -149,7 +149,7 @@ return (
   <Sidebar
     collapsible="icon"
     variant="sidebar"
-    className="from-sidebar via-sidebar to-sidebar bg-gradient-to-b from-[#f5f5f7] via-[#e8f4f0] to-[#f5f5f7] dark:from-[#0a0e27] dark:via-[#162e40] dark:to-[#0a0e27]"
+    className="sidebar-gradient-bg border-sidebar-border"
   >
     {/* HEADER - LOGO */}
     <SidebarHeader className="border-sidebar-border flex h-16 items-center border-b px-2">
@@ -263,7 +263,7 @@ return (
     </SidebarContent>
 
     {/* SEPARATOR */}
-    <SidebarSeparator className="my-0" />
+    <SidebarSeparator className="my-0 mx-0 w-full" />
 
     {/* FOOTER - ROLE */}
     <SidebarFooter className="flex h-16 items-center justify-between border-t-0 px-2">

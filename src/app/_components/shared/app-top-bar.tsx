@@ -47,7 +47,9 @@ export function AppTopBar({ role = "EMPLOYEE" }: AppTopBarProps) {
     : "US";
 
   return (
-    <header className="border-border sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-linear-to-r from-[#f5f5f7] via-[#c8e6e0] to-[#f5f5f7] px-6 backdrop-blur-sm dark:from-[#0a0e27] dark:via-[#1a4d3e] dark:to-[#0a0e27]">
+    <header 
+      className="navbar-bg border-border sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b px-6"
+    >
       {/* Left: Sidebar Trigger + Logo/Title */}
       <div className="flex items-center gap-4">
         <SidebarTrigger className="text-foreground" />
