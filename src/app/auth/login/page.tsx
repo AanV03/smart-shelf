@@ -10,7 +10,7 @@ import { RegisterOAuthSection } from "@/app/_components/auth/RegisterOAuthSectio
 
 type AuthMode = "login" | "register";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 const FAVICON_URL = `${SITE_URL}/favicon.png`;
 
 export default function AuthPage() {
