@@ -73,8 +73,5 @@
   "ct3aMetadata": {
     "initVersion": "7.40.0"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "packageManager": "npm@11.6.2"
 }
