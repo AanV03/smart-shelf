@@ -1,12 +1,15 @@
 /**
  * Email Service: Financial Reports
  *
- * Utiliza Resend para enviar reportes financieros a managers
+ * Utiliza Resend SDK para enviar reportes financieros a managers
  */
 
+import { Resend } from "resend";
 import { env } from "@/env";
 
-interface ReportData {
+const resend = new Resend(env.RESEND_API_KEY);
+
+export interface ReportData {
   storeId: string;
   period: string;
   totalRevenue: number;
@@ -24,56 +27,65 @@ interface SendReportEmailInput {
 }
 
 /**
- * Send financial report email via Resend
+ * Send financial report email via Resend SDK
+ * Throws if Resend is not configured or email fails to send
  */
 export async function sendReportEmail({
   to,
   recipientName,
   reportData,
-}: SendReportEmailInput): Promise<void> {
+}: SendReportEmailInput): Promise<{ success: boolean; messageId?: string }> {
   console.log("[EMAIL_SERVICE_REPORT] Sending report email", {
     to,
     period: reportData.period,
+    recipientName,
   });
 
   if (!env.RESEND_API_KEY) {
-    console.warn(
-      "[EMAIL_SERVICE_REPORT] RESEND_API_KEY not configured, skipping email",
+    throw new Error(
+      "[EMAIL_SERVICE_REPORT] RESEND_API_KEY not configured. Cannot send emails.",
     );
-    return;
+  }
+
+  if (!env.RESEND_FROM_EMAIL) {
+    throw new Error(
+      "[EMAIL_SERVICE_REPORT] RESEND_FROM_EMAIL not configured. Cannot send emails.",
+    );
   }
 
   try {
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: env.RESEND_FROM_EMAIL ?? "noreply@smart-shelf.app",
-        to,
-        subject: `📊 Tu Reporte Financiero - ${reportData.period}`,
-        html: generateReportHTML({
-          recipientName,
-          reportData,
-        }),
+    const result = await resend.emails.send({
+      from: env.RESEND_FROM_EMAIL,
+      to,
+      subject: `📊 Tu Reporte Financiero - ${reportData.period}`,
+      html: generateReportHTML({
+        recipientName,
+        reportData,
       }),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Resend API error: ${JSON.stringify(error)}`);
+    if (result.error) {
+      throw new Error(
+        `Resend API error: ${result.error.message || JSON.stringify(result.error)}`,
+      );
     }
 
-    const { id } = (await response.json()) as { id: string };
     console.log("[EMAIL_SERVICE_REPORT] Report email sent successfully", {
-      id,
+      messageId: result.data?.id,
       to,
     });
+
+    return {
+      success: true,
+      messageId: result.data?.id,
+    };
   } catch (error) {
-    console.error("[EMAIL_SERVICE_REPORT] Error sending report email", error);
-    throw error; // Propagate error for logging
+    console.error("[EMAIL_SERVICE_REPORT] Error sending report email", {
+      error,
+      to,
+      period: reportData.period,
+    });
+    throw error;
   }
 }
 
