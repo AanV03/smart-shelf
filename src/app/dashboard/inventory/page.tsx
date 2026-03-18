@@ -1,8 +1,8 @@
 import { getServerAuthSession } from "@/server/auth";
 import { redirect } from "next/navigation";
-import { FefoInventoryTable } from "../_components/FefoInventoryTable";
-import { StrategicInventoryTable } from "../_components/StrategicInventoryTable";
-import { InventoryHeader } from "../_components/InventoryHeader";
+import { FefoInventoryTable } from "../../../../docs/_components/FefoInventoryTable";
+import { StrategicInventoryTable } from "../../../../docs/_components/StrategicInventoryTable";
+import { InventoryHeader } from "../../../../docs/_components/InventoryHeader";
 
 export const metadata = {
   title: "Inventario - Smart-Shelf",

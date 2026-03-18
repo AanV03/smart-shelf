@@ -8,6 +8,8 @@ import {
   TrendingDown,
   AlertTriangle,
   PieChart as PieChartIcon,
+  FileText,
+  ExternalLink,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +20,7 @@ import { api } from "@/trpc/react";
 export function AnalyticsPanel() {
   const { t } = useI18n();
   const [isExporting, setIsExporting] = useState(false);
+  
   // Main dashboard stats
   const { data: dashboardStats, isLoading: statsLoading } =
     api.stats.getDashboardStats.useQuery();
@@ -39,8 +42,19 @@ export function AnalyticsPanel() {
       limit: 10,
     });
 
+  // Financial reports (NEW)
+  const { data: reportsData, isLoading: reportsLoading } =
+    api.reports.getReports.useQuery({
+      limit: 10,
+      offset: 0,
+    });
+
   const isLoading =
-    statsLoading || categoryLoading || trendLoading || alertsLoading;
+    statsLoading ||
+    categoryLoading ||
+    trendLoading ||
+    alertsLoading ||
+    reportsLoading;
 
   // Find max value for scaling the trend chart
   const maxTrendValue = useMemo(() => {
@@ -332,6 +346,107 @@ export function AnalyticsPanel() {
               </p>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Financial Reports Section (NEW) */}
+      <Card className="border-border/50 from-card to-card/80 bg-linear-to-br backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="text-primary h-5 w-5" />
+            Reportes Financieros
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {reportsLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <p className="text-muted-foreground">Cargando reportes...</p>
+            </div>
+          ) : reportsData && reportsData.reports.length > 0 ? (
+            <div className="space-y-3">
+              {reportsData.reports.map((report) => (
+                <div
+                  key={report.id}
+                  className="border-border/30 flex items-center justify-between rounded-lg border p-4 hover:bg-muted/40 transition-colors"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <FileText className="text-primary h-4 w-4" />
+                      <p className="text-foreground font-medium">
+                        Período: {report.period}
+                      </p>
+                    </div>
+                    <div className="text-muted-foreground mt-2 grid grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <p className="text-xs font-semibold">Ingresos</p>
+                        <p className="text-foreground font-bold">
+                          ${report.totalRevenue.toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold">Costo</p>
+                        <p className="text-foreground font-bold">
+                          ${report.totalCost.toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold">Ganancia Neta</p>
+                        <p
+                          className={`font-bold ${
+                            report.netProfit > 0
+                              ? "text-green-600"
+                              : "text-destructive"
+                          }`}
+                        >
+                          ${report.netProfit.toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground mt-2 text-xs">
+                      Generado: {format(new Date(report.generatedAt), "dd MMM yyyy HH:mm")}
+                    </p>
+                  </div>
+
+                  {/* Download Button */}
+                  <div className="flex items-center gap-2">
+                    {report.blobUrl ? (
+                      <a
+                        href={report.blobUrl}
+                        download={report.blobFileName ?? `report-${report.period}.csv`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-3 py-2 text-primary hover:bg-primary/20 transition-colors"
+                        title="Descargar reporte CSV"
+                      >
+                        <Download className="h-4 w-4" />
+                        <span className="text-xs font-medium">Descargar</span>
+                      </a>
+                    ) : (
+                      <Badge variant="outline" className="text-xs">
+                        Procesando...
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-2 py-8">
+              <FileText className="text-muted-foreground h-8 w-8" />
+              <p className="text-muted-foreground text-center text-sm">
+                No hay reportes disponibles aún. Los reportes se generan automáticamente cada 24 horas.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
