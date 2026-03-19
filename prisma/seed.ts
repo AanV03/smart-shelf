@@ -465,6 +465,123 @@ async function main() {
     console.log(`✅ Created ${alerts.length} alerts`);
 
     // ============================================
+    // 7. Crear Reportes Financieros
+    // ============================================
+    console.log("💰 Creating financial reports...");
+
+    const reports = [];
+
+    // Reporte de Marzo 2026 (tienda 1)
+    reports.push(
+      await db.financialReport.upsert({
+        where: {
+          storeId_period: {
+            storeId: store1.id,
+            period: "2026-03",
+          },
+        },
+        update: {},
+        create: {
+          id: "report-001",
+          storeId: store1.id,
+          period: "2026-03",
+          totalRevenue: 8500.5,
+          totalCost: 5120.75,
+          netProfit: 3379.75,
+          blobFileName: null,
+          blobUrl: null,
+          generatedBy: "cron-worker",
+          generatedAt: new Date("2026-03-31T23:00:00Z"),
+          sentAt: null,
+          sentTo: null,
+        },
+      }),
+    );
+
+    // Reporte de Febrero 2026 (tienda 1)
+    reports.push(
+      await db.financialReport.upsert({
+        where: {
+          storeId_period: {
+            storeId: store1.id,
+            period: "2026-02",
+          },
+        },
+        update: {},
+        create: {
+          id: "report-002",
+          storeId: store1.id,
+          period: "2026-02",
+          totalRevenue: 7200.0,
+          totalCost: 4320.0,
+          netProfit: 2880.0,
+          blobFileName: null,
+          blobUrl: null,
+          generatedBy: "cron-worker",
+          generatedAt: new Date("2026-02-28T23:00:00Z"),
+          sentAt: null,
+          sentTo: null,
+        },
+      }),
+    );
+
+    // Reporte de Enero 2026 (tienda 1)
+    reports.push(
+      await db.financialReport.upsert({
+        where: {
+          storeId_period: {
+            storeId: store1.id,
+            period: "2026-01",
+          },
+        },
+        update: {},
+        create: {
+          id: "report-003",
+          storeId: store1.id,
+          period: "2026-01",
+          totalRevenue: 6950.25,
+          totalCost: 4170.15,
+          netProfit: 2780.1,
+          blobFileName: null,
+          blobUrl: null,
+          generatedBy: "cron-worker",
+          generatedAt: new Date("2026-01-31T23:00:00Z"),
+          sentAt: null,
+          sentTo: null,
+        },
+      }),
+    );
+
+    // Reporte de Marzo 2026 (tienda 2)
+    reports.push(
+      await db.financialReport.upsert({
+        where: {
+          storeId_period: {
+            storeId: store2.id,
+            period: "2026-03",
+          },
+        },
+        update: {},
+        create: {
+          id: "report-004",
+          storeId: store2.id,
+          period: "2026-03",
+          totalRevenue: 5420.0,
+          totalCost: 3252.0,
+          netProfit: 2168.0,
+          blobFileName: null,
+          blobUrl: null,
+          generatedBy: "cron-worker",
+          generatedAt: new Date("2026-03-31T23:00:00Z"),
+          sentAt: null,
+          sentTo: null,
+        },
+      }),
+    );
+
+    console.log(`✅ Created ${reports.length} financial reports`);
+
+    // ============================================
     // Summary
     // ============================================
     console.log("\n✨ Seed completed successfully!");
@@ -475,6 +592,7 @@ async function main() {
     👥 Users: 3
     📊 Batches: ${batches.length}
     🚨 Alerts: ${alerts.length}
+    💰 Financial Reports: ${reports.length}
 
     📝 Test Users (Password: Password123!):
     - Manager (Tienda 1): gerente@tienda1.com
